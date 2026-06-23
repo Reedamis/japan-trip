@@ -1,0 +1,1041 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Kansai Trip — Jan 22–Feb 5</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Noto+Serif+JP:wght@300;400;600&family=Inter:wght@300;400;500;600&display=swap');
+
+  :root {
+    --ink: #1a1a1a;
+    --mist: #f0ede8;
+    --steam: #e8e3dc;
+    --water: #2d5a6b;
+    --ember: #c4622d;
+    --moss: #4a6741;
+    --gold: #b8860b;
+    --snow: #ffffff;
+    --muted: #6b6560;
+    --card-border: #e0dbd4;
+  }
+
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+
+  body {
+    font-family: 'Inter', sans-serif;
+    background: var(--mist);
+    color: var(--ink);
+    line-height: 1.6;
+  }
+
+  header {
+    background: var(--water);
+    color: white;
+    padding: 48px 24px 36px;
+    text-align: center;
+  }
+  .header-jp {
+    font-family: 'Noto Serif JP', serif;
+    font-size: 13px;
+    letter-spacing: 0.3em;
+    opacity: 0.65;
+    margin-bottom: 12px;
+  }
+  header h1 {
+    font-family: 'Noto Serif JP', serif;
+    font-size: clamp(22px, 5vw, 40px);
+    font-weight: 300;
+    letter-spacing: 0.05em;
+    margin-bottom: 10px;
+  }
+  .header-sub {
+    font-size: 13px;
+    opacity: 0.75;
+    letter-spacing: 0.1em;
+  }
+  .header-tags {
+    display: flex;
+    gap: 8px;
+    justify-content: center;
+    flex-wrap: wrap;
+    margin-top: 18px;
+  }
+  .tag {
+    background: rgba(255,255,255,0.15);
+    border: 1px solid rgba(255,255,255,0.25);
+    font-size: 11px;
+    padding: 4px 12px;
+    border-radius: 20px;
+    letter-spacing: 0.06em;
+  }
+
+  .pass-bar {
+    background: #1e4455;
+    color: #c8dfe8;
+    padding: 11px 20px;
+    font-size: 12.5px;
+    text-align: center;
+    line-height: 1.5;
+  }
+  .pass-bar strong { color: white; }
+
+  main {
+    max-width: 800px;
+    margin: 0 auto;
+    padding: 32px 16px 80px;
+  }
+
+  /* CITY SECTION */
+  .city-section {
+    margin-bottom: 48px;
+  }
+  .city-header {
+    display: flex;
+    align-items: baseline;
+    gap: 14px;
+    border-bottom: 2px solid var(--water);
+    padding-bottom: 10px;
+    margin-bottom: 20px;
+  }
+  .city-name {
+    font-family: 'Noto Serif JP', serif;
+    font-size: 24px;
+    font-weight: 400;
+    color: var(--water);
+  }
+  .city-meta {
+    font-size: 13px;
+    color: var(--muted);
+    letter-spacing: 0.04em;
+  }
+
+  /* DAY BLOCK */
+  .day-block {
+    background: white;
+    border-radius: 10px;
+    margin-bottom: 16px;
+    overflow: hidden;
+    box-shadow: 0 1px 3px rgba(0,0,0,0.07);
+    border-left: 4px solid var(--water);
+  }
+  .day-block.type-onsen { border-left-color: var(--ember); }
+  .day-block.type-hike  { border-left-color: var(--moss); }
+  .day-block.type-ski   { border-left-color: #4a8aaf; }
+  .day-block.type-travel{ border-left-color: var(--gold); }
+  .day-block.type-arrive{ border-left-color: var(--muted); }
+
+  .day-top {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 14px 16px 10px;
+    border-bottom: 1px solid var(--steam);
+    cursor: pointer;
+    user-select: none;
+  }
+  .day-top:hover { background: #fafaf8; }
+  .day-chevron {
+    font-size: 11px;
+    color: var(--muted);
+    transition: transform 0.2s;
+    flex-shrink: 0;
+  }
+  .day-block.collapsed .day-chevron { transform: rotate(-90deg); }
+  .day-block.collapsed .day-body { display: none; }
+  .day-block.collapsed .day-top { border-bottom: none; }
+  .day-date {
+    font-size: 11px;
+    font-weight: 600;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: var(--muted);
+    min-width: 56px;
+    flex-shrink: 0;
+  }
+  .day-title {
+    font-size: 15px;
+    font-weight: 600;
+    flex: 1;
+  }
+  .day-emoji { font-size: 16px; }
+
+  .day-body {
+    padding: 14px 16px 16px;
+  }
+
+  /* STOP */
+  .stop {
+    display: grid;
+    grid-template-columns: 26px 1fr;
+    gap: 8px;
+    padding: 11px 0;
+    border-bottom: 1px solid #f4f1ee;
+    align-items: start;
+  }
+  .stop:last-child { border-bottom: none; }
+  .stop-icon { font-size: 16px; text-align: center; padding-top: 1px; }
+  .stop-name {
+    font-size: 14px;
+    font-weight: 600;
+    margin-bottom: 4px;
+    color: var(--ink);
+  }
+  .stop-note {
+    font-size: 13px;
+    color: #4a4540;
+    line-height: 1.55;
+  }
+  .badges {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 5px;
+    margin-bottom: 5px;
+  }
+  .badge {
+    font-size: 10px;
+    font-weight: 600;
+    padding: 2px 8px;
+    border-radius: 10px;
+    letter-spacing: 0.04em;
+    text-transform: uppercase;
+  }
+  .b-tattoo  { background: #e5f2e5; color: #2a5e2a; }
+  .b-sticker { background: #fff3e0; color: #a04a00; }
+  .b-private { background: #e0edf5; color: #1e4a68; }
+  .b-hike    { background: #eaf2e5; color: #325828; }
+  .b-pass    { background: #f5f0e0; color: #6a4a10; }
+  .b-warn    { background: #fdecea; color: #a02020; }
+
+  /* TRANSIT BOX */
+  .transit-box {
+    background: #f7f5f0;
+    border-radius: 7px;
+    padding: 10px 12px;
+    margin-top: 12px;
+    font-size: 12.5px;
+    color: #4a4540;
+    display: flex;
+    gap: 9px;
+    align-items: flex-start;
+  }
+  .transit-box .ti { font-size: 15px; flex-shrink: 0; }
+
+  /* FOOD BOX */
+  .food-box {
+    background: #fff9f0;
+    border: 1px solid #f0dfc0;
+    border-radius: 8px;
+    padding: 12px 14px;
+    margin-top: 12px;
+  }
+  .food-box-title {
+    font-size: 11px;
+    font-weight: 700;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: var(--ember);
+    margin-bottom: 8px;
+  }
+  .food-item {
+    font-size: 13px;
+    color: #3a3028;
+    padding: 5px 0;
+    border-bottom: 1px solid #f0e8d8;
+    display: flex;
+    gap: 8px;
+  }
+  .food-item:last-child { border-bottom: none; padding-bottom: 0; }
+  .food-item strong { font-weight: 600; }
+
+  /* CALLOUT */
+  .callout {
+    border-radius: 8px;
+    padding: 12px 14px;
+    margin-top: 12px;
+    font-size: 13px;
+  }
+  .callout-pass { background: #fffbe8; border: 1px solid #e8d060; color: #5a4010; }
+  .callout-tip  { background: #e8f4f8; border: 1px solid #90c8d8; color: #1a3a4a; }
+
+  /* ONSEN NIGHT */
+  .onsen-night {
+    background: #fff5f0;
+    border: 1px solid #e8c8b8;
+    border-radius: 8px;
+    padding: 14px;
+    margin-top: 12px;
+  }
+  .onsen-night-title {
+    font-size: 11px;
+    font-weight: 700;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: var(--ember);
+    margin-bottom: 10px;
+  }
+  .onsen-pick {
+    display: flex;
+    gap: 10px;
+    align-items: flex-start;
+    padding: 8px 0;
+    border-bottom: 1px solid #f0e0d8;
+    font-size: 13px;
+  }
+  .onsen-pick:last-child { border-bottom: none; padding-bottom: 0; }
+  .onsen-num {
+    background: var(--ember);
+    color: white;
+    font-size: 10px;
+    font-weight: 700;
+    width: 20px;
+    height: 20px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+    margin-top: 1px;
+  }
+
+  /* TIPS */
+  .tips-section {
+    background: white;
+    border-radius: 10px;
+    padding: 22px;
+    margin-top: 16px;
+    box-shadow: 0 1px 3px rgba(0,0,0,0.07);
+  }
+  .tips-title {
+    font-family: 'Noto Serif JP', serif;
+    font-size: 20px;
+    color: var(--water);
+    margin-bottom: 16px;
+    padding-bottom: 10px;
+    border-bottom: 1px solid var(--steam);
+  }
+  .tip {
+    display: flex;
+    gap: 10px;
+    align-items: flex-start;
+    padding: 10px 0;
+    border-bottom: 1px solid var(--steam);
+    font-size: 13.5px;
+    line-height: 1.55;
+  }
+  .tip:last-child { border-bottom: none; }
+  .tip-icon { flex-shrink: 0; font-size: 16px; }
+
+  footer {
+    text-align: center;
+    padding: 28px;
+    font-size: 12px;
+    color: var(--muted);
+  }
+</style>
+</head>
+<body>
+
+<header>
+  <div class="header-jp">関西 温泉と山の旅</div>
+  <h1>Kansai — Onsen &amp; Hiking</h1>
+  <div class="header-sub">January 22 – February 5 &nbsp;·&nbsp; Osaka → Kyoto → Kobe/Arima → Kinosaki</div>
+  <div class="header-tags">
+    <span class="tag">🛁 Tattoo-friendly onsen</span>
+    <span class="tag">🥾 Hiking</span>
+    <span class="tag">⛷️ Skiing</span>
+    <span class="tag">🍜 Great ramen</span>
+    <span class="tag">🦀 Crab season</span>
+    <span class="tag">🐒 Monkeys</span>
+  </div>
+</header>
+
+<!-- ROUTE MAP -->
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/leaflet@1.9.4/dist/leaflet.css"/>
+<div id="route-map" style="height:420px; width:100%;"></div>
+<script src="https://cdn.jsdelivr.net/npm/leaflet@1.9.4/dist/leaflet.js"></script>
+<script>
+var map = L.map('route-map', { scrollWheelZoom: false }).setView([34.9, 135.2], 7);
+L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+  attribution: '© OpenStreetMap contributors'
+}).addTo(map);
+var stops = [
+  { name: "Osaka", dates: "Jan 22–24", lat: 34.6937, lng: 135.5023 },
+  { name: "Kinosaki Onsen", dates: "Jan 24–27", lat: 35.6243, lng: 134.8131 },
+  { name: "Kyoto", dates: "Jan 27–30", lat: 35.0116, lng: 135.7681 },
+  { name: "Kumano / Yunomine", dates: "Jan 30–Feb 1", lat: 33.8522, lng: 135.7675 },
+  { name: "Kobe / Arima Onsen", dates: "Feb 1–3", lat: 34.6901, lng: 135.1956 },
+  { name: "Osaka", dates: "Feb 3–5", lat: 34.6937, lng: 135.5023 }
+];
+var icon = L.divIcon({
+  className: '',
+  html: '<div style="width:13px;height:13px;background:#c4622d;border:2.5px solid white;border-radius:50%;box-shadow:0 1px 4px rgba(0,0,0,0.4)"></div>',
+  iconSize: [13,13], iconAnchor: [6,6], popupAnchor: [0,-10]
+});
+stops.slice(0,-1).forEach(function(s) {
+  L.marker([s.lat, s.lng], { icon: icon }).addTo(map)
+    .bindPopup('<strong>' + s.name + '</strong><br><span style="font-size:12px;color:#666">' + s.dates + '</span>');
+});
+L.polyline(stops.map(function(s){ return [s.lat, s.lng]; }), {
+  color: '#2d5a6b', weight: 3, opacity: 0.85
+}).addTo(map);
+</script>
+
+<div class="pass-bar">
+  🎫 <strong>Transit:</strong> ICOCA card (tap on/off everything in cities) &nbsp;+&nbsp; <strong>Kansai Wide Area Pass</strong> ×2 per person (5-day, ~¥12,000 each) for all long-distance trains &nbsp;·&nbsp; Skip the national JR Pass — not worth it for this itinerary
+</div>
+<main>
+
+<!-- ═══ OSAKA — ARRIVAL ═══ -->
+<div class="city-section">
+  <div class="city-header">
+    <div class="city-name">Osaka</div>
+    <div class="city-meta">Jan 22–24 &nbsp;·&nbsp; 2 nights &nbsp;·&nbsp; Arrival + jet lag base</div>
+  </div>
+
+  <div class="day-block type-arrive">
+    <div class="day-top">
+      <div class="day-date">Jan 22</div>
+      <div class="day-title">Arrive KIX — get to hotel, sleep</div>
+      <div class="day-emoji">✈️</div>
+    </div>
+    <div class="day-body">
+      <div class="stop">
+        <div class="stop-icon">✈️</div>
+        <div>
+          <div class="stop-name">Kansai International Airport (KIX)</div>
+          <div class="stop-note">Land at 5pm. Clear customs. Don't push it — get to your hotel, eat something close by, sleep. You've been traveling 15+ hours.</div>
+        </div>
+      </div>
+      <div class="transit-box">
+        <div class="ti">🚆</div>
+        <div>JR Haruka Limited Express: KIX → Osaka Station · ~50 min · ~¥1,900/person · Pay with ICOCA card or cash</div>
+      </div>
+      <div class="food-box">
+        <div class="food-box-title">🍜 Tonight — keep it dead simple</div>
+        <div class="food-item"><span>🍜</span><div><strong>Ichiran Ramen</strong> — open late near Dotonbori. Solo booths, order by form, zero Japanese needed. Rich tonkotsu broth. Perfect first night bowl.</div></div>
+        <div class="food-item"><span>🏪</span><div><strong>Or just 7-Eleven</strong> — Japan's konbini are genuinely great. Hot nikuman pork buns, onigiri, hot noodles. No shame at all.</div></div>
+      </div>
+    </div>
+  </div>
+
+  <div class="day-block type-hike">
+    <div class="day-top">
+      <div class="day-date">Jan 23</div>
+      <div class="day-title">Minoh Falls hike + Solaniwa Onsen evening</div>
+      <div class="day-emoji">🥾🛁</div>
+    </div>
+    <div class="day-body">
+      <div class="stop">
+        <div class="stop-icon">🥾</div>
+        <div>
+          <div class="stop-name">Minoh Falls (箕面大滝)</div>
+          <div class="badges"><span class="badge b-hike">2.7km · Easy · Paved · Free</span></div>
+          <div class="stop-note">40 min from Osaka by Hankyu Minoh Line. Forested river valley trail to a 33m waterfall. Crisp and beautiful in January. Wild macaques in the park. Allow 2–2.5 hrs round trip.</div>
+        </div>
+      </div>
+      <div class="stop">
+        <div class="stop-icon">🛁</div>
+        <div>
+          <div class="stop-name">Solaniwa Onsen (空庭温泉)</div>
+          <div class="badges">
+            <span class="badge b-sticker">Stickers for communal baths</span>
+            <span class="badge b-private">Private kashikiri available</span>
+          </div>
+          <div class="stop-note">9 spring types fed by water from 1,000m underground. Rooftop Japanese garden, torii gate path. Book a private kashikiri bath (¥4,000–7,000/hr) to soak together tattoo-free. Open until 11pm. 10-min walk from Bentencho Station.</div>
+        </div>
+      </div>
+      <div class="food-box">
+        <div class="food-box-title">🍜 Food today</div>
+        <div class="food-item"><span>🍡</span><div><strong>Minoh Park</strong> — maple leaf tempura from stalls along the trail. Sounds weird, tastes great.</div></div>
+        <div class="food-item"><span>🍜</span><div><strong>Dinner — Kadoya Shokudo</strong> · 60+ year old Bib Gourmand institution. Classic shoyu ramen, thin noodles, bamboo shoots. Not fishy at all — great intro ramen. Get the gyoza.</div></div>
+      </div>
+    </div>
+  </div>
+
+  <div class="day-block type-onsen">
+    <div class="day-top">
+      <div class="day-date">Jan 24</div>
+      <div class="day-title">Explore Osaka + Healthy Spa Tateba · depart for Kinosaki</div>
+      <div class="day-emoji">🏙️🛁🚆</div>
+    </div>
+    <div class="day-body">
+      <div class="stop">
+        <div class="stop-icon">🏙️</div>
+        <div>
+          <div class="stop-name">Morning — Dotonbori + Kuromon Market</div>
+          <div class="stop-note">Walk Dotonbori canal, the Glico man. Kuromon Ichiba market for a big breakfast/lunch — 150-year-old covered market with stalls serving fresh skewers, crab legs, oysters, wagyu.</div>
+        </div>
+      </div>
+      <div class="stop">
+        <div class="stop-icon">🛁</div>
+        <div>
+          <div class="stop-name">Healthy Spa Tateba — morning soak before the train</div>
+          <div class="badges"><span class="badge b-tattoo">Fully tattoo-friendly · No covering</span></div>
+          <div class="stop-note">Sign at the door says "Welcome tattoos everyone!" Cold bath, electric bath, jacuzzis, salt sauna. ~¥520. Near Sakuragawa Station. Get in, get warm, then catch your train.</div>
+        </div>
+      </div>
+      <div class="transit-box">
+        <div class="ti">🚆</div>
+        <div><strong>JR Kounotori Limited Express</strong>: Osaka → Kinosaki Onsen · ~2.5 hrs · Covered by Kansai Wide Area Pass · Reserve seats in advance</div>
+      </div>
+      <div class="callout callout-pass">
+        🎫 <strong>Activate Kansai Wide Area Pass #1 today.</strong> Covers this train + all travel through Kyoto.
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ═══ KINOSAKI ONSEN ═══ -->
+<div class="city-section">
+  <div class="city-header">
+    <div class="city-name">Kinosaki Onsen</div>
+    <div class="city-meta">Jan 24–27 &nbsp;·&nbsp; 3 nights &nbsp;·&nbsp; All baths 100% tattoo-friendly</div>
+  </div>
+
+  <div class="day-block type-onsen">
+    <div class="day-top">
+      <div class="day-date">Jan 24</div>
+      <div class="day-title">Arrive Kinosaki · first evening bath</div>
+      <div class="day-emoji">🧣🛁</div>
+    </div>
+    <div class="day-body">
+      <div class="stop">
+        <div class="stop-icon">🧣</div>
+        <div>
+          <div class="stop-name">Check into ryokan — Morizuya Inn (recommended)</div>
+          <div class="stop-note">4.8 stars, family-owned for 8 generations, private cave onsen, perfectly central. morizuya.com — book early, peak crab season fills fast. Your ryokan provides yukata, wooden geta sandals, and a bathhouse pass. Put the yukata on immediately — everyone in town walks around in them.</div>
+        </div>
+      </div>
+      <div class="onsen-night">
+        <div class="onsen-night-title">🛁 Tonight — pick one bathhouse</div>
+        <div class="onsen-pick">
+          <div class="onsen-num">1</div>
+          <div><strong>Ichino Yu (一の湯)</strong> — Built into a cave face. Most dramatic first-night choice.</div>
+        </div>
+        <div class="onsen-pick">
+          <div class="onsen-num">2</div>
+          <div><strong>Satono Yu (さとの湯)</strong> — Most modern, largest facility, multiple bath types. Good if you want variety in one visit.</div>
+        </div>
+      </div>
+      <div class="food-box">
+        <div class="food-box-title">🦀 Tonight — ryokan kaiseki dinner</div>
+        <div class="food-item"><span>🦀</span><div><strong>Peak Matsuba snow crab season</strong> — fished fresh from the nearby Sea of Japan port. Multi-course kaiseki dinner included with your ryokan stay. Eat in your yukata at a low table. This is one of the best things you can eat in Japan in winter.</div></div>
+      </div>
+    </div>
+  </div>
+
+  <div class="day-block type-hike">
+    <div class="day-top">
+      <div class="day-date">Jan 25</div>
+      <div class="day-title">Mt. Daishi ropeway + Onsenji Temple · evening bath</div>
+      <div class="day-emoji">🥾⛩️🛁</div>
+    </div>
+    <div class="day-body">
+      <div class="stop">
+        <div class="stop-icon">🚡</div>
+        <div>
+          <div class="stop-name">Kinosaki Ropeway → Mt. Daishi summit</div>
+          <div class="stop-note">Panoramic views of the Sea of Japan and the entire Kinosaki valley. Take the ropeway up, walk the descent trail back down through mountain cedar forest.</div>
+        </div>
+      </div>
+      <div class="stop">
+        <div class="stop-icon">⛩️</div>
+        <div>
+          <div class="stop-name">Onsenji Temple (温泉寺) — 500 stone steps</div>
+          <div class="stop-note">Ancient temple midway down the mountain, said to have founded Kinosaki's hot springs 1,300 years ago. 500 mossy stone steps winding through old-growth cedar. The steps earn the evening soak.</div>
+        </div>
+      </div>
+      <div class="stop">
+        <div class="stop-icon">🏘️</div>
+        <div>
+          <div class="stop-name">Afternoon — canal wandering + food stalls</div>
+          <div class="stop-note">Walk the willow-lined canal in your yukata. Souvenir shops, grilled crab leg street stalls, small cafes. Optional day trip to Izushi samurai castle town (30 min bus) — snow-dusted old town and famous soba.</div>
+        </div>
+      </div>
+      <div class="onsen-night">
+        <div class="onsen-night-title">🛁 Tonight — Gosho no Yu (save for a special evening)</div>
+        <div class="onsen-pick">
+          <div class="onsen-num">★</div>
+          <div><strong>Gosho no Yu (御所の湯)</strong> — The crown jewel. Only fully all-outdoor rotenburo in Kinosaki — three-tiered pools facing two cascading waterfalls, open sky above. In February with cold air and steam rising this is the best soak of the trip. <strong style="color:var(--ember)">Closed Thursdays.</strong></div>
+        </div>
+      </div>
+      <div class="food-box">
+        <div class="food-box-title">🦀 Food today</div>
+        <div class="food-item"><span>🦀</span><div><strong>Grilled crab leg from a street stall</strong> while wandering back in your yukata. That's a very good 10 minutes.</div></div>
+        <div class="food-item"><span>🍱</span><div><strong>Ryokan kaiseki dinner</strong> — second night of the full crab spread.</div></div>
+      </div>
+    </div>
+  </div>
+
+  <div class="day-block type-onsen">
+    <div class="day-top">
+      <div class="day-date">Jan 26</div>
+      <div class="day-title">Final morning soak · slow morning · depart for Kyoto</div>
+      <div class="day-emoji">🌅🚆</div>
+    </div>
+    <div class="day-body">
+      <div class="stop">
+        <div class="stop-icon">🌅</div>
+        <div>
+          <div class="stop-name">Morning bath — Mandara Yu or Yanagi Yu</div>
+          <div class="stop-note">Most bathhouses open at 7am. A morning soak in February — cold air, steam, nobody around — is the defining memory of Kinosaki. 30–40 minutes, get out, get warm, ryokan breakfast, pack.</div>
+        </div>
+      </div>
+      <div class="transit-box">
+        <div class="ti">🚆</div>
+        <div>JR Kounotori Limited Express: Kinosaki → Kyoto · ~2.5 hrs · Covered by Kansai Wide Area Pass</div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ═══ KYOTO ═══ -->
+<div class="city-section">
+  <div class="city-header">
+    <div class="city-name">Kyoto</div>
+    <div class="city-meta">Jan 26–30 &nbsp;·&nbsp; 3 nights &nbsp;·&nbsp; Temples · ramen · onsen</div>
+  </div>
+
+  <div class="day-block type-hike">
+    <div class="day-top">
+      <div class="day-date">Jan 27</div>
+      <div class="day-title">Arashiyama + Monkey Park + Funaoka Onsen</div>
+      <div class="day-emoji">🎋🐒🛁</div>
+    </div>
+    <div class="day-body">
+      <div class="stop">
+        <div class="stop-icon">🎋</div>
+        <div>
+          <div class="stop-name">Arashiyama Bamboo Grove — go early</div>
+          <div class="stop-note">At 8–9am in late January you may have it nearly to yourselves. Towering green stalks in winter light. Combine with Tenryu-ji temple garden right next door.</div>
+        </div>
+      </div>
+      <div class="stop">
+        <div class="stop-icon">🐒</div>
+        <div>
+          <div class="stop-name">Iwatayama Monkey Park</div>
+          <div class="stop-note">20-min steep hike up the mountain. At the top you're inside a wire-mesh hut — ~120 wild macaques roam freely outside and press against the mesh for treats. You hand food through the wire. Totally ethical, no chains, no performing. ¥800 each. Panoramic view of Kyoto below.</div>
+        </div>
+      </div>
+      <div class="stop">
+        <div class="stop-icon">🛁</div>
+        <div>
+          <div class="stop-name">Funaoka Onsen (船岡温泉) — evening</div>
+          <div class="badges">
+            <span class="badge b-tattoo">Fully tattoo-friendly · No covering</span>
+            <span class="badge b-warn">⚠ Closed Tuesdays</span>
+          </div>
+          <div class="stop-note">Kyoto's most beloved tattoo-friendly sento. Built 1923, extraordinary wood carvings of historical battle scenes throughout the changing room. Multiple pools, cold plunge, outdoor bath, sauna. Opens 3pm weekdays (8am Sundays). ~¥550.</div>
+        </div>
+      </div>
+      <div class="food-box">
+        <div class="food-box-title">🍜 Food today</div>
+        <div class="food-item"><span>☕</span><div><strong>% Arabica, Arashiyama</strong> — riverside location, stunning espresso. Best morning coffee of the trip.</div></div>
+        <div class="food-item"><span>🍱</span><div><strong>Lunch — Omen Nanzenji</strong> · Handmade udon in rich broth with toppings on the side. Hearty, warming, a Kyoto institution.</div></div>
+        <div class="food-item"><span>🍜</span><div><strong>Dinner — Kamodashi Chukasoba ROKU</strong> · Kyoto-style ramen by a Michelin-trained chef. Refined but hearty chicken broth. One of the best bowls in the city.</div></div>
+      </div>
+    </div>
+  </div>
+
+  <div class="day-block type-hike">
+    <div class="day-top">
+      <div class="day-date">Jan 28</div>
+      <div class="day-title">Kurama mountain hike + Kurama Hot Spring</div>
+      <div class="day-emoji">🥾🛁</div>
+    </div>
+    <div class="day-body">
+      <div class="stop">
+        <div class="stop-icon">🚃</div>
+        <div>
+          <div class="stop-name">Eizan Railway → Kurama Station</div>
+          <div class="stop-note">From Demachiyanagi Station · ~30 min · ~¥430 each way · Pay with ICOCA — not JR covered.</div>
+        </div>
+      </div>
+      <div class="stop">
+        <div class="stop-icon">⛩️</div>
+        <div>
+          <div class="stop-name">Kurama-dera Temple → over the ridge → Kibune</div>
+          <div class="badges"><span class="badge b-hike">Moderate · 3–4 hrs · Possibly icy in January</span></div>
+          <div class="stop-note">Hike up through the ancient mountain temple, traverse the ridge over to the Kibune valley on the other side, then walk back to Kurama. Steep icy descent in January — great boots essential. The forest feels ancient and completely otherworldly in winter.</div>
+        </div>
+      </div>
+      <div class="stop">
+        <div class="stop-icon">🛁</div>
+        <div>
+          <div class="stop-name">Kurama Hot Spring (くらま温泉)</div>
+          <div class="badges"><span class="badge b-tattoo">Fully tattoo-friendly · No covering</span></div>
+          <div class="stop-note">Outdoor rotenburo in the mountain forest. Steam rises into cold mountain air. ¥2,500 for indoor + outdoor baths. Open until 7pm — time your hike to finish here. 5-min walk from Kurama Station.</div>
+        </div>
+      </div>
+      <div class="food-box">
+        <div class="food-box-title">🍜 Food today</div>
+        <div class="food-item"><span>🍡</span><div><strong>Kibune village</strong> — small cozy restaurants along the river road. A bowl of noodles or tofu hotpot (yudofu) after the hike, before the onsen.</div></div>
+        <div class="food-item"><span>🍺</span><div><strong>Evening — izakaya near Kyoto Station</strong> · Edamame, karaage, yakitori skewers, gyoza, cold Asahi. Look for a red lantern (akachochin) outside.</div></div>
+      </div>
+    </div>
+  </div>
+
+  <div class="day-block type-onsen">
+    <div class="day-top">
+      <div class="day-date">Jan 29</div>
+      <div class="day-title">Slow Kyoto day · Nishiki Market · Philosopher's Path · ramen crawl</div>
+      <div class="day-emoji">🏛️🍜</div>
+    </div>
+    <div class="day-body">
+      <div class="stop">
+        <div class="stop-icon">🏮</div>
+        <div>
+          <div class="stop-name">Nishiki Market (錦市場)</div>
+          <div class="stop-note">Kyoto's "kitchen" — a covered 400-year-old market street. Pickles, tofu, fresh yuba, grilled skewers, matcha everything. Go hungry, graze your way through.</div>
+        </div>
+      </div>
+      <div class="stop">
+        <div class="stop-icon">🌿</div>
+        <div>
+          <div class="stop-name">Philosopher's Path (哲学の道)</div>
+          <div class="stop-note">2km canal-side walkway connecting Ginkaku-ji and Nanzen-ji. Quiet in January, small cafes and galleries along the way. Good afternoon wander.</div>
+        </div>
+      </div>
+      <div class="stop">
+        <div class="stop-icon">⛩️</div>
+        <div>
+          <div class="stop-name">Fushimi Inari (optional — if not done yet)</div>
+          <div class="stop-note">Thousands of torii gates winding up a mountain. Go late afternoon when crowds thin. The upper sections in January are often misty and very atmospheric.</div>
+        </div>
+      </div>
+      <div class="food-box">
+        <div class="food-box-title">🍜 Full ramen day — Kyoto</div>
+        <div class="food-item"><span>🍜</span><div><strong>Lunch — Menya Inoichi Hanare</strong> · Delicate but deeply flavourful chicken and clam broth. Unusual and memorable. One of Kyoto's most talked-about bowls.</div></div>
+        <div class="food-item"><span>🍜</span><div><strong>Dinner — Takayasu</strong> · Old-school Kyoto-style shoyu ramen, been open since the 1940s. Dark soy broth, thin noodles, green onion. Deeply local, no frills.</div></div>
+        <div class="food-item"><span>🍡</span><div><strong>Dessert — matcha soft serve</strong> anywhere on Nishiki. You'll see them.</div></div>
+      </div>
+    </div>
+  </div>
+
+  <div class="day-block type-travel">
+    <div class="day-top">
+      <div class="day-date">Jan 30</div>
+      <div class="day-title">Morning in Kyoto · depart for Kumano</div>
+      <div class="day-emoji">🚆🌲</div>
+    </div>
+    <div class="day-body">
+      <div class="stop">
+        <div class="stop-icon">🌅</div>
+        <div>
+          <div class="stop-name">Final Kyoto morning — slow breakfast, pack</div>
+          <div class="stop-note">One last bowl of ramen before you leave if you want it. Check out, store bags at the station coin lockers if needed.</div>
+        </div>
+      </div>
+      <div class="transit-box">
+        <div class="ti">🚆</div>
+        <div>JR Kuroshio Limited Express: Kyoto → Osaka → Kii-Tanabe · ~2.5 hrs total · Covered by Kansai Wide Area Pass · Then local bus to Takijiri trailhead (~45 min)</div>
+      </div>
+      <div class="callout callout-pass">
+        🎫 <strong>Activate Kansai Wide Area Pass #2 today</strong> — covers Kumano Kodo trains + buses + Kobe/Arima leg + return to Osaka.
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ═══ KUMANO KODO ═══ -->
+<div class="city-section">
+  <div class="city-header">
+    <div class="city-name">Kumano Kodo + Yunomine Onsen</div>
+    <div class="city-meta">Jan 30–Feb 1 &nbsp;·&nbsp; 2 nights &nbsp;·&nbsp; Ancient forest trail · oldest onsen in Japan</div>
+  </div>
+
+  <div class="day-block type-hike">
+    <div class="day-top">
+      <div class="day-date">Jan 30–31</div>
+      <div class="day-title">Nakahechi trail — hike into Hongu</div>
+      <div class="day-emoji">🌲🥾</div>
+    </div>
+    <div class="day-body">
+      <div class="stop">
+        <div class="stop-icon">🌲</div>
+        <div>
+          <div class="stop-name">Kumano Kodo — Nakahechi route</div>
+          <div class="badges"><span class="badge b-hike">Moderate · 2-day walk · Ancient pilgrimage trail</span></div>
+          <div class="stop-note">A 1,000-year-old pilgrimage route through the mountains of the Kii Peninsula — the route emperors walked. Towering ancient cedars, moss-covered stone steps, river gorges, shrine gates appearing out of nowhere. The Kansai area stays green all winter. February means near-zero crowds on the trail. Luggage transfer service available — hike light.</div>
+        </div>
+      </div>
+      <div class="stop">
+        <div class="stop-icon">🌸</div>
+        <div>
+          <div class="stop-name">February on the trail</div>
+          <div class="stop-note">Late January into February brings ume (plum) blossoms through the forest — white dapples in the cedars, considered in ancient times more important than cherry blossoms. The cold makes the forest feel otherworldly.</div>
+        </div>
+      </div>
+      <div class="stop">
+        <div class="stop-icon">⛩️</div>
+        <div>
+          <div class="stop-name">Kumano Hongu Taisha — trail endpoint</div>
+          <div class="stop-note">One of Japan's most sacred shrines, deep in the mountains. Arrive on foot the way pilgrims have for a thousand years.</div>
+        </div>
+      </div>
+      <div class="food-box">
+        <div class="food-box-title">🍜 Food on the trail</div>
+        <div class="food-item"><span>🍱</span><div><strong>Pack lunch</strong> — buy onigiri and a hot drink at a konbini before the trailhead. Small guesthouses (minshuku) along the route serve simple hearty dinners — rice, miso, mountain vegetables, grilled fish.</div></div>
+      </div>
+    </div>
+  </div>
+
+  <div class="day-block type-onsen">
+    <div class="day-top">
+      <div class="day-date">Feb 1</div>
+      <div class="day-title">Yunomine Onsen · depart for Kobe/Arima</div>
+      <div class="day-emoji">🛁🚆</div>
+    </div>
+    <div class="day-body">
+      <div class="stop">
+        <div class="stop-icon">🛁</div>
+        <div>
+          <div class="stop-name">Yunomine Onsen (湯の峰温泉)</div>
+          <div class="badges"><span class="badge b-tattoo">Tattoo-friendly · check with your ryokan</span></div>
+          <div class="stop-note">One of the oldest hot springs in Japan — pilgrims have been purifying themselves here for over 1,000 years. A tiny village of perhaps 30 buildings. The public bath Tsuboyu is a UNESCO World Heritage listed onsen (the only one in the world). Morning soak, then breakfast, then head out.</div>
+        </div>
+      </div>
+      <div class="transit-box">
+        <div class="ti">🚆</div>
+        <div>Bus: Yunomine → Shingu Station · JR Kuroshio Limited Express: Shingu → Shin-Kobe · ~3 hrs · Covered by Kansai Wide Area Pass</div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ═══ KOBE / ARIMA ═══ -->
+<div class="city-section">
+  <div class="city-header">
+    <div class="city-name">Kobe → Arima Onsen</div>
+    <div class="city-meta">Feb 1–3 &nbsp;·&nbsp; 2 nights</div>
+  </div>
+
+  <div class="day-block type-hike">
+    <div class="day-top">
+      <div class="day-date">Feb 1</div>
+      <div class="day-title">Arrive Kobe · Kitano + Nankinmachi</div>
+      <div class="day-emoji">🏯🥟</div>
+    </div>
+    <div class="day-body">
+      <div class="stop">
+        <div class="stop-icon">🏯</div>
+        <div>
+          <div class="stop-name">Kitano Ijinkan district</div>
+          <div class="stop-note">Hillside district of 19th-century Western-style mansions built by foreign merchants. Strangely beautiful, very quiet in February.</div>
+        </div>
+      </div>
+      <div class="stop">
+        <div class="stop-icon">🥟</div>
+        <div>
+          <div class="stop-name">Nankinmachi — Kobe's Chinatown</div>
+          <div class="stop-note">Compact and lively. Pork buns, dumplings, char siu from street stalls. Kobe is also famous for beef — if you want a proper dinner, Kobe beef teppanyaki here is more affordable than Tokyo.</div>
+        </div>
+      </div>
+      <div class="food-box">
+        <div class="food-box-title">🍜 Food today</div>
+        <div class="food-item"><span>🥩</span><div><strong>Kobe beef teppanyaki</strong> — you're in Kobe, it would be criminal not to. Lunch is cheaper than dinner. Look for a set lunch around ¥3,000–5,000.</div></div>
+        <div class="food-item"><span>🍜</span><div><strong>Ramen — Ramen Kokoro</strong> · Kobe-style thick soy broth, hearty and rich. Very different from Kyoto's refined bowls.</div></div>
+      </div>
+    </div>
+  </div>
+
+  <div class="day-block type-hike">
+    <div class="day-top">
+      <div class="day-date">Feb 2</div>
+      <div class="day-title">Mt. Rokko hike → descend into Arima Onsen</div>
+      <div class="day-emoji">🥾🏔️🛁</div>
+    </div>
+    <div class="day-body">
+      <div class="stop">
+        <div class="stop-icon">🏔️</div>
+        <div>
+          <div class="stop-name">Mt. Rokko traverse (六甲山)</div>
+          <div class="badges"><span class="badge b-hike">Moderate-Hard · 4–5 hrs · Chains · Possible frost</span></div>
+          <div class="stop-note">Start at Ashiyagawa trailhead (JR from Kobe ~10 min + bus ~¥230). Rocky sections with fixed chains, panoramic views of Kobe and Osaka Bay. Possible frost on the north-facing descent in February. The trail deposits you directly into Arima Onsen town. Most satisfying hike of the trip.</div>
+        </div>
+      </div>
+      <div class="stop">
+        <div class="stop-icon">🛁</div>
+        <div>
+          <div class="stop-name">Kin no Yu — Golden Spring (金の湯)</div>
+          <div class="badges"><span class="badge b-tattoo">Fully tattoo-friendly</span></div>
+          <div class="stop-note">Iron-rich, rust-brown mineral water. One of Japan's most distinctive hot springs. Arrive straight off the mountain. ~¥800. Open until 9pm.</div>
+        </div>
+      </div>
+      <div class="stop">
+        <div class="stop-icon">🛁</div>
+        <div>
+          <div class="stop-name">Gin no Yu — Silver Spring (銀の湯)</div>
+          <div class="badges"><span class="badge b-tattoo">Fully tattoo-friendly</span></div>
+          <div class="stop-note">Different mineral profile, lighter water. ~¥550. 10-min walk from Kin no Yu. Do both in the same evening if you have energy.</div>
+        </div>
+      </div>
+      <div class="stop">
+        <div class="stop-icon">🏡</div>
+        <div>
+          <div class="stop-name">Ryokan overnight · private kashikiri bath</div>
+          <div class="badges"><span class="badge b-private">Soak together · No stickers · Book ahead</span></div>
+          <div class="stop-note">Negiya Ryofukaku or Gekkoen Korokan both offer private rental baths for tattooed guests — ¥3,000–5,000 per 45–60 min. Tatami rooms, yukata, kaiseki dinner. After the hike you will sleep like rocks.</div>
+        </div>
+      </div>
+      <div class="food-box">
+        <div class="food-box-title">🍜 Food today</div>
+        <div class="food-item"><span>🍱</span><div><strong>Pack lunch</strong> — onigiri from a konbini before the hike. You'll be on the mountain all day.</div></div>
+        <div class="food-item"><span>🍱</span><div><strong>Ryokan kaiseki dinner</strong> — multi-course traditional dinner included. Arima mountain vegetables, tofu, grilled fish, miso, rice. Eat in your yukata. This is the real deal.</div></div>
+      </div>
+    </div>
+  </div>
+
+  <div class="day-block type-travel">
+    <div class="day-top">
+      <div class="day-date">Feb 3</div>
+      <div class="day-title">Morning in Arima · return to Osaka</div>
+      <div class="day-emoji">🚆</div>
+    </div>
+    <div class="day-body">
+      <div class="stop">
+        <div class="stop-icon">🌅</div>
+        <div>
+          <div class="stop-name">Slow morning — ryokan breakfast + wander Arima</div>
+          <div class="stop-note">Arima is a lovely little onsen town — a few hours of wandering the stone-paved streets, temples, and sake shops before heading back.</div>
+        </div>
+      </div>
+      <div class="transit-box">
+        <div class="ti">🚆</div>
+        <div>Bus: Arima → Shin-Kobe Station · JR back to Osaka · ~1 hr total · Covered by pass</div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ═══ OSAKA — RETURN ═══ -->
+<div class="city-section">
+  <div class="city-header">
+    <div class="city-name">Osaka — Final Days</div>
+    <div class="city-meta">Feb 3–5 &nbsp;·&nbsp; 2 nights &nbsp;·&nbsp; Eat everything · depart Feb 5</div>
+  </div>
+
+  <div class="day-block type-onsen">
+    <div class="day-top">
+      <div class="day-date">Feb 3–4</div>
+      <div class="day-title">Full food blitz · one last soak</div>
+      <div class="day-emoji">🍜🛁</div>
+    </div>
+    <div class="day-body">
+      <div class="stop">
+        <div class="stop-icon">🍜</div>
+        <div>
+          <div class="stop-name">Ura-Namba ramen crawl</div>
+          <div class="stop-note">The back streets behind Namba Station — tiny ramen shops, izakayas, zero tourists. Wander until something looks right and go in. This is where Osaka people actually eat.</div>
+        </div>
+      </div>
+      <div class="stop">
+        <div class="stop-icon">🥩</div>
+        <div>
+          <div class="stop-name">Yakiniku (grilled meat, Korean BBQ style)</div>
+          <div class="stop-note">Osaka has fantastic yakiniku. Wagyu gyutan (beef tongue) grilled at the table, cold beer. Great final dinner energy.</div>
+        </div>
+      </div>
+      <div class="stop">
+        <div class="stop-icon">🍢</div>
+        <div>
+          <div class="stop-name">Shinsekai — kushikatsu</div>
+          <div class="stop-note">Deep-fried skewers dipped in communal brown sauce. Rule: dip once, never double-dip. Daruma is the classic chain. Get the beef, quail egg, lotus root, corn.</div>
+        </div>
+      </div>
+      <div class="stop">
+        <div class="stop-icon">🛁</div>
+        <div>
+          <div class="stop-name">Optional — one last soak at Solaniwa or Irifune</div>
+          <div class="badges">
+            <span class="badge b-sticker">Solaniwa: stickers for communal baths</span>
+            <span class="badge b-tattoo">Irifune: fully tattoo-friendly</span>
+          </div>
+          <div class="stop-note">Solaniwa open until 11pm — book a private kashikiri bath and end the trip with a long soak together. Or Irifune for a cheap, local, no-fuss neighbourhood sento.</div>
+        </div>
+      </div>
+      <div class="food-box">
+        <div class="food-box-title">🍜 Final ramen picks — Osaka</div>
+        <div class="food-item"><span>🍜</span><div><strong>Menya Yamahide</strong> · Spicy Taiwan ramen — minced pork, chili, chives. Bold and hearty. The most satisfying bowl on this list.</div></div>
+        <div class="food-item"><span>🍜</span><div><strong>Zundo-Ya</strong> · Rich tonkotsu, multiple Osaka locations. Customize broth richness and noodle firmness. Stewed pork platter as a side is mandatory.</div></div>
+        <div class="food-item"><span>🥟</span><div><strong>Gyoza Stadium, Namba Parks</strong> · Entire food court dedicated to gyoza from different regional styles across Japan. Order 6 kinds and share.</div></div>
+      </div>
+    </div>
+  </div>
+
+  <div class="day-block type-arrive">
+    <div class="day-top">
+      <div class="day-date">Feb 5</div>
+      <div class="day-title">Depart KIX — 6pm flight</div>
+      <div class="day-emoji">✈️</div>
+    </div>
+    <div class="day-body">
+      <div class="stop">
+        <div class="stop-icon">⏰</div>
+        <div>
+          <div class="stop-name">Check out · head to KIX by 3:30pm</div>
+          <div class="stop-note">50 min on the Haruka + 2+ hrs before international departure. Store bags at hotel or Osaka Station coin lockers for a final lunch before heading to the airport.</div>
+        </div>
+      </div>
+      <div class="transit-box">
+        <div class="ti">🚆</div>
+        <div>JR Haruka Limited Express: Osaka → KIX · ~50 min · ~¥1,900 · Pay with ICOCA or cash</div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ═══ ESSENTIAL NOTES ═══ -->
+<div class="tips-section">
+  <div class="tips-title">Essential notes</div>
+  <div class="tip">
+    <div class="tip-icon">🎫</div>
+    <div><strong>Kansai Wide Area Pass</strong> (5-day, ¥12,000/person) — buy two per person. Activate Pass #1 on Jan 24 (Kinosaki train). Activate Pass #2 on Jan 30 (Kumano train). Buy in advance via Klook or JR West official site before leaving Portland. Covers: all JR trains between cities, limited express to Kinosaki, Kuroshio to Kumano, and Kobe/Arima trains.</div>
+  </div>
+  <div class="tip">
+    <div class="tip-icon">💳</div>
+    <div><strong>ICOCA card</strong> — pick up at KIX on arrival. Load ¥10,000–15,000. Works on every subway, bus, local train, and most convenience stores. Use everywhere the JR pass doesn't cover (Eizan Railway to Kurama, city subways, local buses).</div>
+  </div>
+  <div class="tip">
+    <div class="tip-icon">🛁</div>
+    <div><strong>Tattoo summary:</strong> Solaniwa — stickers for communal baths, private kashikiri available. Healthy Spa Tateba + Irifune (Osaka), Funaoka + Kurama (Kyoto), Kin no Yu + Gin no Yu (Arima), all 6 Kinosaki bathhouses — fully tattoo-friendly, no covering needed.</div>
+  </div>
+  <div class="tip">
+    <div class="tip-icon">👘</div>
+    <div><strong>Kinosaki ryokan — book ASAP.</strong> Morizuya Inn (morizuya.com) — 4.8 stars, 8 generations family-owned, private cave onsen. February is peak crab season and fills months ahead. All ryokan include dinner + breakfast.</div>
+  </div>
+  <div class="tip">
+    <div class="tip-icon">🥾</div>
+    <div><strong>Hiking boots</strong> — Waterproof, mid-height, Vibram soles. Salomon X Ultra 5 Mid GTX (~$190) or Merrell Moab 3 Mid WP (~$130). Break them in well before January — 50+ miles minimum.</div>
+  </div>
+  <div class="tip">
+    <div class="tip-icon">🧥</div>
+    <div><strong>Cold weather</strong> — Osaka/Kyoto: 3–8°C. Kinosaki (Sea of Japan coast): 2–5°C with real snow possible. Kumano (Kii Peninsula): milder, 5–10°C, stays green. Pack a serious insulated jacket, thermal underlayers, hat, gloves, wool socks.</div>
+  </div>
+  <div class="tip">
+    <div class="tip-icon">💴</div>
+    <div><strong>Cash</strong> — Japan is largely cash-based outside major cities. Carry ¥20,000–30,000 at all times. 7-Eleven and Japan Post ATMs reliably accept foreign cards.</div>
+  </div>
+  <div class="tip">
+    <div class="tip-icon">🍜</div>
+    <div><strong>Ramen cheat sheet:</strong> Tonkotsu = rich pork bone broth (milky, hearty). Shoyu = soy sauce broth (lighter, savory, not fishy). Miso = fermented soybean broth (earthy, warming). Spicy tantanmen = sesame + chili (bold). Start with shoyu or tonkotsu — crowd-pleasing, not fishy.</div>
+  </div>
+</div>
+
+</main>
+
+<script>
+document.querySelectorAll('.day-top').forEach(function(top) {
+  var chevron = document.createElement('span');
+  chevron.className = 'day-chevron';
+  chevron.textContent = '▼';
+  top.appendChild(chevron);
+  top.addEventListener('click', function() {
+    top.closest('.day-block').classList.toggle('collapsed');
+  });
+});
+</script>
+
+</body>
+</html>
