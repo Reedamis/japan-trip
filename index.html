@@ -3,1105 +3,1224 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Kansai Trip — Jan 22–Feb 5</title>
+<title>Europe Trip — Three Ways</title>
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/leaflet@1.9.4/dist/leaflet.css"/>
 <style>
-  @import url('https://fonts.googleapis.com/css2?family=Noto+Serif+JP:wght@300;400;600&family=Inter:wght@300;400;500;600&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Noto+Serif+JP:wght@400;600&family=Inter:wght@400;500;600&display=swap');
 
-  :root {
-    --ink: #1a1a1a;
-    --mist: #f0ede8;
-    --steam: #e8e3dc;
-    --water: #2d5a6b;
-    --ember: #c4622d;
-    --moss: #4a6741;
-    --gold: #b8860b;
-    --snow: #ffffff;
-    --muted: #6b6560;
-    --card-border: #e0dbd4;
-  }
+:root {
+  --water: #2d5a6b;
+  --ember: #c4622d;
+  --moss: #4a6741;
+  --gold: #b8860b;
+  --mist: #f0ede8;
+  --steam: #e8e3dc;
+  --ink: #1a1a1a;
+  --muted: #6b6560;
+  --cream: #faf8f4;
+}
 
-  .map-label {
-    background: white;
-    border: 1px solid #ddd;
-    border-radius: 4px;
-    padding: 3px 7px;
-    font-family: 'Inter', sans-serif;
-    font-size: 12px;
-    box-shadow: 0 1px 3px rgba(0,0,0,0.15);
-    white-space: nowrap;
-  }
-  .map-label::before { display: none; }
+* { box-sizing: border-box; margin: 0; padding: 0; }
 
-  a.place-link {
-    color: inherit;
-    text-decoration: none;
-    cursor: pointer;
-  }
-  a.place-link:hover {
-    opacity: 0.75;
-  }
+body {
+  background: var(--mist);
+  color: var(--ink);
+  font-family: 'Inter', sans-serif;
+  font-size: 15px;
+  line-height: 1.7;
+}
 
-  body {
-    font-family: 'Inter', sans-serif;
-    background: var(--mist);
-    color: var(--ink);
-    line-height: 1.6;
-  }
+/* HEADER */
+.site-header {
+  background: var(--water);
+  color: white;
+  padding: 36px 24px 28px;
+  text-align: center;
+}
+.site-header h1 {
+  font-family: 'Noto Serif JP', serif;
+  font-size: 2rem;
+  font-weight: 600;
+  letter-spacing: 0.02em;
+  margin-bottom: 6px;
+}
+.site-header .subtitle {
+  font-size: 0.95rem;
+  opacity: 0.82;
+  margin-bottom: 14px;
+}
+.tags {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 8px;
+}
+.tag {
+  background: rgba(255,255,255,0.15);
+  border: 1px solid rgba(255,255,255,0.3);
+  border-radius: 20px;
+  padding: 3px 12px;
+  font-size: 0.78rem;
+  letter-spacing: 0.03em;
+}
 
-  header {
-    background: var(--water);
-    color: white;
-    padding: 48px 24px 36px;
-    text-align: center;
-  }
-  .header-jp {
-    font-family: 'Noto Serif JP', serif;
-    font-size: 13px;
-    letter-spacing: 0.3em;
-    opacity: 0.65;
-    margin-bottom: 12px;
-  }
-  header h1 {
-    font-family: 'Noto Serif JP', serif;
-    font-size: clamp(22px, 5vw, 40px);
-    font-weight: 300;
-    letter-spacing: 0.05em;
-    margin-bottom: 10px;
-  }
-  .header-sub {
-    font-size: 13px;
-    opacity: 0.75;
-    letter-spacing: 0.1em;
-  }
-  .header-tags {
-    display: flex;
-    gap: 8px;
-    justify-content: center;
-    flex-wrap: wrap;
-    margin-top: 18px;
-  }
-  .tag {
-    background: rgba(255,255,255,0.15);
-    border: 1px solid rgba(255,255,255,0.25);
-    font-size: 11px;
-    padding: 4px 12px;
-    border-radius: 20px;
-    letter-spacing: 0.06em;
-  }
+/* TRIP SELECTOR */
+.trip-selector {
+  display: flex;
+  justify-content: center;
+  gap: 12px;
+  flex-wrap: wrap;
+  padding: 28px 20px 0;
+}
+.trip-btn {
+  background: white;
+  border: 2px solid var(--steam);
+  border-radius: 8px;
+  padding: 10px 22px;
+  font-family: 'Inter', sans-serif;
+  font-size: 0.88rem;
+  font-weight: 500;
+  cursor: pointer;
+  color: var(--muted);
+  transition: all 0.2s;
+}
+.trip-btn.active {
+  background: var(--water);
+  border-color: var(--water);
+  color: white;
+}
+.trip-btn:hover:not(.active) {
+  border-color: var(--water);
+  color: var(--water);
+}
 
-  .pass-bar {
-    background: #1e4455;
-    color: #c8dfe8;
-    padding: 11px 20px;
-    font-size: 12.5px;
-    text-align: center;
-    line-height: 1.5;
-  }
-  .pass-bar strong { color: white; }
+/* TRIP PANELS */
+.trip-panel { display: none; }
+.trip-panel.active { display: block; }
 
-  main {
-    max-width: 800px;
-    margin: 0 auto;
-    padding: 32px 16px 80px;
-  }
+/* MAP */
+.map-wrap {
+  margin: 24px auto;
+  max-width: 960px;
+  padding: 0 20px;
+}
+#map1, #map2, #map3 {
+  height: 420px;
+  border-radius: 10px;
+  border: 1px solid var(--steam);
+  box-shadow: 0 2px 12px rgba(0,0,0,0.08);
+}
 
-  /* CITY SECTION */
-  .city-section {
-    margin-bottom: 48px;
-  }
-  .city-header {
-    display: flex;
-    align-items: baseline;
-    gap: 14px;
-    border-bottom: 2px solid var(--water);
-    padding-bottom: 10px;
-    margin-bottom: 20px;
-  }
-  .city-name {
-    font-family: 'Noto Serif JP', serif;
-    font-size: 24px;
-    font-weight: 400;
-    color: var(--water);
-  }
-  .city-meta {
-    font-size: 13px;
-    color: var(--muted);
-    letter-spacing: 0.04em;
-  }
+/* TRIP INTRO */
+.trip-intro {
+  max-width: 960px;
+  margin: 0 auto 8px;
+  padding: 0 20px;
+}
+.trip-intro-card {
+  background: white;
+  border-radius: 10px;
+  border-left: 4px solid var(--water);
+  padding: 18px 22px;
+  box-shadow: 0 1px 6px rgba(0,0,0,0.06);
+}
+.trip-intro-card h2 {
+  font-family: 'Noto Serif JP', serif;
+  font-size: 1.2rem;
+  color: var(--water);
+  margin-bottom: 6px;
+}
+.trip-intro-card p {
+  color: var(--muted);
+  font-size: 0.9rem;
+}
+.trip-meta {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 16px;
+  margin-top: 12px;
+}
+.trip-meta-item {
+  font-size: 0.82rem;
+  color: var(--muted);
+}
+.trip-meta-item strong {
+  color: var(--ink);
+}
 
-  /* DAY BLOCK */
-  .day-block {
-    background: white;
-    border-radius: 10px;
-    margin-bottom: 16px;
-    overflow: hidden;
-    box-shadow: 0 1px 3px rgba(0,0,0,0.07);
-    border-left: 4px solid var(--water);
-  }
-  .day-block.type-onsen { border-left-color: var(--ember); }
-  .day-block.type-hike  { border-left-color: var(--moss); }
-  .day-block.type-ski   { border-left-color: #4a8aaf; }
-  .day-block.type-travel{ border-left-color: var(--gold); }
-  .day-block.type-arrive{ border-left-color: var(--muted); }
+/* MAIN CONTENT */
+.content {
+  max-width: 960px;
+  margin: 0 auto;
+  padding: 0 20px 60px;
+}
 
-  .day-top {
-    display: flex;
-    align-items: center;
-    gap: 12px;
-    padding: 14px 16px 10px;
-    border-bottom: 1px solid var(--steam);
-    cursor: pointer;
-    user-select: none;
-  }
-  .day-top:hover { background: #fafaf8; }
-  .day-chevron {
-    font-size: 11px;
-    color: var(--muted);
-    transition: transform 0.2s;
-    flex-shrink: 0;
-  }
-  .day-block.collapsed .day-chevron { transform: rotate(-90deg); }
-  .day-block.collapsed .day-body { display: none; }
-  .day-block.collapsed .day-top { border-bottom: none; }
-  .day-date {
-    font-size: 11px;
-    font-weight: 600;
-    letter-spacing: 0.1em;
-    text-transform: uppercase;
-    color: var(--muted);
-    min-width: 56px;
-    flex-shrink: 0;
-  }
-  .day-title {
-    font-size: 15px;
-    font-weight: 600;
-    flex: 1;
-  }
-  .day-emoji { font-size: 16px; }
+/* CITY BLOCK */
+.city-block {
+  margin-top: 36px;
+}
+.city-header {
+  margin-bottom: 16px;
+}
+.city-name {
+  font-family: 'Noto Serif JP', serif;
+  font-size: 1.7rem;
+  font-weight: 600;
+  color: var(--water);
+}
+.city-dates {
+  font-size: 0.88rem;
+  color: var(--muted);
+  margin-top: 2px;
+}
+.city-intro {
+  margin-top: 10px;
+  font-size: 0.93rem;
+  color: var(--ink);
+  max-width: 720px;
+}
+.city-transit-note {
+  display: inline-block;
+  margin-top: 8px;
+  font-size: 0.82rem;
+  color: var(--gold);
+  font-weight: 500;
+}
 
-  .day-body {
-    padding: 14px 16px 16px;
-  }
+/* SECTION BLOCKS */
+.section-block {
+  background: white;
+  border-radius: 10px;
+  border-left: 4px solid var(--steam);
+  box-shadow: 0 1px 6px rgba(0,0,0,0.05);
+  margin-bottom: 10px;
+  overflow: hidden;
+}
+.section-block.food   { border-left-color: var(--ember); }
+.section-block.attr   { border-left-color: var(--moss); }
+.section-block.ent    { border-left-color: var(--water); }
+.section-block.bath   { border-left-color: #7b5ea7; }
+.section-block.transit{ border-left-color: var(--gold); }
 
-  /* STOP */
-  .stop {
-    display: grid;
-    grid-template-columns: 26px 1fr;
-    gap: 8px;
-    padding: 11px 0;
-    border-bottom: 1px solid #f4f1ee;
-    align-items: start;
-  }
-  .stop:last-child { border-bottom: none; }
-  .stop-icon { font-size: 16px; text-align: center; padding-top: 1px; }
-  .stop-name {
-    font-size: 14px;
-    font-weight: 600;
-    margin-bottom: 4px;
-    color: var(--ink);
-  }
-  .stop-note {
-    font-size: 13px;
-    color: #4a4540;
-    line-height: 1.55;
-  }
-  .badges {
-    display: flex;
-    flex-wrap: wrap;
-    gap: 5px;
-    margin-bottom: 5px;
-  }
-  .badge {
-    font-size: 10px;
-    font-weight: 600;
-    padding: 2px 8px;
-    border-radius: 10px;
-    letter-spacing: 0.04em;
-    text-transform: uppercase;
-  }
-  .b-tattoo  { background: #e5f2e5; color: #2a5e2a; }
-  .b-sticker { background: #fff3e0; color: #a04a00; }
-  .b-private { background: #e0edf5; color: #1e4a68; }
-  .b-hike    { background: #eaf2e5; color: #325828; }
-  .b-pass    { background: #f5f0e0; color: #6a4a10; }
-  .b-warn    { background: #fdecea; color: #a02020; }
+.section-top {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 14px 18px;
+  cursor: pointer;
+  user-select: none;
+}
+.section-top h3 {
+  font-size: 0.97rem;
+  font-weight: 600;
+  color: var(--ink);
+}
+.chevron {
+  font-size: 0.75rem;
+  color: var(--muted);
+  transition: transform 0.2s;
+}
+.section-block.collapsed .chevron { transform: rotate(-90deg); }
+.section-block.collapsed .section-body { display: none; }
 
-  /* TRANSIT BOX */
-  .transit-box {
-    background: #f7f5f0;
-    border-radius: 7px;
-    padding: 10px 12px;
-    margin-top: 12px;
-    font-size: 12.5px;
-    color: #4a4540;
-    display: flex;
-    gap: 9px;
-    align-items: flex-start;
-  }
-  .transit-box .ti { font-size: 15px; flex-shrink: 0; }
+.section-body {
+  padding: 0 18px 16px;
+  border-top: 1px solid var(--steam);
+}
 
-  /* FOOD BOX */
-  .food-box {
-    background: #fff9f0;
-    border: 1px solid #f0dfc0;
-    border-radius: 8px;
-    padding: 12px 14px;
-    margin-top: 12px;
-  }
-  .food-box-title {
-    font-size: 11px;
-    font-weight: 700;
-    letter-spacing: 0.1em;
-    text-transform: uppercase;
-    color: var(--ember);
-    margin-bottom: 8px;
-  }
-  .food-item {
-    font-size: 13px;
-    color: #3a3028;
-    padding: 5px 0;
-    border-bottom: 1px solid #f0e8d8;
-    display: flex;
-    gap: 8px;
-  }
-  .food-item:last-child { border-bottom: none; padding-bottom: 0; }
-  .food-item strong { font-weight: 600; }
+/* SUBLABEL */
+.sublabel {
+  font-size: 0.73rem;
+  font-weight: 600;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--muted);
+  margin: 14px 0 6px;
+}
 
-  /* CALLOUT */
-  .callout {
-    border-radius: 8px;
-    padding: 12px 14px;
-    margin-top: 12px;
-    font-size: 13px;
-  }
-  .callout-pass { background: #fffbe8; border: 1px solid #e8d060; color: #5a4010; }
-  .callout-tip  { background: #e8f4f8; border: 1px solid #90c8d8; color: #1a3a4a; }
+/* PLACE ITEMS */
+.place-item {
+  display: grid;
+  grid-template-columns: 22px 1fr;
+  gap: 6px;
+  margin-bottom: 10px;
+  align-items: start;
+}
+.place-icon { font-size: 1rem; padding-top: 1px; }
+.place-content {}
+.place-name {
+  font-weight: 500;
+  color: var(--ink);
+  text-decoration: none;
+}
+.place-name:hover { text-decoration: underline; }
+.place-desc {
+  font-size: 0.85rem;
+  color: var(--muted);
+  margin-top: 1px;
+}
 
-  /* ONSEN NIGHT */
-  .onsen-night {
-    background: #fff5f0;
-    border: 1px solid #e8c8b8;
-    border-radius: 8px;
-    padding: 14px;
-    margin-top: 12px;
-  }
-  .onsen-night-title {
-    font-size: 11px;
-    font-weight: 700;
-    letter-spacing: 0.1em;
-    text-transform: uppercase;
-    color: var(--ember);
-    margin-bottom: 10px;
-  }
-  .onsen-pick {
-    display: flex;
-    gap: 10px;
-    align-items: flex-start;
-    padding: 8px 0;
-    border-bottom: 1px solid #f0e0d8;
-    font-size: 13px;
-  }
-  .onsen-pick:last-child { border-bottom: none; padding-bottom: 0; }
-  .onsen-num {
-    background: var(--ember);
-    color: white;
-    font-size: 10px;
-    font-weight: 700;
-    width: 20px;
-    height: 20px;
-    border-radius: 50%;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    flex-shrink: 0;
-    margin-top: 1px;
-  }
+/* HIGHLIGHT TAGS */
+.hl-onsen  { color: #7b5ea7; font-weight: 500; }
+.hl-hike   { color: var(--moss); font-weight: 500; }
+.hl-travel { color: var(--gold); font-weight: 500; }
+.hl-ww1    { color: var(--ember); font-weight: 500; }
 
-  /* TIPS */
-  .tips-section {
-    background: white;
-    border-radius: 10px;
-    padding: 22px;
-    margin-top: 16px;
-    box-shadow: 0 1px 3px rgba(0,0,0,0.07);
-  }
-  .tips-title {
-    font-family: 'Noto Serif JP', serif;
-    font-size: 20px;
-    color: var(--water);
-    margin-bottom: 16px;
-    padding-bottom: 10px;
-    border-bottom: 1px solid var(--steam);
-  }
-  .tip {
-    display: flex;
-    gap: 10px;
-    align-items: flex-start;
-    padding: 10px 0;
-    border-bottom: 1px solid var(--steam);
-    font-size: 13.5px;
-    line-height: 1.55;
-  }
-  .tip:last-child { border-bottom: none; }
-  .tip-icon { flex-shrink: 0; font-size: 16px; }
+/* PHRASE TABLE */
+.phrase-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr 1fr;
+  gap: 6px 12px;
+  font-size: 0.83rem;
+  margin-top: 8px;
+}
+.phrase-grid .ph-header {
+  font-weight: 600;
+  color: var(--muted);
+  font-size: 0.73rem;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  border-bottom: 1px solid var(--steam);
+  padding-bottom: 4px;
+  margin-bottom: 4px;
+}
+.phrase-grid .ph-en { color: var(--ink); }
+.phrase-grid .ph-jp { font-size: 0.88rem; }
+.phrase-grid .ph-ro { color: var(--muted); font-style: italic; }
 
-  footer {
-    text-align: center;
-    padding: 28px;
-    font-size: 12px;
-    color: var(--muted);
-  }
+/* TRANSPORT BADGE */
+.transport-row {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  background: var(--mist);
+  border-radius: 7px;
+  padding: 10px 14px;
+  margin-bottom: 10px;
+  font-size: 0.88rem;
+}
+.transport-badge {
+  font-size: 0.72rem;
+  font-weight: 600;
+  letter-spacing: 0.07em;
+  text-transform: uppercase;
+  padding: 2px 8px;
+  border-radius: 12px;
+  white-space: nowrap;
+}
+.badge-fly   { background: #dbeafe; color: #1d4ed8; }
+.badge-train { background: #dcfce7; color: #166534; }
+.badge-bus   { background: #fef9c3; color: #854d0e; }
+.badge-walk  { background: #f3e8ff; color: #6b21a8; }
+.badge-car   { background: #ffe4e6; color: #9f1239; }
+
+/* NOTES SECTION */
+.notes-section {
+  margin-top: 36px;
+}
+.notes-section h2 {
+  font-family: 'Noto Serif JP', serif;
+  font-size: 1.25rem;
+  color: var(--water);
+  margin-bottom: 14px;
+}
+.note-card {
+  background: white;
+  border-radius: 10px;
+  border-left: 4px solid var(--water);
+  padding: 14px 18px;
+  margin-bottom: 10px;
+  box-shadow: 0 1px 6px rgba(0,0,0,0.05);
+  font-size: 0.9rem;
+}
+.note-card strong { display: block; margin-bottom: 4px; color: var(--ink); }
+.note-card p { color: var(--muted); }
+
+/* DIVIDER */
+.city-divider {
+  border: none;
+  border-top: 1px dashed var(--steam);
+  margin: 32px 0 0;
+}
+
+@media (max-width: 600px) {
+  .site-header h1 { font-size: 1.5rem; }
+  .city-name { font-size: 1.35rem; }
+  .phrase-grid { grid-template-columns: 1fr 1fr; }
+  .phrase-grid .ph-ro { display: none; }
+  .trip-meta { flex-direction: column; gap: 6px; }
+}
 </style>
 </head>
 <body>
 
-<header>
-  <div class="header-jp">関西 温泉と山の旅</div>
-  <h1>Kansai — Onsen &amp; Hiking</h1>
-  <div class="header-sub">January 22 – February 5 &nbsp;·&nbsp; Osaka → Kyoto → Kobe/Arima → Kinosaki</div>
-  <div class="header-tags">
-    <span class="tag">🛁 Tattoo-friendly onsen</span>
-    <span class="tag">🥾 Hiking</span>
-    <span class="tag">⛷️ Skiing</span>
-    <span class="tag">🍜 Great ramen</span>
-    <span class="tag">🦀 Crab season</span>
-    <span class="tag">🐒 Monkeys</span>
+<header class="site-header">
+  <h1>Europe Trip — Three Ways</h1>
+  <p class="subtitle">Late January · 10 Days · Portland → Andalusia + Beyond</p>
+  <div class="tags">
+    <span class="tag">🍽️ Food-first</span>
+    <span class="tag">🏛️ History</span>
+    <span class="tag">🛁 Bathhouses</span>
+    <span class="tag">🏘️ Small Towns</span>
+    <span class="tag">🥐 Bakeries</span>
+    <span class="tag">⚔️ WWI / Roman History</span>
   </div>
 </header>
 
-<!-- ROUTE MAP -->
-<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/leaflet@1.9.4/dist/leaflet.css"/>
-<div id="route-map" style="height:420px; width:100%;"></div>
+<!-- TRIP SELECTOR -->
+<div class="trip-selector">
+  <button class="trip-btn active" onclick="showTrip(1)">🇪🇸🇫🇷 Trip 1 — Andalusia + Alsace</button>
+  <button class="trip-btn" onclick="showTrip(2)">🇪🇸🇫🇷 Trip 2 — Andalusia + Basque + Dordogne</button>
+  <button class="trip-btn" onclick="showTrip(3)">🇪🇸🇫🇷 Trip 3 — Andalusia + Provence</button>
+</div>
+
+<!-- ============================================================ -->
+<!-- TRIP 1: ANDALUSIA + ALSACE -->
+<!-- ============================================================ -->
+<div class="trip-panel active" id="trip1">
+
+  <div class="map-wrap">
+    <div id="map1"></div>
+  </div>
+
+  <div class="trip-intro">
+    <div class="trip-intro-card">
+      <h2>Trip 1 — Andalusia + Alsace, France</h2>
+      <p>Maximum contrast. Moorish palaces and sherry tapas in southern Spain, then fairy-tale half-timbered wine villages and WWI memorial sites in northeastern France. Two completely different worlds, both deeply food-obsessed and walkable on a human scale. Best fit if WWI history is a priority.</p>
+      <div class="trip-meta">
+        <div class="trip-meta-item"><strong>Fly in:</strong> PDX → Madrid → Málaga (AGP)</div>
+        <div class="trip-meta-item"><strong>Fly out:</strong> Strasbourg (SXB) or Basel (BSL) → PDX</div>
+        <div class="trip-meta-item"><strong>Mid-trip flight:</strong> Málaga → Strasbourg (via Madrid or Frankfurt)</div>
+        <div class="trip-meta-item"><strong>Ground transport:</strong> Train + walking in both regions</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="content">
+
+    <!-- DAY 1: TRAVEL -->
+    <div class="city-block">
+      <div class="city-header">
+        <div class="city-name">✈️ Travel Day</div>
+        <div class="city-dates">Thursday, Day 1 — Portland → Málaga</div>
+        <p class="city-intro">PDX to Málaga with one connection, typically through Madrid (Iberia) or Amsterdam/Frankfurt (KLM/Lufthansa). Total travel time ~16–20 hours. Arrive Day 2 morning local time.</p>
+        <span class="city-transit-note">🚆 Tip: Book PDX → MAD → AGP on Iberia for the smoothest single-ticket connection.</span>
+      </div>
+    </div>
+
+    <hr class="city-divider">
+
+    <!-- MÁLAGA -->
+    <div class="city-block">
+      <div class="city-header">
+        <div class="city-name"><a href="https://www.google.com/search?q=Malaga+Spain" target="_blank" class="place-name">Málaga</a></div>
+        <div class="city-dates">Friday–Saturday, Days 2–3 🌙🌙</div>
+        <p class="city-intro">Your soft landing. Málaga is a port city with a genuinely great food scene, a walkable old town, and a warm January climate (~15°C). It punches above its weight for a mid-size city — Roman theatre, Moorish Alcazaba, Picasso's birthplace, and some of the best breakfast bars in Spain. Not intimidating at all.</p>
+        <span class="city-transit-note">✈️ Arriving by plane from PDX</span>
+      </div>
+
+      <div class="section-block food collapsed">
+        <div class="section-top"><h3>🍜 Food</h3><span class="chevron">▼</span></div>
+        <div class="section-body">
+          <div class="sublabel">Breakfast</div>
+          <div class="place-item"><span class="place-icon">☕</span><div class="place-content"><a href="https://www.google.com/search?q=cafe+con+leche+breakfast+Malaga+Spain" target="_blank" class="place-name">Café con leche + tostada con tomate</a><p class="place-desc">The Andalusian breakfast ritual. Any bar in the old town will do it well — toasted bread rubbed with tomato and olive oil. Cheap, essential, perfect.</p></div></div>
+          <div class="sublabel">Lunch / Dinner</div>
+          <div class="place-item"><span class="place-icon">🐟</span><div class="place-content"><a href="https://www.google.com/search?q=espetos+sardinas+Malaga+beach+Spain" target="_blank" class="place-name">Espetos de sardinas</a><p class="place-desc">Málaga's signature dish — whole sardines skewered on cane rods and grilled over a wood fire on the beach. Unmissable in January when crowds are gone.</p></div></div>
+          <div class="place-item"><span class="place-icon">🍷</span><div class="place-content"><a href="https://www.google.com/search?q=tapas+El+Pimpi+Malaga" target="_blank" class="place-name">Tapas bars around El Pimpi district</a><p class="place-desc">The old bodega district. Order fino sherry alongside small plates. Boquerones (anchovies), gambas al ajillo, and salmorejo are local staples.</p></div></div>
+          <div class="sublabel">Bakeries & Snacks</div>
+          <div class="place-item"><span class="place-icon">🥐</span><div class="place-content"><a href="https://www.google.com/search?q=pastelerias+Malaga+Spain+sweet+shops" target="_blank" class="place-name">Pastelerías in the old town</a><p class="place-desc">Look for polvorones (crumbly almond shortbread) and roscos de vino (anise wine biscuits) — both peak season in January as post-Christmas treats.</p></div></div>
+        </div>
+      </div>
+
+      <div class="section-block attr collapsed">
+        <div class="section-top"><h3>🗺️ Attractions</h3><span class="chevron">▼</span></div>
+        <div class="section-body">
+          <div class="place-item"><span class="place-icon">🏰</span><div class="place-content"><a href="https://www.google.com/search?q=Alcazaba+Malaga+Spain" target="_blank" class="place-name">Alcazaba of Málaga</a><p class="place-desc">11th-century Moorish fortress with exceptional city and harbour views. Built from Roman ruins, so you're looking at two civilisations at once. Free on Sundays.</p></div></div>
+          <div class="place-item"><span class="place-icon">🏛️</span><div class="place-content"><a href="https://www.google.com/search?q=Roman+Theatre+Malaga+Spain" target="_blank" class="place-name">Roman Theatre</a><p class="place-desc">1st century BC, right at the base of the Alcazaba. Free to visit and genuinely impressive for a city most people underestimate.</p></div></div>
+          <div class="place-item"><span class="place-icon">🎨</span><div class="place-content"><a href="https://www.google.com/search?q=Picasso+Museum+Malaga+Spain" target="_blank" class="place-name">Picasso Museum</a><p class="place-desc">Málaga was Picasso's birthplace. The museum is small and very good. January means no queues.</p></div></div>
+          <div class="place-item"><span class="place-icon">🚶</span><div class="place-content"><a href="https://www.google.com/search?q=Malaga+Cathedral+Spain" target="_blank" class="place-name">Cathedral & Historic Centre walk</a><p class="place-desc">The cathedral is nicknamed "La Manquita" (the one-armed lady) because one tower was never finished. The surrounding streets are excellent for wandering.</p></div></div>
+        </div>
+      </div>
+
+      <div class="section-block bath collapsed">
+        <div class="section-top"><h3>🛁 Baths</h3><span class="chevron">▼</span></div>
+        <div class="section-body">
+          <div class="place-item"><span class="place-icon">♨️</span><div class="place-content"><a href="https://www.google.com/search?q=Hammam+Al+Andalus+Malaga+Spain" target="_blank" class="place-name">Hammam Al Ándalus</a><p class="place-desc">Arab bath complex in a beautifully restored 16th-century building. Hot and cold pools, steam room, optional massage. <span class="hl-onsen">Tattoo policy: covered tattoos are fine, visible tattoos generally accepted.</span> Book ahead.</p></div></div>
+        </div>
+      </div>
+
+      <div class="section-block transit collapsed">
+        <div class="section-top"><h3>🚆 Transit & Getting Around</h3><span class="chevron">▼</span></div>
+        <div class="section-body">
+          <div class="transport-row"><span class="transport-badge badge-walk">Walk</span>The historic centre is entirely walkable. Airport to city: taxi (~€20) or metro (Line 1, ~€1.80).</div>
+          <div class="sublabel">Key Phrases — Spanish</div>
+          <div class="phrase-grid">
+            <span class="ph-header">English</span><span class="ph-header">Spanish</span><span class="ph-header">Pronunciation</span>
+            <span class="ph-en">Two coffees, please</span><span class="ph-jp">Dos cafés, por favor</span><span class="ph-ro">dohs kah-FEHS por fah-VOR</span>
+            <span class="ph-en">Where is the old town?</span><span class="ph-jp">¿Dónde está el casco antiguo?</span><span class="ph-ro">DON-deh es-TAH el KAS-ko an-TEE-gwoh</span>
+            <span class="ph-en">The bill, please</span><span class="ph-jp">La cuenta, por favor</span><span class="ph-ro">lah KWEN-tah por fah-VOR</span>
+            <span class="ph-en">Do you have vegetarian?</span><span class="ph-jp">¿Tiene algo vegetariano?</span><span class="ph-ro">tee-EH-neh AL-go veh-heh-tah-ree-AH-no</span>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <hr class="city-divider">
+
+    <!-- RONDA -->
+    <div class="city-block">
+      <div class="city-header">
+        <div class="city-name"><a href="https://www.google.com/search?q=Ronda+Spain" target="_blank" class="place-name">Ronda</a></div>
+        <div class="city-dates">Sunday, Day 4 🌙 — Day Trip from Málaga</div>
+        <p class="city-intro">One of the most dramatic towns in Spain, full stop. Ronda sits on a sheer 100-metre gorge and is connected by a single 18th-century stone bridge. Tiny, walkable, genuinely breathtaking. The drive or bus ride through the mountains is half the experience. Come for the day, or stay a night if you want peace and quiet.</p>
+        <span class="city-transit-note">🚌 Bus from Málaga bus station, ~2 hours. Or rent a car for the mountain scenery.</span>
+      </div>
+
+      <div class="section-block attr collapsed">
+        <div class="section-top"><h3>🗺️ Attractions</h3><span class="chevron">▼</span></div>
+        <div class="section-body">
+          <div class="place-item"><span class="place-icon">🌉</span><div class="place-content"><a href="https://www.google.com/search?q=Puente+Nuevo+Ronda+Spain" target="_blank" class="place-name">Puente Nuevo (New Bridge)</a><p class="place-desc">The iconic 18th-century bridge spanning the 120-metre El Tajo gorge. The views from the bridge and the path below it are extraordinary. Free to walk across.</p></div></div>
+          <div class="place-item"><span class="place-icon">🏟️</span><div class="place-content"><a href="https://www.google.com/search?q=Plaza+de+Toros+Ronda+Spain+bullring" target="_blank" class="place-name">Plaza de Toros</a><p class="place-desc">One of the oldest and most beautiful bullrings in Spain (1785). Even if bullfighting isn't your thing, the ring and its museum are architectural and cultural history worth seeing.</p></div></div>
+          <div class="place-item"><span class="place-icon">🏘️</span><div class="place-content"><a href="https://www.google.com/search?q=La+Ciudad+old+town+Ronda+Spain" target="_blank" class="place-name">La Ciudad (Old Moorish Quarter)</a><p class="place-desc">The southern half of Ronda dates to Moorish rule. Narrow whitewashed streets, a 13th-century baths ruin, and quiet plazas. Takes about 2 hours to wander properly.</p></div></div>
+        </div>
+      </div>
+
+      <div class="section-block food collapsed">
+        <div class="section-top"><h3>🍜 Food</h3><span class="chevron">▼</span></div>
+        <div class="section-body">
+          <div class="place-item"><span class="place-icon">🍖</span><div class="place-content"><a href="https://www.google.com/search?q=rabo+de+toro+Ronda+Spain+oxtail+stew" target="_blank" class="place-name">Rabo de toro (oxtail stew)</a><p class="place-desc">The regional signature dish. Rich, slow-braised, deeply savoury. Every restaurant in Ronda does a version — it's what you eat here.</p></div></div>
+          <div class="place-item"><span class="place-icon">🫙</span><div class="place-content"><a href="https://www.google.com/search?q=local+olive+oil+honey+Ronda+markets" target="_blank" class="place-name">Local olive oil and honey shops</a><p class="place-desc">The Serranía de Ronda produces excellent olive oil and wildflower honey. Pick some up to carry home — both pack well.</p></div></div>
+        </div>
+      </div>
+    </div>
+
+    <hr class="city-divider">
+
+    <!-- GRANADA -->
+    <div class="city-block">
+      <div class="city-header">
+        <div class="city-name"><a href="https://www.google.com/search?q=Granada+Spain" target="_blank" class="place-name">Granada</a></div>
+        <div class="city-dates">Monday–Tuesday, Days 5–6 🌙🌙</div>
+        <p class="city-intro">The crown of Andalusia. Granada has the Alhambra — the greatest surviving Moorish palace complex in the world — and one of Spain's best tapas traditions (free tapas with every drink, still, in Granada). The Albaicín neighbourhood is a UNESCO-listed Moorish quarter of steep whitewashed lanes and tea houses. January is cold but crowd-free.</p>
+        <span class="city-transit-note">🚌 Bus from Málaga, ~1.5–2 hours. Direct and frequent.</span>
+      </div>
+
+      <div class="section-block food collapsed">
+        <div class="section-top"><h3>🍜 Food</h3><span class="chevron">▼</span></div>
+        <div class="section-body">
+          <div class="sublabel">The Granada Tapas Rule</div>
+          <div class="place-item"><span class="place-icon">🍺</span><div class="place-content"><a href="https://www.google.com/search?q=free+tapas+Granada+Spain+tradition" target="_blank" class="place-name">Free tapas with every drink</a><p class="place-desc">Unlike the rest of Spain, Granada still brings you a free tapa with each beer or wine. Bars around Plaza Nueva and Calle Navas are the best hunting ground. Order a few rounds and you have a meal.</p></div></div>
+          <div class="place-item"><span class="place-icon">🫕</span><div class="place-content"><a href="https://www.google.com/search?q=plato+alpujarreño+Granada+Spain" target="_blank" class="place-name">Plato alpujarreño</a><p class="place-desc">Mountain-style plate: potatoes, blood sausage, chorizo, egg. Hearty and warming for a cold January in the Sierra Nevada foothills.</p></div></div>
+          <div class="sublabel">Tea Houses (Teterías)</div>
+          <div class="place-item"><span class="place-icon">🍵</span><div class="place-content"><a href="https://www.google.com/search?q=teterias+Albaicin+Granada+Spain+tea+houses" target="_blank" class="place-name">Moroccan-style tea houses, Albaicín</a><p class="place-desc">The Albaicín has dozens of beautiful Moroccan-influenced tea rooms — cushioned floors, mint tea, pastries. Perfect afternoon stop after climbing the hill.</p></div></div>
+        </div>
+      </div>
+
+      <div class="section-block attr collapsed">
+        <div class="section-top"><h3>🗺️ Attractions</h3><span class="chevron">▼</span></div>
+        <div class="section-body">
+          <div class="place-item"><span class="place-icon">🏰</span><div class="place-content"><a href="https://www.google.com/search?q=Alhambra+Granada+Spain" target="_blank" class="place-name">The Alhambra</a><p class="place-desc">Book tickets weeks in advance — entry is strictly timed and sells out even in January. The Nasrid Palaces are the highlight: intricate tilework, carved plaster, reflecting pools. Give it a full half-day minimum.</p></div></div>
+          <div class="place-item"><span class="place-icon">🕌</span><div class="place-content"><a href="https://www.google.com/search?q=Albaicin+neighbourhood+Granada+Spain" target="_blank" class="place-name">Albaicín Quarter</a><p class="place-desc">The Moorish hilltop neighbourhood across the gorge from the Alhambra. Wander up through narrow carmenes (walled garden houses) to the Mirador de San Nicolás for the famous Alhambra view at sunset.</p></div></div>
+          <div class="place-item"><span class="place-icon">⛪</span><div class="place-content"><a href="https://www.google.com/search?q=Granada+Cathedral+Royal+Chapel+Spain" target="_blank" class="place-name">Cathedral & Royal Chapel</a><p class="place-desc">Where Ferdinand and Isabella are buried. The Royal Chapel is small, quiet, and genuinely moving — two of history's most consequential monarchs in a plain stone tomb.</p></div></div>
+        </div>
+      </div>
+
+      <div class="section-block bath collapsed">
+        <div class="section-top"><h3>🛁 Baths</h3><span class="chevron">▼</span></div>
+        <div class="section-body">
+          <div class="place-item"><span class="place-icon">♨️</span><div class="place-content"><a href="https://www.google.com/search?q=Hammam+Al+Andalus+Granada+Spain" target="_blank" class="place-name">Hammam Al Ándalus Granada</a><p class="place-desc">The Granada outpost of the same chain as Málaga — stunning vaulted ceilings, hot and cold pools, candlelit ambiance. Sits in the Albaicín. <span class="hl-onsen">Tattoo policy: generally welcoming, swimwear required.</span> Book ahead, evenings fill up.</p></div></div>
+        </div>
+      </div>
+
+      <div class="section-block transit collapsed">
+        <div class="section-top"><h3>🚆 Transit & Essentials</h3><span class="chevron">▼</span></div>
+        <div class="section-body">
+          <div class="transport-row"><span class="transport-badge badge-bus">Bus</span>Granada to Málaga: ALSA bus, ~1h45. Frequent. Book online.</div>
+          <div class="transport-row"><span class="transport-badge badge-walk">Walk</span>Albaicín and city centre are walkable. The hill is steep — wear good shoes.</div>
+          <div class="sublabel">Alhambra Booking — Critical</div>
+          <div class="place-item"><span class="place-icon">⚠️</span><div class="place-content"><a href="https://www.google.com/search?q=Alhambra+tickets+book+in+advance+online" target="_blank" class="place-name">Book Alhambra tickets before you leave home</a><p class="place-desc">Tickets sell out weeks in advance even in winter. Official site: alhambra-patronato.es. Timed entry for the Nasrid Palaces is separate from general grounds.</p></div></div>
+        </div>
+      </div>
+    </div>
+
+    <hr class="city-divider">
+
+    <!-- MID-TRIP FLY DAY -->
+    <div class="city-block">
+      <div class="city-header">
+        <div class="city-name">✈️ Transit Day</div>
+        <div class="city-dates">Wednesday, Day 7 — Granada/Málaga → Strasbourg</div>
+        <p class="city-intro">Train or bus back to Málaga, then fly to Strasbourg via Madrid or Frankfurt. Strasbourg airport (SXB) is small and easy. Arrive early evening — pick up provisions and settle in.</p>
+        <span class="city-transit-note">✈️ Fly: AGP → MAD → SXB or AGP → FRA → SXB. Budget ~€100–180 for this leg.</span>
+      </div>
+    </div>
+
+    <hr class="city-divider">
+
+    <!-- STRASBOURG -->
+    <div class="city-block">
+      <div class="city-header">
+        <div class="city-name"><a href="https://www.google.com/search?q=Strasbourg+France" target="_blank" class="place-name">Strasbourg</a></div>
+        <div class="city-dates">Thursday–Friday, Days 8–9 🌙🌙</div>
+        <p class="city-intro">Your base for Alsace. Strasbourg is the capital of the region — a genuinely beautiful city of canals, half-timbered houses, and a towering Gothic cathedral. It's the EU Parliament city, but feels nothing like a bureaucratic capital. The old town (Grande Île) is an island surrounded by canals and is UNESCO-listed. January is cold and quiet, with warm bouchons (traditional restaurants) everywhere.</p>
+        <span class="city-transit-note">✈️ Arriving by flight from Málaga</span>
+      </div>
+
+      <div class="section-block food collapsed">
+        <div class="section-top"><h3>🍜 Food</h3><span class="chevron">▼</span></div>
+        <div class="section-body">
+          <div class="sublabel">Alsatian Specialties</div>
+          <div class="place-item"><span class="place-icon">🥗</span><div class="place-content"><a href="https://www.google.com/search?q=tarte+flambee+Alsace+France" target="_blank" class="place-name">Tarte flambée (Flammekueche)</a><p class="place-desc">Alsace's answer to pizza — thin crispy dough with crème fraîche, lardons, and onions. Found in every bouchon. Order multiple, they're small and addictive.</p></div></div>
+          <div class="place-item"><span class="place-icon">🥬</span><div class="place-content"><a href="https://www.google.com/search?q=choucroute+garnie+Alsace+Strasbourg" target="_blank" class="place-name">Choucroute garnie</a><p class="place-desc">Alsatian sauerkraut with pork sausage, knuckle, and potatoes. A serious winter dish. The kind of meal that requires a nap afterward.</p></div></div>
+          <div class="sublabel">Bakeries</div>
+          <div class="place-item"><span class="place-icon">🥨</span><div class="place-content"><a href="https://www.google.com/search?q=bretzel+bread+bakeries+Strasbourg+France" target="_blank" class="place-name">Bretzels and kougelhopf</a><p class="place-desc">Alsace invented the pretzel (bretzel here). Kougelhopf is the regional sweet bread — a ring-shaped brioche with raisins and almonds. Find both in any boulangerie.</p></div></div>
+          <div class="sublabel">Wine</div>
+          <div class="place-item"><span class="place-icon">🍷</span><div class="place-content"><a href="https://www.google.com/search?q=Alsace+white+wine+Riesling+Gewurztraminer" target="_blank" class="place-name">Alsatian Riesling & Gewurztraminer</a><p class="place-desc">Alsace produces some of France's best whites. Order by the glass in any bouchon — Riesling is crisp and mineral, Gewurztraminer is aromatic and slightly sweet.</p></div></div>
+        </div>
+      </div>
+
+      <div class="section-block attr collapsed">
+        <div class="section-top"><h3>🗺️ Attractions</h3><span class="chevron">▼</span></div>
+        <div class="section-body">
+          <div class="place-item"><span class="place-icon">⛪</span><div class="place-content"><a href="https://www.google.com/search?q=Strasbourg+Cathedral+Notre+Dame" target="_blank" class="place-name">Strasbourg Cathedral (Notre-Dame)</a><p class="place-desc">One of the tallest medieval buildings in the world. The Gothic facade is extraordinarily detailed — took 250 years to build. Climb to the platform for panoramic views of the Rhine plain.</p></div></div>
+          <div class="place-item"><span class="place-icon">🏘️</span><div class="place-content"><a href="https://www.google.com/search?q=Petite+France+Strasbourg+France" target="_blank" class="place-name">La Petite France</a><p class="place-desc">The most photographed corner of Strasbourg — half-timbered houses reflected in the canal, lock gates, weir walkways. Genuinely as pretty as the photos. Empty in January.</p></div></div>
+          <div class="place-item"><span class="place-icon">🖼️</span><div class="place-content"><a href="https://www.google.com/search?q=Musee+Alsacien+Strasbourg" target="_blank" class="place-name">Musée Alsacien</a><p class="place-desc">Folk museum inside three connected 17th-century houses. Covers Alsatian rural life, craft traditions, and religious objects. Small, warm, and deeply regional.</p></div></div>
+        </div>
+      </div>
+
+      <div class="section-block attr collapsed">
+        <div class="section-top"><h3>⚔️ WWI History — Day Trip</h3><span class="chevron">▼</span></div>
+        <div class="section-body">
+          <div class="place-item"><span class="place-icon">🪖</span><div class="place-content"><a href="https://www.google.com/search?q=Vieil+Armand+Hartmannswillerkopf+WWI+Alsace" target="_blank" class="place-name">Hartmannswillerkopf (Vieil Armand)</a><p class="place-desc"><span class="hl-ww1">WWI memorial site.</span> A mountain ridge south of Colmar where French and German forces fought brutal battles in 1914–1915. National monument with ossuary, trenches, and memorial museum. Deeply moving. ~1 hour from Strasbourg by car.</p></div></div>
+          <div class="place-item"><span class="place-icon">🪦</span><div class="place-content"><a href="https://www.google.com/search?q=WWI+cemeteries+Alsace+France" target="_blank" class="place-name">WWI cemeteries of Alsace</a><p class="place-desc"><span class="hl-ww1">The Alsatian front saw some of the war's earliest fighting.</span> Scattered German and French military cemeteries dot the Vosges foothills — most are free, quiet, and accessible by car. Neuf-Brisach and the Rhine fortifications are also nearby.</p></div></div>
+        </div>
+      </div>
+
+      <div class="section-block bath collapsed">
+        <div class="section-top"><h3>🛁 Baths</h3><span class="chevron">▼</span></div>
+        <div class="section-body">
+          <div class="place-item"><span class="place-icon">♨️</span><div class="place-content"><a href="https://www.google.com/search?q=Les+Bains+Municipaux+Strasbourg+swimming+thermal" target="_blank" class="place-name">Les Bains Municipaux</a><p class="place-desc">Strasbourg's historic municipal baths — an Art Nouveau building from 1908 with thermal pools. Locals use it regularly. Very affordable, very genuine. <span class="hl-onsen">Tattoo policy: generally relaxed.</span></p></div></div>
+          <div class="place-item"><span class="place-icon">♨️</span><div class="place-content"><a href="https://www.google.com/search?q=Niederbronn+les+Bains+thermal+spa+Alsace" target="_blank" class="place-name">Niederbronn-les-Bains (Day Trip)</a><p class="place-desc">A small spa town 40 minutes north of Strasbourg with Roman-origin thermal springs. The whole town is built around the baths. Charming, tiny, and exactly the kind of quiet place you described wanting.</p></div></div>
+        </div>
+      </div>
+
+      <div class="section-block transit collapsed">
+        <div class="section-top"><h3>🚆 Transit & Essentials</h3><span class="chevron">▼</span></div>
+        <div class="section-body">
+          <div class="transport-row"><span class="transport-badge badge-train">Train</span>Strasbourg to Colmar: 30 min by TGV/TER. Strasbourg to Basel: 1h20 by train.</div>
+          <div class="transport-row"><span class="transport-badge badge-car">Car</span>Renting a car for 1–2 days is the best way to reach WWI sites and wine villages off the train line.</div>
+          <div class="sublabel">Key Phrases — French</div>
+          <div class="phrase-grid">
+            <span class="ph-header">English</span><span class="ph-header">French</span><span class="ph-header">Pronunciation</span>
+            <span class="ph-en">One tarte flambée please</span><span class="ph-jp">Une tarte flambée s'il vous plaît</span><span class="ph-ro">oon tart flam-BAY seel voo PLAY</span>
+            <span class="ph-en">Where is the cathedral?</span><span class="ph-jp">Où est la cathédrale?</span><span class="ph-ro">oo ay la ka-tay-DRAL</span>
+            <span class="ph-en">The bill, please</span><span class="ph-jp">L'addition, s'il vous plaît</span><span class="ph-ro">lah-dee-SYON seel voo PLAY</span>
+            <span class="ph-en">Do you speak English?</span><span class="ph-jp">Parlez-vous anglais?</span><span class="ph-ro">par-LAY voo ong-GLAY</span>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <hr class="city-divider">
+
+    <!-- ALSACE VILLAGES -->
+    <div class="city-block">
+      <div class="city-header">
+        <div class="city-name">Alsace Wine Villages</div>
+        <div class="city-dates">Friday, Day 9 — Day Trips from Strasbourg</div>
+        <p class="city-intro">The Route des Vins d'Alsace (Alsace Wine Route) runs south from Strasbourg through some of the most absurdly picturesque small towns in France. These are the places that look like they're from a fairy tale — because they basically are. All within 1 hour of Strasbourg by train or car.</p>
+        <span class="city-transit-note">🚗 Best by rental car or taxi. Colmar is also easy by train (30 min).</span>
+      </div>
+
+      <div class="section-block attr collapsed">
+        <div class="section-top"><h3>🗺️ Villages Worth Visiting</h3><span class="chevron">▼</span></div>
+        <div class="section-body">
+          <div class="place-item"><span class="place-icon">🏘️</span><div class="place-content"><a href="https://www.google.com/search?q=Colmar+Alsace+France" target="_blank" class="place-name">Colmar</a><p class="place-desc">The main hub of the wine route. A full city of half-timbered houses, canals (the "Little Venice" district), excellent museums, and great restaurants. Worth 3–4 hours at minimum.</p></div></div>
+          <div class="place-item"><span class="place-icon">🏘️</span><div class="place-content"><a href="https://www.google.com/search?q=Riquewihr+Alsace+France+village" target="_blank" class="place-name">Riquewihr</a><p class="place-desc">A tiny walled village almost entirely unchanged since the 16th century. No cars inside the walls. Lined with wine shops and bakeries. January means almost no tourists — it's yours.</p></div></div>
+          <div class="place-item"><span class="place-icon">🏘️</span><div class="place-content"><a href="https://www.google.com/search?q=Eguisheim+Alsace+France+village" target="_blank" class="place-name">Eguisheim</a><p class="place-desc">A circular medieval village built in concentric rings around a castle courtyard. Voted one of France's most beautiful villages. Geranium-lined in summer, frost-quiet in January.</p></div></div>
+          <div class="place-item"><span class="place-icon">🏘️</span><div class="place-content"><a href="https://www.google.com/search?q=Kaysersberg+Alsace+France" target="_blank" class="place-name">Kaysersberg</a><p class="place-desc">Albert Schweitzer's birthplace. A village with a ruined castle, a fortified bridge, and some of the best pâtisseries on the wine route. A perfect lunch stop.</p></div></div>
+        </div>
+      </div>
+    </div>
+
+    <hr class="city-divider">
+
+    <!-- FLY HOME -->
+    <div class="city-block">
+      <div class="city-header">
+        <div class="city-name">✈️ Travel Home</div>
+        <div class="city-dates">Saturday, Day 10 — Strasbourg/Basel → Portland</div>
+        <p class="city-intro">Fly from Strasbourg (SXB) or Basel (BSL — 1h by train) back to PDX, typically via Paris, Frankfurt, or Amsterdam. Basel EuroAirport actually serves both Switzerland and France and often has better options.</p>
+        <span class="city-transit-note">✈️ BSL or SXB → CDG/FRA/AMS → PDX. Budget a full travel day.</span>
+      </div>
+    </div>
+
+    <!-- NOTES -->
+    <div class="notes-section">
+      <h2>Essential Notes — Trip 1</h2>
+      <div class="note-card"><strong>💶 Currency</strong><p>Spain and France both use Euro. Carry some cash for markets and small village bakeries — card acceptance varies outside cities.</p></div>
+      <div class="note-card"><strong>🌡️ January Weather</strong><p>Málaga and Granada: 10–15°C, sunny days likely. Strasbourg and Alsace: 0–5°C, possibly frosty or light snow. Pack layers — the contrast is real.</p></div>
+      <div class="note-card"><strong>🏰 Alhambra Tickets</strong><p>Book before you leave Portland. Sell out weeks in advance even in low season. alhambra-patronato.es — timed entry, non-refundable.</p></div>
+      <div class="note-card"><strong>📱 Transport Apps</strong><p>Spain: ALSA (buses), Renfe (trains). France: SNCF Connect app for trains. For Alsace day trips, consider renting a car for one day via Europcar or Sixt from Strasbourg station.</p></div>
+      <div class="note-card"><strong>✈️ Mid-Trip Flight</strong><p>Book Málaga → Strasbourg as a separate ticket from your transatlantic flights. Vueling, Iberia, and Air France typically serve this route with one connection.</p></div>
+    </div>
+
+  </div>
+</div>
+
+<!-- ============================================================ -->
+<!-- TRIP 2: ANDALUSIA + BASQUE + DORDOGNE -->
+<!-- ============================================================ -->
+<div class="trip-panel" id="trip2">
+
+  <div class="map-wrap">
+    <div id="map2"></div>
+  </div>
+
+  <div class="trip-intro">
+    <div class="trip-intro-card">
+      <h2>Trip 2 — Andalusia + Basque Country + Dordogne, France</h2>
+      <p>The food pilgrim route. You move north through Spain by train — Málaga to Granada, then up to San Sebastián (the pintxos capital of the world), cross the border into southwestern France and disappear into the medieval villages of the Dordogne. Truffle country, foie gras, prehistoric caves, and rivers. Fly home from Bordeaux. Least flying of the three options after you land.</p>
+      <div class="trip-meta">
+        <div class="trip-meta-item"><strong>Fly in:</strong> PDX → Madrid → Málaga (AGP)</div>
+        <div class="trip-meta-item"><strong>Fly out:</strong> Bordeaux (BOD) → PDX</div>
+        <div class="trip-meta-item"><strong>Mid-trip:</strong> All train or bus — no internal flights needed</div>
+        <div class="trip-meta-item"><strong>Ground transport:</strong> Train-heavy with one car rental in Dordogne</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="content">
+
+    <!-- DAY 1: TRAVEL -->
+    <div class="city-block">
+      <div class="city-header">
+        <div class="city-name">✈️ Travel Day</div>
+        <div class="city-dates">Thursday, Day 1 — Portland → Málaga</div>
+        <p class="city-intro">PDX to Málaga via Madrid or Amsterdam. Arrive morning of Day 2. The Iberia connection through Madrid is typically the smoothest and fastest option.</p>
+      </div>
+    </div>
+
+    <hr class="city-divider">
+
+    <!-- MÁLAGA -->
+    <div class="city-block">
+      <div class="city-header">
+        <div class="city-name"><a href="https://www.google.com/search?q=Malaga+Spain" target="_blank" class="place-name">Málaga</a></div>
+        <div class="city-dates">Friday–Saturday, Days 2–3 🌙🌙</div>
+        <p class="city-intro">Your arrival city and Andalusian warm-up. Beach city with a genuinely great food scene, a walkable Moorish fortress, Roman ruins, and excellent breakfast culture. Mild in January. Take it slow — you're recovering from the overnight flight.</p>
+        <span class="city-transit-note">✈️ Arriving by plane from PDX</span>
+      </div>
+
+      <div class="section-block food collapsed">
+        <div class="section-top"><h3>🍜 Food</h3><span class="chevron">▼</span></div>
+        <div class="section-body">
+          <div class="place-item"><span class="place-icon">☕</span><div class="place-content"><a href="https://www.google.com/search?q=cafe+con+leche+tostada+tomate+Malaga+Spain" target="_blank" class="place-name">Tostada con tomate y aceite</a><p class="place-desc">The Andalusian breakfast. Toast, ripe tomato pulp, olive oil, salt. Get this every morning.</p></div></div>
+          <div class="place-item"><span class="place-icon">🐟</span><div class="place-content"><a href="https://www.google.com/search?q=espetos+sardinas+Malaga+beach" target="_blank" class="place-name">Espetos de sardinas</a><p class="place-desc">Málaga's iconic beach-grilled sardines on cane spits. Best eaten by the sea, even in January.</p></div></div>
+          <div class="place-item"><span class="place-icon">🥐</span><div class="place-content"><a href="https://www.google.com/search?q=pastelerias+Malaga+polvorones+roscos" target="_blank" class="place-name">Local pastelerías</a><p class="place-desc">January is prime season for polvorones (almond shortbread) and roscos de vino (anise biscuits) leftover from Christmas. Every bakery has them.</p></div></div>
+        </div>
+      </div>
+
+      <div class="section-block attr collapsed">
+        <div class="section-top"><h3>🗺️ Attractions</h3><span class="chevron">▼</span></div>
+        <div class="section-body">
+          <div class="place-item"><span class="place-icon">🏰</span><div class="place-content"><a href="https://www.google.com/search?q=Alcazaba+Malaga+fortress" target="_blank" class="place-name">Alcazaba fortress</a><p class="place-desc">11th-century Moorish hilltop fort with Roman ruins at its base and harbour views from the top. Free on Sundays.</p></div></div>
+          <div class="place-item"><span class="place-icon">🏛️</span><div class="place-content"><a href="https://www.google.com/search?q=Roman+Theatre+Malaga+ruins" target="_blank" class="place-name">Roman Theatre</a><p class="place-desc">1st-century BC, free to visit, right in the city centre. Sets the historical tone for the whole trip.</p></div></div>
+        </div>
+      </div>
+
+      <div class="section-block bath collapsed">
+        <div class="section-top"><h3>🛁 Baths</h3><span class="chevron">▼</span></div>
+        <div class="section-body">
+          <div class="place-item"><span class="place-icon">♨️</span><div class="place-content"><a href="https://www.google.com/search?q=Hammam+Al+Andalus+Malaga" target="_blank" class="place-name">Hammam Al Ándalus</a><p class="place-desc">Arab bath experience in a restored historic building. Hot and cold pools, steam, optional massage. <span class="hl-onsen">Tattoo policy: generally welcoming.</span></p></div></div>
+        </div>
+      </div>
+
+      <div class="section-block transit collapsed">
+        <div class="section-top"><h3>🚆 Transit & Getting Around</h3><span class="chevron">▼</span></div>
+        <div class="section-body">
+          <div class="transport-row"><span class="transport-badge badge-walk">Walk</span>Historic centre is completely walkable from the airport metro (Line 1).</div>
+          <div class="sublabel">Key Phrases — Spanish</div>
+          <div class="phrase-grid">
+            <span class="ph-header">English</span><span class="ph-header">Spanish</span><span class="ph-header">Pronunciation</span>
+            <span class="ph-en">A coffee with milk, please</span><span class="ph-jp">Un café con leche, por favor</span><span class="ph-ro">oon ka-FAY kon LAY-cheh por fah-VOR</span>
+            <span class="ph-en">The bill, please</span><span class="ph-jp">La cuenta, por favor</span><span class="ph-ro">lah KWEN-tah por fah-VOR</span>
+            <span class="ph-en">Where is the beach?</span><span class="ph-jp">¿Dónde está la playa?</span><span class="ph-ro">DON-deh es-TAH la PLY-ah</span>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <hr class="city-divider">
+
+    <!-- RONDA DAY TRIP -->
+    <div class="city-block">
+      <div class="city-header">
+        <div class="city-name"><a href="https://www.google.com/search?q=Ronda+Spain+gorge" target="_blank" class="place-name">Ronda</a></div>
+        <div class="city-dates">Sunday, Day 4 — Day Trip from Málaga</div>
+        <p class="city-intro">A cliffside town perched 750 metres above a sheer gorge, connected to itself by an 18th-century stone bridge. One of Spain's most dramatic small towns. A perfect day trip before heading north.</p>
+        <span class="city-transit-note">🚌 Bus from Málaga, ~2 hours. Or scenic drive through Sierra Nevada foothills.</span>
+      </div>
+
+      <div class="section-block attr collapsed">
+        <div class="section-top"><h3>🗺️ Attractions</h3><span class="chevron">▼</span></div>
+        <div class="section-body">
+          <div class="place-item"><span class="place-icon">🌉</span><div class="place-content"><a href="https://www.google.com/search?q=Puente+Nuevo+bridge+Ronda+Spain" target="_blank" class="place-name">Puente Nuevo & El Tajo Gorge</a><p class="place-desc">The 120-metre gorge and the 18th-century bridge spanning it. Walk the path down into the gorge for the underside view. Vertigo-inducing in the best way.</p></div></div>
+          <div class="place-item"><span class="place-icon">🏘️</span><div class="place-content"><a href="https://www.google.com/search?q=La+Ciudad+old+town+Ronda" target="_blank" class="place-name">La Ciudad (Old Town)</a><p class="place-desc">Moorish quarter with Arab baths ruins, narrow streets, and viewpoints over the Serranía. Allow 2–3 hours to wander properly.</p></div></div>
+        </div>
+      </div>
+
+      <div class="section-block food collapsed">
+        <div class="section-top"><h3>🍜 Food</h3><span class="chevron">▼</span></div>
+        <div class="section-body">
+          <div class="place-item"><span class="place-icon">🍖</span><div class="place-content"><a href="https://www.google.com/search?q=rabo+de+toro+oxtail+stew+Ronda" target="_blank" class="place-name">Rabo de toro (oxtail stew)</a><p class="place-desc">The mountain signature — slow-braised oxtail, rich and warming. Every restaurant in Ronda does it well.</p></div></div>
+        </div>
+      </div>
+    </div>
+
+    <hr class="city-divider">
+
+    <!-- TRAIN NORTH -->
+    <div class="city-block">
+      <div class="city-header">
+        <div class="city-name">🚂 Heading North</div>
+        <div class="city-dates">Monday, Day 5 — Málaga → San Sebastián</div>
+        <p class="city-intro">A long but scenic train day. Málaga to Madrid on the AVE (high-speed, ~2h30), then Madrid to San Sebastián by train (~5h30). Arrive late afternoon. This is the moment the trip shifts — from Moorish south to Basque north.</p>
+        <span class="city-transit-note">🚂 Train: Renfe AVE Málaga→Madrid + Renfe San Sebastián→Donostia. Book ahead on renfe.com</span>
+      </div>
+    </div>
+
+    <hr class="city-divider">
+
+    <!-- SAN SEBASTIÁN -->
+    <div class="city-block">
+      <div class="city-header">
+        <div class="city-name"><a href="https://www.google.com/search?q=San+Sebastian+Donostia+Spain+Basque" target="_blank" class="place-name">San Sebastián (Donostia)</a></div>
+        <div class="city-dates">Monday–Wednesday, Days 5–7 🌙🌙🌙</div>
+        <p class="city-intro">Arguably the best food city in the world per capita. San Sebastián sits on a bay in the Basque Country — a crescent beach, a compact old town called Parte Vieja, and more Michelin stars per square metre than almost anywhere on earth. The pintxos bars of Parte Vieja are the main event: stand-up eating at the counter, tiny bites of extraordinary things, glass of txakoli wine in hand. Cold and dramatic in January.</p>
+        <span class="city-transit-note">🚂 Arriving by train from Madrid</span>
+      </div>
+
+      <div class="section-block food collapsed">
+        <div class="section-top"><h3>🍜 Food</h3><span class="chevron">▼</span></div>
+        <div class="section-body">
+          <div class="sublabel">The Pintxos Crawl (this is the whole point)</div>
+          <div class="place-item"><span class="place-icon">🍢</span><div class="place-content"><a href="https://www.google.com/search?q=pintxos+bars+Parte+Vieja+San+Sebastian" target="_blank" class="place-name">Pintxos bars, Parte Vieja</a><p class="place-desc">The old town has ~30 bars in a few blocks. The ritual: walk in, order one pintxo and a glass of txakoli (sparkling Basque white wine), eat standing at the bar, move to the next place. Do this for 2–3 hours. It is one of the great eating experiences in Europe.</p></div></div>
+          <div class="place-item"><span class="place-icon">🐚</span><div class="place-content"><a href="https://www.google.com/search?q=Basque+seafood+San+Sebastian+bacalao+squid" target="_blank" class="place-name">Bacalao al pil-pil & grilled squid</a><p class="place-desc">Basque cooking is obsessed with salt cod and seafood. Pil-pil is a sauce made by emulsifying the fish's own gelatin with olive oil. Extraordinary.</p></div></div>
+          <div class="sublabel">Bakeries</div>
+          <div class="place-item"><span class="place-icon">🍮</span><div class="place-content"><a href="https://www.google.com/search?q=pastel+vasco+Basque+cake+San+Sebastian" target="_blank" class="place-name">Pastel vasco (Gâteau basque)</a><p class="place-desc">The Basque pastry — a shortcrust shell filled with pastry cream or cherry jam. Every pâtisserie makes one. Get it warm if you can.</p></div></div>
+        </div>
+      </div>
+
+      <div class="section-block attr collapsed">
+        <div class="section-top"><h3>🗺️ Attractions</h3><span class="chevron">▼</span></div>
+        <div class="section-body">
+          <div class="place-item"><span class="place-icon">🏖️</span><div class="place-content"><a href="https://www.google.com/search?q=La+Concha+beach+San+Sebastian" target="_blank" class="place-name">La Concha Beach</a><p class="place-desc">The iconic curved bay. January is too cold to swim but the promenade walk is spectacular — wide, elegant, and almost empty. The city looks completely different from the water's edge.</p></div></div>
+          <div class="place-item"><span class="place-icon">⛰️</span><div class="place-content"><a href="https://www.google.com/search?q=Monte+Urgull+San+Sebastian+viewpoint" target="_blank" class="place-name">Monte Urgull</a><p class="place-desc">The wooded hill above the old town with a castle and Christ statue at the top. Free to walk up. Views of the bay, the beach, and the whole city. Takes about 40 minutes from base to summit.</p></div></div>
+          <div class="place-item"><span class="place-icon">🎨</span><div class="place-content"><a href="https://www.google.com/search?q=San+Telmo+Museum+San+Sebastian" target="_blank" class="place-name">San Telmo Museum</a><p class="place-desc">Basque culture and contemporary art in a converted 16th-century convent. Excellent context for understanding the Basque identity — which is genuinely distinct from Spanish identity in fascinating ways.</p></div></div>
+        </div>
+      </div>
+
+      <div class="section-block bath collapsed">
+        <div class="section-top"><h3>🛁 Baths</h3><span class="chevron">▼</span></div>
+        <div class="section-body">
+          <div class="place-item"><span class="place-icon">♨️</span><div class="place-content"><a href="https://www.google.com/search?q=La+Perla+spa+thalassotherapy+San+Sebastian" target="_blank" class="place-name">La Perla Thalassotherapy Centre</a><p class="place-desc">Seawater spa right on La Concha beach. Pools fed with Atlantic seawater, steam rooms, jet showers. Very San Sebastián — serious wellness without pretension. <span class="hl-onsen">Tattoo policy: welcoming. Swimwear required.</span></p></div></div>
+        </div>
+      </div>
+
+      <div class="section-block transit collapsed">
+        <div class="section-top"><h3>🚆 Transit & Essentials</h3><span class="chevron">▼</span></div>
+        <div class="section-body">
+          <div class="transport-row"><span class="transport-badge badge-walk">Walk</span>Parte Vieja and the beach are all walkable. The whole city is compact.</div>
+          <div class="transport-row"><span class="transport-badge badge-train">Train</span>San Sebastián to Bayonne (France): EuskoTren or SNCF, ~40 minutes across the border.</div>
+          <div class="sublabel">Key Phrases — Basque / Spanish</div>
+          <div class="phrase-grid">
+            <span class="ph-header">English</span><span class="ph-header">Basque/Spanish</span><span class="ph-header">Pronunciation</span>
+            <span class="ph-en">One of those, please</span><span class="ph-jp">Bat, mesedez / Uno, por favor</span><span class="ph-ro">baht meh-SEH-dez</span>
+            <span class="ph-en">Thank you</span><span class="ph-jp">Eskerrik asko / Gracias</span><span class="ph-ro">es-KEH-rreek AHS-ko</span>
+            <span class="ph-en">A glass of txakoli</span><span class="ph-jp">Un txakoli, por favor</span><span class="ph-ro">oon cha-KO-lee por fah-VOR</span>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <hr class="city-divider">
+
+    <!-- DORDOGNE -->
+    <div class="city-block">
+      <div class="city-header">
+        <div class="city-name"><a href="https://www.google.com/search?q=Dordogne+France+Perigord+medieval+villages" target="_blank" class="place-name">Dordogne / Périgord, France</a></div>
+        <div class="city-dates">Thursday–Friday, Days 8–9 🌙🌙</div>
+        <p class="city-intro">Cross into southwestern France and enter one of the most beautiful and undervisited regions in the country. The Dordogne river valley is lined with medieval cliff-top castles, limestone villages, prehistoric cave art, and the richest food culture in France — truffle country, foie gras, walnut oil, confit de canard. In January you'll have the villages almost entirely to yourself. Base yourself in Sarlat-la-Canéda.</p>
+        <span class="city-transit-note">🚂 Train: San Sebastián → Bayonne → Bordeaux → Sarlat (via Périgueux). Or rent a car from Bordeaux — strongly recommended for the valley villages.</span>
+      </div>
+
+      <div class="section-block food collapsed">
+        <div class="section-top"><h3>🍜 Food</h3><span class="chevron">▼</span></div>
+        <div class="section-body">
+          <div class="sublabel">Périgord Classics</div>
+          <div class="place-item"><span class="place-icon">🦆</span><div class="place-content"><a href="https://www.google.com/search?q=confit+de+canard+duck+confit+Perigord+Dordogne" target="_blank" class="place-name">Confit de canard</a><p class="place-desc">Duck leg slow-cooked in its own fat — the canonical dish of the region. Every restaurant does it, none do it badly here. It is the comfort food of the Dordogne.</p></div></div>
+          <div class="place-item"><span class="place-icon">🍄</span><div class="place-content"><a href="https://www.google.com/search?q=truffle+Perigord+noir+black+truffle+January+market" target="_blank" class="place-name">Black truffle (Périgord noir)</a><p class="place-desc"><span class="hl-hike">January is peak truffle season.</span> The Dordogne's black truffles are among the most prized in the world. Sarlat and Périgueux have winter truffle markets — you can buy direct from producers. Scrambled eggs with truffle shaved over them is a local obsession.</p></div></div>
+          <div class="place-item"><span class="place-icon">🫙</span><div class="place-content"><a href="https://www.google.com/search?q=foie+gras+markets+Sarlat+Perigord" target="_blank" class="place-name">Foie gras markets</a><p class="place-desc">The Dordogne is the source of most of France's foie gras. Local markets sell it fresh, whole, in terrine. Sarlat's Saturday market is one of the best in France even in January.</p></div></div>
+          <div class="sublabel">Bakeries</div>
+          <div class="place-item"><span class="place-icon">🥐</span><div class="place-content"><a href="https://www.google.com/search?q=walnut+bread+cake+Perigord+noix" target="_blank" class="place-name">Walnut bread and gâteau aux noix</a><p class="place-desc">The Périgord grows excellent walnuts. Walnut oil, walnut bread, and dense walnut cake show up in every boulangerie and market stall.</p></div></div>
+        </div>
+      </div>
+
+      <div class="section-block attr collapsed">
+        <div class="section-top"><h3>🗺️ Attractions</h3><span class="chevron">▼</span></div>
+        <div class="section-body">
+          <div class="place-item"><span class="place-icon">🏘️</span><div class="place-content"><a href="https://www.google.com/search?q=Sarlat+la+Caneda+France+medieval+town" target="_blank" class="place-name">Sarlat-la-Canéda</a><p class="place-desc">The best-preserved medieval town in France. The entire centre is 14th and 15th-century stone — no fake renovations, no modern intrusions. Quiet and golden in January. The Saturday market is outstanding.</p></div></div>
+          <div class="place-item"><span class="place-icon">🪨</span><div class="place-content"><a href="https://www.google.com/search?q=Lascaux+caves+prehistoric+art+Dordogne" target="_blank" class="place-name">Lascaux IV (Prehistoric Cave Art)</a><p class="place-desc">The original Lascaux cave (17,000-year-old paintings) is sealed for preservation, but Lascaux IV is a complete full-scale replica with an excellent museum. One of the most important prehistoric art sites in the world. Near Montignac, ~30 min from Sarlat.</p></div></div>
+          <div class="place-item"><span class="place-icon">🏰</span><div class="place-content"><a href="https://www.google.com/search?q=castles+Dordogne+valley+Beynac+Castelnaud" target="_blank" class="place-name">Castles of the Dordogne Valley</a><p class="place-desc">Beynac and Castelnaud face each other across the river — English vs French castles from the Hundred Years War. Both dramatically perched on limestone cliffs above the river. Drive the valley road between them.</p></div></div>
+          <div class="place-item"><span class="place-icon">🏘️</span><div class="place-content"><a href="https://www.google.com/search?q=La+Roque+Gageac+village+Dordogne+France" target="_blank" class="place-name">La Roque-Gageac</a><p class="place-desc">A village built directly into a limestone cliff above the river. Consistently voted one of France's most beautiful villages. Takes 20 minutes to walk the whole thing. Extraordinary.</p></div></div>
+        </div>
+      </div>
+
+      <div class="section-block transit collapsed">
+        <div class="section-top"><h3>🚆 Transit & Essentials</h3><span class="chevron">▼</span></div>
+        <div class="section-body">
+          <div class="transport-row"><span class="transport-badge badge-car">Car</span>A rental car is strongly recommended for the Dordogne. Castles and villages are spread across the valley — public transport is sparse in January.</div>
+          <div class="transport-row"><span class="transport-badge badge-train">Train</span>Bordeaux to Sarlat: 2h30 by train (via Bergerac or Périgueux). Then car hire from Sarlat station.</div>
+          <div class="sublabel">Key Phrases — French</div>
+          <div class="phrase-grid">
+            <span class="ph-header">English</span><span class="ph-header">French</span><span class="ph-header">Pronunciation</span>
+            <span class="ph-en">Do you have truffles today?</span><span class="ph-jp">Vous avez des truffes aujourd'hui?</span><span class="ph-ro">voo za-VAY day TROOF oh-zhoor-DWEE</span>
+            <span class="ph-en">One duck confit, please</span><span class="ph-jp">Un confit de canard, s'il vous plaît</span><span class="ph-ro">un kon-FEE duh ka-NAR seel voo PLAY</span>
+            <span class="ph-en">The bill, please</span><span class="ph-jp">L'addition, s'il vous plaît</span><span class="ph-ro">lah-dee-SYON seel voo PLAY</span>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <hr class="city-divider">
+
+    <!-- FLY HOME FROM BORDEAUX -->
+    <div class="city-block">
+      <div class="city-header">
+        <div class="city-name">✈️ Travel Home via <a href="https://www.google.com/search?q=Bordeaux+France+city" target="_blank" class="place-name">Bordeaux</a></div>
+        <div class="city-dates">Saturday, Day 10 — Sarlat → Bordeaux → Portland</div>
+        <p class="city-intro">Drive or train from Sarlat to Bordeaux (~2 hours). Bordeaux airport (BOD) has good connections to Paris CDG and Amsterdam for onward flights to PDX. If you have a few hours, Bordeaux's Saint-Pierre district is beautiful for a final breakfast.</p>
+        <span class="city-transit-note">✈️ BOD → CDG or AMS → PDX. Budget a full travel day.</span>
+      </div>
+    </div>
+
+    <!-- NOTES -->
+    <div class="notes-section">
+      <h2>Essential Notes — Trip 2</h2>
+      <div class="note-card"><strong>🍄 January is Truffle Season</strong><p>The Périgord Noir truffle season peaks in January. Check market dates in Sarlat, Périgueux, and Sorges before you go — some markets are weekly, some are annual.</p></div>
+      <div class="note-card"><strong>🚗 Rent a Car in the Dordogne</strong><p>The valley villages are not accessible by public transport in winter. Rent from Bordeaux or Sarlat for your Dordogne days. Return at Bordeaux airport on departure.</p></div>
+      <div class="note-card"><strong>🌡️ Weather Contrast</strong><p>Málaga: mild (~14°C). San Sebastián: cold and rainy (~9°C, Atlantic weather). Dordogne: cold and possibly frosty (~5°C). Pack real layers for the French leg.</p></div>
+      <div class="note-card"><strong>🚂 Train Booking</strong><p>Spain: renfe.com for AVE (high-speed). France: SNCF Connect app. Book the San Sebastián → Bordeaux leg early — it's a popular cross-border route.</p></div>
+      <div class="note-card"><strong>💶 Currency</strong><p>Both Spain and France use Euro. The Dordogne markets are cash-heavy — bring enough for market purchases, especially for truffle and foie gras producers.</p></div>
+    </div>
+
+  </div>
+</div>
+
+<!-- ============================================================ -->
+<!-- TRIP 3: ANDALUSIA + PROVENCE -->
+<!-- ============================================================ -->
+<div class="trip-panel" id="trip3">
+
+  <div class="map-wrap">
+    <div id="map3"></div>
+  </div>
+
+  <div class="trip-intro">
+    <div class="trip-intro-card">
+      <h2>Trip 3 — Andalusia + Provence, France</h2>
+      <p>The slow south play. Stay in Mediterranean warmth the whole trip. Moorish Andalusia gives way to Roman Provence — lavender fields (dormant but beautiful in winter), ochre cliff villages, Roman aqueducts, and extraordinary markets. All train travel once you land. Fly home from Marseille or Lyon. Least stressful of the three options, most cohesive mood.</p>
+      <div class="trip-meta">
+        <div class="trip-meta-item"><strong>Fly in:</strong> PDX → Madrid → Málaga (AGP)</div>
+        <div class="trip-meta-item"><strong>Fly out:</strong> Marseille (MRS) or Lyon (LYS) → PDX</div>
+        <div class="trip-meta-item"><strong>Mid-trip:</strong> Train from Málaga/Granada → Barcelona → Avignon/Marseille</div>
+        <div class="trip-meta-item"><strong>Ground transport:</strong> Train-heavy + one car rental for Luberon villages</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="content">
+
+    <!-- DAY 1: TRAVEL -->
+    <div class="city-block">
+      <div class="city-header">
+        <div class="city-name">✈️ Travel Day</div>
+        <div class="city-dates">Thursday, Day 1 — Portland → Málaga</div>
+        <p class="city-intro">PDX to Málaga via Madrid. Arrive morning of Day 2. Same entry as the other two trips — Iberia through Madrid is the smoothest option.</p>
+      </div>
+    </div>
+
+    <hr class="city-divider">
+
+    <!-- MÁLAGA -->
+    <div class="city-block">
+      <div class="city-header">
+        <div class="city-name"><a href="https://www.google.com/search?q=Malaga+Spain" target="_blank" class="place-name">Málaga</a></div>
+        <div class="city-dates">Friday–Saturday, Days 2–3 🌙🌙</div>
+        <p class="city-intro">Soft landing in the Mediterranean sun. Málaga in January is mild and quiet — great food, good walking, no crowds. Roman ruins, Moorish fortress, Picasso's birthplace, and excellent breakfast culture.</p>
+        <span class="city-transit-note">✈️ Arriving by plane from PDX</span>
+      </div>
+
+      <div class="section-block food collapsed">
+        <div class="section-top"><h3>🍜 Food</h3><span class="chevron">▼</span></div>
+        <div class="section-body">
+          <div class="place-item"><span class="place-icon">☕</span><div class="place-content"><a href="https://www.google.com/search?q=cafe+con+leche+tostada+tomate+Malaga" target="_blank" class="place-name">Café con leche + tostada con tomate</a><p class="place-desc">The non-negotiable Andalusian morning. Toast, tomato, olive oil, salt. Repeat daily.</p></div></div>
+          <div class="place-item"><span class="place-icon">🐟</span><div class="place-content"><a href="https://www.google.com/search?q=espetos+sardinas+Malaga+beach+grilled" target="_blank" class="place-name">Espetos de sardinas</a><p class="place-desc">Beach-grilled sardines on cane spits. Málaga's most iconic dish and completely delicious even in winter.</p></div></div>
+          <div class="place-item"><span class="place-icon">🥐</span><div class="place-content"><a href="https://www.google.com/search?q=pastelerias+Malaga+polvorones+mantecados" target="_blank" class="place-name">Local pastelerías</a><p class="place-desc">January: polvorones, mantecados, roscos. Crumbly, almond-rich Andalusian Christmas biscuits still being sold off. Buy a bag for the train.</p></div></div>
+        </div>
+      </div>
+
+      <div class="section-block attr collapsed">
+        <div class="section-top"><h3>🗺️ Attractions</h3><span class="chevron">▼</span></div>
+        <div class="section-body">
+          <div class="place-item"><span class="place-icon">🏰</span><div class="place-content"><a href="https://www.google.com/search?q=Alcazaba+Malaga" target="_blank" class="place-name">Alcazaba fortress</a><p class="place-desc">11th-century Moorish fort. Free on Sundays. Built using Roman ruins — two civilisations in one visit.</p></div></div>
+          <div class="place-item"><span class="place-icon">🏛️</span><div class="place-content"><a href="https://www.google.com/search?q=Roman+Theatre+Malaga" target="_blank" class="place-name">Roman Theatre</a><p class="place-desc">1st century BC, free, and sets up the Roman history theme you'll continue in Provence.</p></div></div>
+        </div>
+      </div>
+
+      <div class="section-block bath collapsed">
+        <div class="section-top"><h3>🛁 Baths</h3><span class="chevron">▼</span></div>
+        <div class="section-body">
+          <div class="place-item"><span class="place-icon">♨️</span><div class="place-content"><a href="https://www.google.com/search?q=Hammam+Al+Andalus+Malaga+arab+baths" target="_blank" class="place-name">Hammam Al Ándalus</a><p class="place-desc">Arab bath experience in a historic building. Hot and cold pools, steam, massage. <span class="hl-onsen">Tattoo policy: generally welcoming.</span></p></div></div>
+        </div>
+      </div>
+
+      <div class="section-block transit collapsed">
+        <div class="section-top"><h3>🚆 Transit</h3><span class="chevron">▼</span></div>
+        <div class="section-body">
+          <div class="transport-row"><span class="transport-badge badge-walk">Walk</span>Entirely walkable centre. Metro from airport (Line 1, ~€1.80).</div>
+        </div>
+      </div>
+    </div>
+
+    <hr class="city-divider">
+
+    <!-- RONDA / GRANADA -->
+    <div class="city-block">
+      <div class="city-header">
+        <div class="city-name"><a href="https://www.google.com/search?q=Ronda+Spain+cliff+town" target="_blank" class="place-name">Ronda</a> + <a href="https://www.google.com/search?q=Granada+Spain+Alhambra" target="_blank" class="place-name">Granada</a></div>
+        <div class="city-dates">Sunday–Tuesday, Days 4–6 🌙🌙🌙</div>
+        <p class="city-intro">Day trip to Ronda on Sunday (cliff-top gorge town, one of Spain's most dramatic), then move to Granada for Monday and Tuesday. The Alhambra and the Albaicín quarter are the heart of Andalusian Moorish history — and the free-tapas tradition means eating well is cheap.</p>
+        <span class="city-transit-note">🚌 Bus: Málaga→Ronda→Málaga (day trip). Then bus or train Málaga→Granada (1.5–2h).</span>
+      </div>
+
+      <div class="section-block attr collapsed">
+        <div class="section-top"><h3>🗺️ Highlights</h3><span class="chevron">▼</span></div>
+        <div class="section-body">
+          <div class="place-item"><span class="place-icon">🌉</span><div class="place-content"><a href="https://www.google.com/search?q=Puente+Nuevo+Ronda+Spain+bridge+gorge" target="_blank" class="place-name">Ronda: Puente Nuevo & El Tajo Gorge</a><p class="place-desc">18th-century bridge across a 120-metre gorge. Walk the path down into the gorge for the view from below. One of the most dramatic settings in Spain.</p></div></div>
+          <div class="place-item"><span class="place-icon">🏰</span><div class="place-content"><a href="https://www.google.com/search?q=Alhambra+Granada+Spain+palace" target="_blank" class="place-name">Granada: The Alhambra</a><p class="place-desc">The greatest surviving Moorish palace complex in the world. Book timed-entry tickets before leaving Portland — sell out weeks ahead even in January.</p></div></div>
+          <div class="place-item"><span class="place-icon">🕌</span><div class="place-content"><a href="https://www.google.com/search?q=Albaicin+quarter+Granada+Mirador+San+Nicolas" target="_blank" class="place-name">Granada: Albaicín & Mirador de San Nicolás</a><p class="place-desc">The Moorish hilltop quarter. Wind up through narrow whitewashed streets to the viewpoint for the iconic Alhambra-at-sunset view. Cold in January but unforgettable.</p></div></div>
+          <div class="place-item"><span class="place-icon">♨️</span><div class="place-content"><a href="https://www.google.com/search?q=Hammam+Al+Andalus+Granada+arab+baths" target="_blank" class="place-name">Granada: Hammam Al Ándalus</a><p class="place-desc"><span class="hl-onsen">Arab baths in the Albaicín — vaulted ceilings, candlelit pools, hot/cold circuit.</span> A perfect evening after a long day of walking hills.</p></div></div>
+        </div>
+      </div>
+
+      <div class="section-block food collapsed">
+        <div class="section-top"><h3>🍜 Food</h3><span class="chevron">▼</span></div>
+        <div class="section-body">
+          <div class="place-item"><span class="place-icon">🍺</span><div class="place-content"><a href="https://www.google.com/search?q=free+tapas+Granada+Spain+bars+tradition" target="_blank" class="place-name">Granada's free tapas tradition</a><p class="place-desc">A free tapa comes with every drink in Granada. Wander Calle Navas and Plaza Nueva, order a beer or wine at each bar, eat what arrives. Two hours of this is a full meal.</p></div></div>
+          <div class="place-item"><span class="place-icon">🍵</span><div class="place-content"><a href="https://www.google.com/search?q=teterias+tea+houses+Albaicin+Granada" target="_blank" class="place-name">Albaicín tea houses (teterías)</a><p class="place-desc">Moroccan-style tea rooms with mint tea, pastries, and cushioned floors. Perfect afternoon stop halfway up the hill.</p></div></div>
+        </div>
+      </div>
+    </div>
+
+    <hr class="city-divider">
+
+    <!-- TRANSIT TO PROVENCE -->
+    <div class="city-block">
+      <div class="city-header">
+        <div class="city-name">🚂 Crossing to Provence</div>
+        <div class="city-dates">Wednesday, Day 7 — Granada → Barcelona → Avignon</div>
+        <p class="city-intro">A travel day, but a scenic one. Train from Granada to Barcelona (beautiful Mediterranean coast route), then TGV to Avignon. Arrive early evening — Avignon's old town is compact and walkable immediately on arrival.</p>
+        <span class="city-transit-note">🚂 Train: Granada→Barcelona (Renfe, ~5.5h) + Barcelona→Avignon TGV (~3h). Book ahead on renfe.com and SNCF.</span>
+      </div>
+    </div>
+
+    <hr class="city-divider">
+
+    <!-- AVIGNON -->
+    <div class="city-block">
+      <div class="city-header">
+        <div class="city-name"><a href="https://www.google.com/search?q=Avignon+France+Provence" target="_blank" class="place-name">Avignon</a></div>
+        <div class="city-dates">Thursday, Day 8 🌙</div>
+        <p class="city-intro">A walled medieval city on the Rhône — the seat of the Catholic papacy in the 14th century when the popes fled Rome. The Palais des Papes is one of the largest Gothic buildings in Europe. The city fits entirely inside its medieval walls, which you can still walk. January is cold but uncrowded and atmospheric.</p>
+        <span class="city-transit-note">🚂 Arriving by TGV from Barcelona</span>
+      </div>
+
+      <div class="section-block attr collapsed">
+        <div class="section-top"><h3>🗺️ Attractions</h3><span class="chevron">▼</span></div>
+        <div class="section-body">
+          <div class="place-item"><span class="place-icon">🏰</span><div class="place-content"><a href="https://www.google.com/search?q=Palais+des+Papes+Avignon+France" target="_blank" class="place-name">Palais des Papes</a><p class="place-desc">The immense Gothic palace where seven popes lived in the 14th century. Austere, enormous, and unlike any building in France. An audio guide is essential — the empty rooms need context to come alive.</p></div></div>
+          <div class="place-item"><span class="place-icon">🌉</span><div class="place-content"><a href="https://www.google.com/search?q=Pont+Saint+Benezet+Avignon+bridge" target="_blank" class="place-name">Pont Saint-Bénézet (the broken bridge)</a><p class="place-desc">The famous medieval bridge — half of it fell into the Rhône in the 17th century and was never repaired. The ruin is beautiful and there's a song about it every French child knows.</p></div></div>
+          <div class="place-item"><span class="place-icon">🚶</span><div class="place-content"><a href="https://www.google.com/search?q=Avignon+ramparts+walls+walk" target="_blank" class="place-name">Walk the medieval ramparts</a><p class="place-desc">Avignon's intact city walls are 4.3km around. Walking the exterior perimeter takes about an hour and gives a good sense of the city's scale — rare to find a medieval enceinte this complete.</p></div></div>
+        </div>
+      </div>
+
+      <div class="section-block food collapsed">
+        <div class="section-top"><h3>🍜 Food</h3><span class="chevron">▼</span></div>
+        <div class="section-body">
+          <div class="place-item"><span class="place-icon">🫒</span><div class="place-content"><a href="https://www.google.com/search?q=tapenade+olives+Provence+market+food" target="_blank" class="place-name">Provençal market food</a><p class="place-desc">Avignon's market (Les Halles) is covered and open daily. Tapenade, fresh chevre, Cavaillon melon jam, lavender honey, olives in dozens of varieties. Go before breakfast.</p></div></div>
+          <div class="place-item"><span class="place-icon">🥩</span><div class="place-content"><a href="https://www.google.com/search?q=daube+provencale+beef+stew+Provence" target="_blank" class="place-name">Daube Provençale</a><p class="place-desc">Provençal beef stew slow-cooked in red wine with olives, orange peel, and herbes de Provence. The definitive winter dish of the region.</p></div></div>
+        </div>
+      </div>
+    </div>
+
+    <hr class="city-divider">
+
+    <!-- LUBERON VILLAGES -->
+    <div class="city-block">
+      <div class="city-header">
+        <div class="city-name">Luberon Villages</div>
+        <div class="city-dates">Friday, Day 9 — Day Trip from Avignon</div>
+        <p class="city-intro">The Luberon massif southeast of Avignon contains some of France's most spectacular perched villages — hilltop stone towns with views across lavender fields (bare in January but hauntingly beautiful). A car is essential for this day.</p>
+        <span class="city-transit-note">🚗 Rent a car from Avignon for the day — the villages are 30–60 min apart and not served by trains.</span>
+      </div>
+
+      <div class="section-block attr collapsed">
+        <div class="section-top"><h3>🗺️ Villages</h3><span class="chevron">▼</span></div>
+        <div class="section-body">
+          <div class="place-item"><span class="place-icon">🏘️</span><div class="place-content"><a href="https://www.google.com/search?q=Les+Baux+de+Provence+village+France" target="_blank" class="place-name">Les Baux-de-Provence</a><p class="place-desc">A ruined medieval citadel perched on a white limestone ridge above the plain. The ruins are dramatic and free to explore. The village below has good food and olive oil shops. January: almost no tourists, dramatic winter light.</p></div></div>
+          <div class="place-item"><span class="place-icon">🏘️</span><div class="place-content"><a href="https://www.google.com/search?q=Gordes+village+Provence+France" target="_blank" class="place-name">Gordes</a><p class="place-desc">The most photographed village in Provence — pale stone houses cascading down a hillside. Stunning from the valley below. Has a castle, good bakeries, and a calm off-season atmosphere in January.</p></div></div>
+          <div class="place-item"><span class="place-icon">🏘️</span><div class="place-content"><a href="https://www.google.com/search?q=Roussillon+Provence+ochre+village+France" target="_blank" class="place-name">Roussillon</a><p class="place-desc">The ochre village — built from and surrounded by brilliant orange and red cliff formations. The colour contrast against a clear January sky is extraordinary. The ochre cliffs trail (Sentier des Ocres) is a short walk through the formations.</p></div></div>
+          <div class="place-item"><span class="place-icon">🏛️</span><div class="place-content"><a href="https://www.google.com/search?q=Pont+du+Gard+Roman+aqueduct+Provence" target="_blank" class="place-name">Pont du Gard (Roman Aqueduct)</a><p class="place-desc">30 minutes from Avignon — a three-tiered Roman aqueduct bridge from 50 AD, still standing perfectly. One of the best-preserved Roman structures in the world. Free in winter, uncrowded, remarkable.</p></div></div>
+        </div>
+      </div>
+
+      <div class="section-block bath collapsed">
+        <div class="section-top"><h3>🛁 Baths</h3><span class="chevron">▼</span></div>
+        <div class="section-body">
+          <div class="place-item"><span class="place-icon">♨️</span><div class="place-content"><a href="https://www.google.com/search?q=Thermes+de+Gréoux+les+Bains+Provence+thermal+spa" target="_blank" class="place-name">Thermes de Gréoux-les-Bains</a><p class="place-desc"><span class="hl-onsen">A genuine thermal spa town in the Luberon.</span> Gréoux-les-Bains has Roman-origin sulphur springs and a working thermal centre. The town itself is a small, quiet Provençal village. About 1 hour from Avignon by car. <span class="hl-onsen">Tattoo policy: relaxed at most public facilities.</span></p></div></div>
+        </div>
+      </div>
+    </div>
+
+    <hr class="city-divider">
+
+    <!-- FLY HOME -->
+    <div class="city-block">
+      <div class="city-header">
+        <div class="city-name">✈️ Travel Home via <a href="https://www.google.com/search?q=Marseille+France+city" target="_blank" class="place-name">Marseille</a></div>
+        <div class="city-dates">Saturday, Day 10 — Avignon → Marseille → Portland</div>
+        <p class="city-intro">Train from Avignon to Marseille (~35 min), then fly home. Marseille airport (MRS) connects to Paris CDG, Amsterdam, or London for transatlantic legs. If time allows, walk the Vieux-Port (old harbour) before heading to the airport.</p>
+        <span class="city-transit-note">🚂 Train: Avignon → Marseille (35 min). ✈️ MRS → CDG/AMS/LHR → PDX.</span>
+      </div>
+    </div>
+
+    <!-- NOTES -->
+    <div class="notes-section">
+      <h2>Essential Notes — Trip 3</h2>
+      <div class="note-card"><strong>🏰 Alhambra Tickets</strong><p>Book before leaving Portland. Strict timed entry, sells out weeks ahead. alhambra-patronato.es</p></div>
+      <div class="note-card"><strong>🚗 Car for Luberon</strong><p>The Luberon villages are not accessible by public transit in January. Rent a car from Avignon for Day 9 and return it at Marseille airport on Day 10.</p></div>
+      <div class="note-card"><strong>🌡️ Weather</strong><p>Málaga/Granada: mild (10–15°C). Provence in January: cold (3–8°C), possibly frosty, but usually sunny. Bring a real coat for Avignon — the Mistral wind makes it feel colder than it is.</p></div>
+      <div class="note-card"><strong>🚂 Train Booking</strong><p>Spain: renfe.com. France: SNCF Connect app. Book the Barcelona→Avignon TGV early — it's a busy route even in winter.</p></div>
+      <div class="note-card"><strong>🛁 Provence Thermal Towns</strong><p>Beyond Gréoux, look into Digne-les-Bains (farther east, a full spa town with Alpine backdrop) if you want to extend the bath culture into a second stop.</p></div>
+    </div>
+
+  </div>
+</div>
+
 <script src="https://cdn.jsdelivr.net/npm/leaflet@1.9.4/dist/leaflet.js"></script>
 <script>
-var map = L.map('route-map', { scrollWheelZoom: false }).setView([34.9, 135.2], 7);
-L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
-  attribution: '© OpenStreetMap contributors'
-}).addTo(map);
-var stops = [
-  { name: "Osaka", dates: "Jan 22–24 · Feb 3–5", lat: 34.55, lng: 135.5023, dir: 'right' },
-  { name: "Kinosaki", dates: "Jan 24–26", lat: 35.6243, lng: 134.8131, dir: 'left' },
-  { name: "Kyoto", dates: "Jan 26–30", lat: 35.0116, lng: 135.7681, dir: 'right' },
-  { name: "Kumano", dates: "Jan 30–Feb 1", lat: 33.8522, lng: 135.7675, dir: 'right' },
-  { name: "Kobe / Arima", dates: "Feb 1–3", lat: 34.6901, lng: 135.1956, dir: 'left' }
+
+// ── helpers ──────────────────────────────────────────────────────────
+function glink(q) {
+  return 'https://www.google.com/search?q=' + encodeURIComponent(q);
+}
+
+function makeMap(id, stops, color) {
+  var m = L.map(id, { scrollWheelZoom: false });
+  L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+    attribution: '© OpenStreetMap contributors'
+  }).addTo(m);
+
+  var latlngs = stops.map(function(s){ return [s.lat, s.lng]; });
+
+  // close the loop
+  L.polyline(latlngs.concat([latlngs[0]]), {
+    color: color, weight: 3, opacity: 0.7, dashArray: '6,4'
+  }).addTo(m);
+
+  stops.forEach(function(s) {
+    var dot = L.circleMarker([s.lat, s.lng], {
+      radius: 7, color: '#fff', weight: 2,
+      fillColor: s.highlight ? '#c4622d' : color,
+      fillOpacity: 1
+    }).addTo(m);
+
+    dot.bindTooltip(
+      '<strong>' + s.name + '</strong><br><span style="font-size:0.8em;color:#555">' + s.dates + '</span>',
+      { permanent: true, direction: s.dir || 'right', className: 'city-tip' }
+    );
+  });
+
+  var bounds = L.latLngBounds(latlngs);
+  m.fitBounds(bounds, { padding: [50, 50] });
+  return m;
+}
+
+// ── Trip 1 stops ─────────────────────────────────────────────────────
+var t1 = [
+  { name:'Portland (PDX)', dates:'Day 1 – depart', lat:45.59, lng:-122.59, dir:'right' },
+  { name:'Málaga', dates:'Days 2–3', lat:36.72, lng:-4.42, dir:'right', highlight:true },
+  { name:'Ronda', dates:'Day 4 day trip', lat:36.74, lng:-5.17, dir:'left' },
+  { name:'Granada', dates:'Days 5–6', lat:37.18, lng:-3.60, dir:'right', highlight:true },
+  { name:'Strasbourg', dates:'Days 7–9', lat:48.57, lng:7.75, dir:'right', highlight:true },
+  { name:'Alsace Villages', dates:'Day 9', lat:48.08, lng:7.36, dir:'left' }
 ];
-var icon = L.divIcon({
-  className: '',
-  html: '<div style="width:13px;height:13px;background:#c4622d;border:2.5px solid white;border-radius:50%;box-shadow:0 1px 4px rgba(0,0,0,0.4)"></div>',
-  iconSize: [13,13], iconAnchor: [6,6], popupAnchor: [0,-10]
-});
-stops.forEach(function(s) {
-  L.marker([s.lat, s.lng], { icon: icon }).addTo(map)
-    .bindTooltip('<strong>' + s.name + '</strong><br><span style="font-size:11px;color:#555">' + s.dates + '</span>', {
-      permanent: true, direction: s.dir, className: 'map-label'
-    });
-});
-var routeCoords = stops.map(function(s){ return [s.lat, s.lng]; });
-routeCoords.push([34.55, 135.5023]);
-L.polyline(routeCoords, {
-  color: '#2d5a6b', weight: 3, opacity: 0.85
-}).addTo(map);
-</script>
 
-<div class="pass-bar">
-  🎫 <strong>Transit:</strong> ICOCA card (tap on/off everything in cities) &nbsp;+&nbsp; <strong>Kansai Wide Area Pass</strong> ×2 per person (5-day, ~¥12,000 each) for all long-distance trains &nbsp;·&nbsp; Skip the national JR Pass — not worth it for this itinerary
-</div>
-<main>
+// ── Trip 2 stops ─────────────────────────────────────────────────────
+var t2 = [
+  { name:'Portland (PDX)', dates:'Day 1 – depart', lat:45.59, lng:-122.59, dir:'right' },
+  { name:'Málaga', dates:'Days 2–3', lat:36.72, lng:-4.42, dir:'right', highlight:true },
+  { name:'Ronda', dates:'Day 4 day trip', lat:36.74, lng:-5.17, dir:'left' },
+  { name:'San Sebastián', dates:'Days 5–7', lat:43.32, lng:-1.98, dir:'right', highlight:true },
+  { name:'Dordogne / Sarlat', dates:'Days 8–9', lat:44.89, lng:1.22, dir:'right', highlight:true },
+  { name:'Bordeaux', dates:'Day 10 – depart', lat:44.84, lng:-0.58, dir:'left' }
+];
 
-<style>
-.city-block { margin-bottom: 48px; }
-.city-intro {
-  background: white;
-  border-radius: 10px;
-  padding: 16px 20px;
-  margin-bottom: 12px;
-  box-shadow: 0 1px 3px rgba(0,0,0,0.07);
-  border-left: 4px solid var(--water);
-}
-.city-intro-meta { font-size: 12px; color: var(--muted); letter-spacing: 0.05em; margin-bottom: 6px; }
-.city-intro-note { font-size: 13px; color: #4a4540; line-height: 1.55; }
-.transit-inline {
-  background: #f7f5f0;
-  border-radius: 6px;
-  padding: 8px 12px;
-  margin-top: 8px;
-  font-size: 12.5px;
-  color: #555;
+// ── Trip 3 stops ─────────────────────────────────────────────────────
+var t3 = [
+  { name:'Portland (PDX)', dates:'Day 1 – depart', lat:45.59, lng:-122.59, dir:'right' },
+  { name:'Málaga', dates:'Days 2–3', lat:36.72, lng:-4.42, dir:'right', highlight:true },
+  { name:'Ronda + Granada', dates:'Days 4–6', lat:37.18, lng:-3.60, dir:'right', highlight:true },
+  { name:'Avignon', dates:'Days 7–8', lat:43.95, lng:4.81, dir:'right', highlight:true },
+  { name:'Luberon Villages', dates:'Day 9', lat:43.82, lng:5.40, dir:'right' },
+  { name:'Marseille', dates:'Day 10 – depart', lat:43.30, lng:5.37, dir:'left' }
+];
+
+var maps = {};
+maps[1] = makeMap('map1', t1, '#2d5a6b');
+maps[2] = makeMap('map2', t2, '#4a6741');
+maps[3] = makeMap('map3', t3, '#c4622d');
+
+// ── Trip selector ─────────────────────────────────────────────────────
+function showTrip(n) {
+  document.querySelectorAll('.trip-panel').forEach(function(p){ p.classList.remove('active'); });
+  document.querySelectorAll('.trip-btn').forEach(function(b){ b.classList.remove('active'); });
+  document.getElementById('trip' + n).classList.add('active');
+  document.querySelectorAll('.trip-btn')[n-1].classList.add('active');
+  setTimeout(function(){
+    if (maps[n]) maps[n].invalidateSize();
+  }, 50);
 }
 
-.section-block {
-  background: white;
-  border-radius: 10px;
-  margin-bottom: 10px;
-  overflow: hidden;
-  box-shadow: 0 1px 3px rgba(0,0,0,0.07);
-}
-.section-top {
-  display: flex;
-  align-items: center;
-  gap: 12px;
-  padding: 14px 16px;
-  cursor: pointer;
-  user-select: none;
-  border-bottom: 1px solid var(--steam);
-}
-.section-top:hover { background: #fafaf8; }
-.section-block.collapsed .section-top { border-bottom: none; }
-.section-block.collapsed .section-body { display: none; }
-.section-icon { font-size: 18px; flex-shrink: 0; }
-.section-title { font-size: 15px; font-weight: 600; flex: 1; }
-.section-chevron { font-size: 11px; color: var(--muted); transition: transform 0.2s; }
-.section-block.collapsed .section-chevron { transform: rotate(-90deg); }
-
-.section-body { padding: 14px 16px 16px; }
-
-.sub-section { margin-bottom: 16px; }
-.sub-section:last-child { margin-bottom: 0; }
-.sub-label {
-  font-size: 10px;
-  font-weight: 700;
-  letter-spacing: 0.12em;
-  text-transform: uppercase;
-  color: var(--muted);
-  margin-bottom: 8px;
-  padding-bottom: 4px;
-  border-bottom: 1px solid var(--steam);
-}
-.place-item {
-  display: flex;
-  gap: 10px;
-  padding: 7px 0;
-  border-bottom: 1px solid #f4f1ee;
-  align-items: flex-start;
-}
-.place-item:last-child { border-bottom: none; }
-.place-item-icon { font-size: 14px; flex-shrink: 0; margin-top: 1px; }
-.place-item-content { flex: 1; }
-.place-item-name {
-  font-size: 13.5px;
-  font-weight: 600;
-  color: var(--ink);
-  margin-bottom: 2px;
-}
-.place-item-name a { color: inherit; text-decoration: none; }
-.place-item-name a:hover { opacity: 0.7; }
-.place-item-desc { font-size: 12px; color: #5a5550; line-height: 1.5; }
-.phrase-item {
-  display: grid;
-  grid-template-columns: 1fr 1fr 1fr;
-  gap: 4px 12px;
-  padding: 6px 0;
-  border-bottom: 1px solid #f4f1ee;
-  font-size: 12px;
-}
-.phrase-item:last-child { border-bottom: none; }
-.phrase-en { color: var(--muted); }
-.phrase-jp { font-weight: 600; }
-.phrase-read { color: var(--ember); font-style: italic; }
-</style>
-
-<!-- ═══ OSAKA ═══ -->
-<div class="city-block">
-  <div class="city-header">
-    <div class="city-name">Osaka</div>
-    <div class="city-meta">Jan 22–24 · Feb 3–5 &nbsp;·&nbsp; 🌙🌙 + 🌙🌙</div>
-  </div>
-
-  <div class="city-intro">
-    <div class="city-intro-meta">Arrival city · departure city · Japan's food capital</div>
-    <div class="city-intro-note">You start and end here. Two nights to settle in at the beginning, two nights to eat everything at the end. Osaka is louder, cheaper, and more fun than Tokyo. The food is the point.</div>
-    <div class="transit-inline">🚆 <strong>Getting here:</strong> JR Haruka from KIX → Osaka Station ~50 min ~¥1,900. Use ICOCA card for all city travel. For Dotonbori/Namba area: Osaka Metro Midosuji Line.</div>
-  </div>
-
-  <!-- FOOD -->
-  <div class="section-block collapsed">
-    <div class="section-top">
-      <div class="section-icon">🍜</div>
-      <div class="section-title">Food</div>
-      <div class="section-chevron">▼</div>
-    </div>
-    <div class="section-body">
-      <div class="sub-section">
-        <div class="sub-label">Breakfast</div>
-        <div class="place-item"><div class="place-item-icon">🍳</div><div class="place-item-content"><div class="place-item-name"><a href="https://www.google.com/search?q=Cafe+Absinthe+Osaka" target="_blank">Café Absinthe (カフェ アブサン)</a></div><div class="place-item-desc">Western-style breakfast, big plates, eggs, bacon, bread. Namba area.</div></div></div>
-        <div class="place-item"><div class="place-item-icon">☕</div><div class="place-item-content"><div class="place-item-name"><a href="https://www.google.com/search?q=Brooklyn+Roasting+Company+Osaka" target="_blank">Brooklyn Roasting Company (ブルックリンロースティングカンパニー)</a></div><div class="place-item-desc">American-style coffee and breakfast. Solid eggs and toast, great espresso.</div></div></div>
-        <div class="place-item"><div class="place-item-icon">🍜</div><div class="place-item-content"><div class="place-item-name"><a href="https://www.google.com/search?q=Konaya+Imai+udon+Dotonbori+Osaka" target="_blank">Konaya / 今井 (Dotonbori)</a></div><div class="place-item-desc">Famous Osaka udon institution open for breakfast. Big bowl of thick udon with rice — very filling.</div></div></div>
-        <div class="place-item"><div class="place-item-icon">🍱</div><div class="place-item-content"><div class="place-item-name"><a href="https://www.google.com/search?q=washoku+teishoku+breakfast+Osaka" target="_blank">Traditional Japanese breakfast set (和定食)</a></div><div class="place-item-desc">Rice, miso, grilled salmon, tamagoyaki, pickles. Look for 朝食 (asa-shoku) in the window.</div></div></div>
-      </div>
-      <div class="sub-section">
-        <div class="sub-label">Lunch</div>
-        <div class="place-item"><div class="place-item-icon">🍢</div><div class="place-item-content"><div class="place-item-name"><a href="https://www.google.com/search?q=Daruma+kushikatsu+Shinsekai+Osaka" target="_blank">Daruma (だるま) — Shinsekai</a></div><div class="place-item-desc">Original kushikatsu chain. Deep-fried skewers — beef, quail egg, lotus root, corn. Dip once, never double-dip.</div></div></div>
-        <div class="place-item"><div class="place-item-icon">🥩</div><div class="place-item-content"><div class="place-item-name"><a href="https://www.google.com/search?q=Kuromon+Ichiba+Market+Osaka" target="_blank">Kuromon Ichiba Market (黒門市場)</a></div><div class="place-item-desc">Graze the stalls — grilled wagyu skewers, tamagoyaki, nikuman pork buns. 150-year-old covered market.</div></div></div>
-        <div class="place-item"><div class="place-item-icon">🥟</div><div class="place-item-content"><div class="place-item-name"><a href="https://www.google.com/search?q=Gyoza+Stadium+Namba+Parks+Osaka" target="_blank">Gyoza Stadium — Namba Parks (餃子スタジアム)</a></div><div class="place-item-desc">Entire food court dedicated to gyoza from different regional styles. Order 6 kinds and share.</div></div></div>
-      </div>
-      <div class="sub-section">
-        <div class="sub-label">Dinner</div>
-        <div class="place-item"><div class="place-item-icon">🍜</div><div class="place-item-content"><div class="place-item-name"><a href="https://www.google.com/search?q=Kadoya+Shokudo+ramen+Osaka" target="_blank">Kadoya Shokudo (かどや食堂)</a></div><div class="place-item-desc">60+ year old Bib Gourmand institution. Classic shoyu ramen, thin noodles, bamboo shoots. Not fishy. Get the gyoza.</div></div></div>
-        <div class="place-item"><div class="place-item-icon">🍜</div><div class="place-item-content"><div class="place-item-name"><a href="https://www.google.com/search?q=Menya+Yamahide+ramen+Osaka" target="_blank">Menya Yamahide (麺屋 山秀)</a></div><div class="place-item-desc">Spicy Taiwan ramen — minced pork, chili, chives. Bold and hearty. The most satisfying bowl in Osaka.</div></div></div>
-        <div class="place-item"><div class="place-item-icon">🍜</div><div class="place-item-content"><div class="place-item-name"><a href="https://www.google.com/search?q=Zundo-Ya+ramen+Osaka" target="_blank">Zundo-Ya (ずんどう屋)</a></div><div class="place-item-desc">Rich tonkotsu, multiple locations. Customize broth richness and noodle firmness. Stewed pork platter on the side is mandatory.</div></div></div>
-        <div class="place-item"><div class="place-item-icon">🥩</div><div class="place-item-content"><div class="place-item-name"><a href="https://www.google.com/search?q=yakiniku+Osaka+Namba" target="_blank">Yakiniku (焼肉) — Namba area</a></div><div class="place-item-desc">Grilled meat Korean BBQ style. Wagyu gyutan (beef tongue) grilled at the table, cold beer. Great final dinner energy.</div></div></div>
-      </div>
-      <div class="sub-section">
-        <div class="sub-label">Snacks & street food</div>
-        <div class="place-item"><div class="place-item-icon">🐙</div><div class="place-item-content"><div class="place-item-name"><a href="https://www.google.com/search?q=takoyaki+Dotonbori+Osaka" target="_blank">Takoyaki (たこ焼き) — Dotonbori</a></div><div class="place-item-desc">Osaka's signature. Octopus balls, bonito flakes, mayo. Get them hot from a street stall.</div></div></div>
-        <div class="place-item"><div class="place-item-icon">🥟</div><div class="place-item-content"><div class="place-item-name"><a href="https://www.google.com/search?q=nikuman+pork+bun+konbini+Japan" target="_blank">Nikuman (肉まん) — any konbini</a></div><div class="place-item-desc">Hot steamed pork buns from 7-Eleven or Lawson. Perfect cold morning snack.</div></div></div>
-      </div>
-    </div>
-  </div>
-
-  <!-- ATTRACTIONS -->
-  <div class="section-block collapsed">
-    <div class="section-top">
-      <div class="section-icon">🗺️</div>
-      <div class="section-title">Attractions</div>
-      <div class="section-chevron">▼</div>
-    </div>
-    <div class="section-body">
-      <div class="place-item"><div class="place-item-icon">🏮</div><div class="place-item-content"><div class="place-item-name"><a href="https://www.google.com/search?q=Dotonbori+Osaka" target="_blank">Dotonbori (道頓堀)</a></div><div class="place-item-desc">Walk the canal, cross the bridge, walk both sides. The Glico running man, giant crab sign, street performers. More interesting than it sounds.</div></div></div>
-      <div class="place-item"><div class="place-item-icon">🏮</div><div class="place-item-content"><div class="place-item-name"><a href="https://www.google.com/search?q=Hozenji+Yokocho+Osaka" target="_blank">Hozenji Yokocho (法善寺横丁)</a></div><div class="place-item-desc">Tiny stone alley, moss-covered Fudo Myoo statue, paper lanterns. One of the most atmospheric spots in Osaka. 2 min from Kuromon.</div></div></div>
-      <div class="place-item"><div class="place-item-icon">🏯</div><div class="place-item-content"><div class="place-item-name"><a href="https://www.google.com/search?q=Shinsekai+Osaka" target="_blank">Shinsekai (新世界)</a></div><div class="place-item-desc">Retro working-class neighborhood built in 1912 to resemble Paris and New York. Arcades, kushikatsu joints, Tsutenkaku Tower.</div></div></div>
-      <div class="place-item"><div class="place-item-icon">🏯</div><div class="place-item-content"><div class="place-item-name"><a href="https://www.google.com/search?q=Tsutenkaku+Tower+Osaka" target="_blank">Tsutenkaku Tower (通天閣)</a></div><div class="place-item-desc">Retro tower in Shinsekai. Skip the interior, just walk around it and take in the neighborhood.</div></div></div>
-      <div class="place-item"><div class="place-item-icon">🌿</div><div class="place-item-content"><div class="place-item-name"><a href="https://www.google.com/search?q=Tennoji+Park+Osaka" target="_blank">Tennoji Park (天王寺公園)</a></div><div class="place-item-desc">Free, peaceful, lovely in winter. Walk south from Shinsekai straight into the park.</div></div></div>
-      <div class="place-item"><div class="place-item-icon">🪨</div><div class="place-item-content"><div class="place-item-name"><a href="https://www.google.com/search?q=Keitaku-en+Garden+Osaka" target="_blank">Keitaku-en Garden (慶沢園)</a></div><div class="place-item-desc">Traditional Japanese garden inside Tennoji Park. Free entry. Still water, stone lanterns, bare winter trees.</div></div></div>
-      <div class="place-item"><div class="place-item-icon">🏯</div><div class="place-item-content"><div class="place-item-name"><a href="https://www.google.com/search?q=Osaka+Castle+grounds" target="_blank">Osaka Castle grounds (大阪城)</a></div><div class="place-item-desc">Skip the interior — just walk the moat and park. The castle is dramatic against a grey February sky. Free to walk.</div></div></div>
-      <div class="place-item"><div class="place-item-icon">🌊</div><div class="place-item-content"><div class="place-item-name"><a href="https://www.google.com/search?q=Minoh+Falls+Osaka" target="_blank">Minoh Falls (箕面大滝)</a></div><div class="place-item-desc">40 min by Hankyu Minoh Line. 2.7km paved trail to a 33m waterfall. Wild macaques in the park. Great if you want fresh air.</div></div></div>
-      <div class="place-item"><div class="place-item-icon">🎨</div><div class="place-item-content"><div class="place-item-name"><a href="https://www.google.com/search?q=Osaka+City+Museum+of+Fine+Arts" target="_blank">Osaka City Museum of Fine Arts (大阪市立美術館)</a></div><div class="place-item-desc">Inside Tennoji Park. Strong Japanese and Asian art collection. Free or low entry depending on exhibition.</div></div></div>
-      <div class="place-item"><div class="place-item-icon">🎨</div><div class="place-item-content"><div class="place-item-name"><a href="https://www.google.com/search?q=Amerikamura+Osaka" target="_blank">Amerikamura (アメリカ村)</a></div><div class="place-item-desc">Street art, murals, vintage shops. Interesting visually even if you don't shop. 10 min from Namba.</div></div></div>
-    </div>
-  </div>
-
-  <!-- ENTERTAINMENT -->
-  <div class="section-block collapsed">
-    <div class="section-top">
-      <div class="section-icon">🎭</div>
-      <div class="section-title">Entertainment</div>
-      <div class="section-chevron">▼</div>
-    </div>
-    <div class="section-body">
-      <div class="place-item"><div class="place-item-icon">🐟</div><div class="place-item-content"><div class="place-item-name"><a href="https://www.google.com/search?q=Osaka+Aquarium+Kaiyukan" target="_blank">Osaka Aquarium Kaiyukan (海遊館)</a></div><div class="place-item-desc">One of the best aquariums in the world. Massive whale shark tank, mantas, deep-sea creatures. Worth 2–3 hours.</div></div></div>
-      <div class="place-item"><div class="place-item-icon">🎮</div><div class="place-item-content"><div class="place-item-name"><a href="https://www.google.com/search?q=arcade+Namba+Osaka+Game+Center" target="_blank">Namba arcades (ゲームセンター)</a></div><div class="place-item-desc">Multiple floors of Japanese arcade games — UFO catchers, rhythm games, fighting games. Don't skip the crane games.</div></div></div>
-      <div class="place-item"><div class="place-item-icon">🎶</div><div class="place-item-content"><div class="place-item-name"><a href="https://www.google.com/search?q=Shinsaibashi+shopping+Osaka" target="_blank">Shinsaibashi (心斎橋)</a></div><div class="place-item-desc">Covered shopping arcade. Good for picking up Japanese skincare, snacks, quirky souvenirs. People watching is excellent.</div></div></div>
-      <div class="place-item"><div class="place-item-icon">🎨</div><div class="place-item-content"><div class="place-item-name"><a href="https://www.google.com/search?q=National+Museum+of+Art+Osaka" target="_blank">National Museum of Art Osaka (国立国際美術館)</a></div><div class="place-item-desc">Contemporary international art, underground building. Strong rotating exhibitions. Free on certain days.</div></div></div>
-      <div class="place-item"><div class="place-item-icon">☕</div><div class="place-item-content"><div class="place-item-name"><a href="https://www.google.com/search?q=kissaten+coffee+shop+Osaka" target="_blank">Kissaten (喫茶店) — old school coffee shop</a></div><div class="place-item-desc">A whole culture of slow coffee, thick toast, and boiled eggs. Find one that's been open since the 1970s and just sit for an hour.</div></div></div>
-    </div>
-  </div>
-
-  <!-- BATHS -->
-  <div class="section-block collapsed">
-    <div class="section-top">
-      <div class="section-icon">🛁</div>
-      <div class="section-title">Baths</div>
-      <div class="section-chevron">▼</div>
-    </div>
-    <div class="section-body">
-      <div class="place-item"><div class="place-item-icon">🛁</div><div class="place-item-content"><div class="place-item-name"><a href="https://www.google.com/search?q=Solaniwa+Onsen+Osaka" target="_blank">Solaniwa Onsen (空庭温泉)</a></div><div class="place-item-desc">9 spring types, rooftop Japanese garden, torii gate path. <strong>Stickers required</strong> for communal baths. Private kashikiri baths available ¥4,000–7,000/hr — soak together tattoo-free. Open until 11pm. Bentencho Station.</div></div></div>
-      <div class="place-item"><div class="place-item-icon">🛁</div><div class="place-item-content"><div class="place-item-name"><a href="https://www.google.com/search?q=Healthy+Spa+Tateba+Osaka" target="_blank">Healthy Spa Tateba (ヘルシー温泉タテバ)</a></div><div class="place-item-desc"><strong>Fully tattoo-friendly, no covering.</strong> Sign says "Welcome tattoos everyone!" Cold bath, electric bath, jacuzzis, salt sauna. ~¥520. Near Sakuragawa Station.</div></div></div>
-      <div class="place-item"><div class="place-item-icon">🛁</div><div class="place-item-content"><div class="place-item-name"><a href="https://www.google.com/search?q=Irifune+Onsen+Osaka" target="_blank">Irifune Onsen (入船温泉)</a></div><div class="place-item-desc"><strong>Fully tattoo-friendly, no covering.</strong> Beloved neighborhood sento in Nishinari Ward. Electric current bath, totally local. ~¥500.</div></div></div>
-    </div>
-  </div>
-
-  <!-- TRANSIT -->
-  <div class="section-block collapsed">
-    <div class="section-top">
-      <div class="section-icon">🚆</div>
-      <div class="section-title">Transit & Essentials</div>
-      <div class="section-chevron">▼</div>
-    </div>
-    <div class="section-body">
-      <div class="sub-section">
-        <div class="sub-label">Getting around</div>
-        <div class="place-item"><div class="place-item-icon">🚆</div><div class="place-item-content"><div class="place-item-name">KIX → Osaka</div><div class="place-item-desc">JR Haruka Limited Express · ~50 min · ~¥1,900/person · Pay with ICOCA card</div></div></div>
-        <div class="place-item"><div class="place-item-icon">🚇</div><div class="place-item-content"><div class="place-item-name">City travel</div><div class="place-item-desc">Osaka Metro (subway) — ICOCA card, tap on/off. Covers all main areas including Namba, Shinsaibashi, Tennoji, Bentencho.</div></div></div>
-        <div class="place-item"><div class="place-item-icon">🎫</div><div class="place-item-content"><div class="place-item-name">Kansai Wide Area Pass #1</div><div class="place-item-desc">Activate on Jan 24 (day you leave for Kinosaki). Covers: Kinosaki limited express, Kyoto trains, Kobe, Kumano Kodo.</div></div></div>
-      </div>
-      <div class="sub-section">
-        <div class="sub-label">Key phrases</div>
-        <div class="phrase-item"><span class="phrase-en">Where is...?</span><span class="phrase-jp">...はどこですか?</span><span class="phrase-read">...wa doko desu ka?</span></div>
-        <div class="phrase-item"><span class="phrase-en">How much?</span><span class="phrase-jp">いくらですか?</span><span class="phrase-read">Ikura desu ka?</span></div>
-        <div class="phrase-item"><span class="phrase-en">Thank you</span><span class="phrase-jp">ありがとうございます</span><span class="phrase-read">Arigatou gozaimasu</span></div>
-        <div class="phrase-item"><span class="phrase-en">Excuse me</span><span class="phrase-jp">すみません</span><span class="phrase-read">Sumimasen</span></div>
-        <div class="phrase-item"><span class="phrase-en">One more please</span><span class="phrase-jp">もう一つください</span><span class="phrase-read">Mou hitotsu kudasai</span></div>
-        <div class="phrase-item"><span class="phrase-en">No fish please</span><span class="phrase-jp">魚なしでお願いします</span><span class="phrase-read">Sakana nashi de onegaishimasu</span></div>
-        <div class="phrase-item"><span class="phrase-en">Do you have English menu?</span><span class="phrase-jp">英語のメニューはありますか?</span><span class="phrase-read">Eigo no menyu wa arimasu ka?</span></div>
-        <div class="phrase-item"><span class="phrase-en">Delicious!</span><span class="phrase-jp">美味しい!</span><span class="phrase-read">Oishii!</span></div>
-        <div class="phrase-item"><span class="phrase-en">Check please</span><span class="phrase-jp">お会計をお願いします</span><span class="phrase-read">Okaikei wo onegaishimasu</span></div>
-        <div class="phrase-item"><span class="phrase-en">Tattoo friendly?</span><span class="phrase-jp">タトゥーは大丈夫ですか?</span><span class="phrase-read">Tatuu wa daijoubu desu ka?</span></div>
-      </div>
-      <div class="sub-section">
-        <div class="sub-label">Key signs to recognize</div>
-        <div class="phrase-item"><span class="phrase-en">Entrance</span><span class="phrase-jp">入口</span><span class="phrase-read">Iriguchi</span></div>
-        <div class="phrase-item"><span class="phrase-en">Exit</span><span class="phrase-jp">出口</span><span class="phrase-read">Deguchi</span></div>
-        <div class="phrase-item"><span class="phrase-en">Breakfast</span><span class="phrase-jp">朝食</span><span class="phrase-read">Asa-shoku</span></div>
-        <div class="phrase-item"><span class="phrase-en">Open</span><span class="phrase-jp">営業中</span><span class="phrase-read">Eigyou-chuu</span></div>
-        <div class="phrase-item"><span class="phrase-en">Closed</span><span class="phrase-jp">準備中</span><span class="phrase-read">Junbi-chuu</span></div>
-        <div class="phrase-item"><span class="phrase-en">Women's bath</span><span class="phrase-jp">女湯</span><span class="phrase-read">Onnayu</span></div>
-        <div class="phrase-item"><span class="phrase-en">Men's bath</span><span class="phrase-jp">男湯</span><span class="phrase-read">Otokoyu</span></div>
-      </div>
-    </div>
-  </div>
-</div>
-
-<!-- ═══ KINOSAKI ONSEN ═══ -->
-<div class="city-block">
-  <div class="city-header">
-    <div class="city-name">Kinosaki Onsen</div>
-    <div class="city-meta">Jan 24–26 &nbsp;·&nbsp; 🌙🌙</div>
-  </div>
-
-  <div class="city-intro">
-    <div class="city-intro-meta">Tiny onsen town · peak crab season · all baths 100% tattoo-friendly</div>
-    <div class="city-intro-note">A small town built around hot springs. You check in, get a yukata and wooden geta sandals, and the town is yours. The canal, the bathhouses, the crab — that's Kinosaki. Everything is walkable within 1km.</div>
-    <div class="transit-inline">🚆 <strong>Getting here:</strong> JR Kounotori Limited Express from Osaka · ~2.5 hrs · Covered by Kansai Wide Area Pass · Reserve seats — fills on weekends.</div>
-  </div>
-
-  <!-- FOOD -->
-  <div class="section-block collapsed">
-    <div class="section-top">
-      <div class="section-icon">🍜</div>
-      <div class="section-title">Food</div>
-      <div class="section-chevron">▼</div>
-    </div>
-    <div class="section-body">
-      <div class="sub-section">
-        <div class="sub-label">Breakfast</div>
-        <div class="place-item"><div class="place-item-icon">🍱</div><div class="place-item-content"><div class="place-item-name"><a href="https://www.google.com/search?q=ryokan+breakfast+Kinosaki+Onsen" target="_blank">Ryokan breakfast (included)</a></div><div class="place-item-desc">Your ryokan breakfast is included — rice, miso, grilled fish, tamagoyaki, pickles, tofu. Eat in your yukata. Don't skip it.</div></div></div>
-      </div>
-      <div class="sub-section">
-        <div class="sub-label">Lunch & snacks</div>
-        <div class="place-item"><div class="place-item-icon">🦀</div><div class="place-item-content"><div class="place-item-name"><a href="https://www.google.com/search?q=grilled+crab+leg+street+stall+Kinosaki" target="_blank">Grilled crab leg street stall</a></div><div class="place-item-desc">Walk the canal in your yukata, grab a grilled crab leg from a stall. One of those simple perfect moments.</div></div></div>
-        <div class="place-item"><div class="place-item-icon">🍡</div><div class="place-item-content"><div class="place-item-name"><a href="https://www.google.com/search?q=Kinosaki+Onsen+souvenir+street+food" target="_blank">Canal street stalls</a></div><div class="place-item-desc">Snacks, local sweets, matcha soft serve, pickles. Graze as you wander.</div></div></div>
-        <div class="place-item"><div class="place-item-icon">🍜</div><div class="place-item-content"><div class="place-item-name"><a href="https://www.google.com/search?q=Izushi+soba+Kinosaki+day+trip" target="_blank">Izushi soba (出石そば) — day trip</a></div><div class="place-item-desc">30 min by bus. Famous soba served in small stacked lacquer dishes. A charming samurai town and a great lunch.</div></div></div>
-      </div>
-      <div class="sub-section">
-        <div class="sub-label">Dinner</div>
-        <div class="place-item"><div class="place-item-icon">🦀</div><div class="place-item-content"><div class="place-item-name"><a href="https://www.google.com/search?q=kaiseki+dinner+Kinosaki+Onsen+snow+crab" target="_blank">Ryokan kaiseki dinner — Matsuba snow crab (included)</a></div><div class="place-item-desc">Peak crab season. Multi-course kaiseki dinner included with your stay. Snow crab fished fresh from the nearby Sea of Japan port. Eat in your yukata at a low table. This is the reason people visit Kinosaki in winter.</div></div></div>
-      </div>
-    </div>
-  </div>
-
-  <!-- ATTRACTIONS -->
-  <div class="section-block collapsed">
-    <div class="section-top">
-      <div class="section-icon">🗺️</div>
-      <div class="section-title">Attractions</div>
-      <div class="section-chevron">▼</div>
-    </div>
-    <div class="section-body">
-      <div class="place-item"><div class="place-item-icon">🌊</div><div class="place-item-content"><div class="place-item-name"><a href="https://www.google.com/search?q=Kinosaki+Onsen+willow+canal" target="_blank">Willow-lined canal (柳並木)</a></div><div class="place-item-desc">The heart of Kinosaki. Walk it in your yukata, especially at night when the lanterns are lit. Wooden sandals on cobblestones is the sound of this town.</div></div></div>
-      <div class="place-item"><div class="place-item-icon">🚡</div><div class="place-item-content"><div class="place-item-name"><a href="https://www.google.com/search?q=Kinosaki+Onsen+ropeway+Mt+Daishi" target="_blank">Kinosaki Ropeway — Mt. Daishi (城崎ロープウェイ)</a></div><div class="place-item-desc">Take the ropeway up for panoramic views of the Sea of Japan. Walk the descent trail back down through mountain cedar forest.</div></div></div>
-      <div class="place-item"><div class="place-item-icon">⛩️</div><div class="place-item-content"><div class="place-item-name"><a href="https://www.google.com/search?q=Onsenji+Temple+Kinosaki" target="_blank">Onsenji Temple (温泉寺)</a></div><div class="place-item-desc">Ancient temple on the descent path from Mt. Daishi. 500 mossy stone steps through old-growth cedar. Said to have founded Kinosaki's hot springs 1,300 years ago.</div></div></div>
-      <div class="place-item"><div class="place-item-icon">🏯</div><div class="place-item-content"><div class="place-item-name"><a href="https://www.google.com/search?q=Izushi+castle+town+Hyogo" target="_blank">Izushi castle town (出石) — optional day trip</a></div><div class="place-item-desc">30 min by bus. Snow-dusted samurai castle town with covered walkways and a working clock tower. Famous for Izushi soba.</div></div></div>
-    </div>
-  </div>
-
-  <!-- ENTERTAINMENT -->
-  <div class="section-block collapsed">
-    <div class="section-top">
-      <div class="section-icon">🎭</div>
-      <div class="section-title">Entertainment</div>
-      <div class="section-chevron">▼</div>
-    </div>
-    <div class="section-body">
-      <div class="place-item"><div class="place-item-icon">🎎</div><div class="place-item-content"><div class="place-item-name"><a href="https://www.google.com/search?q=Kinosaki+Onsen+souvenir+shops+craft" target="_blank">Willow craft shops & pottery</a></div><div class="place-item-desc">Kinosaki is known for willow craft goods and local pottery. The covered shopping street has small artisan shops worth browsing.</div></div></div>
-      <div class="place-item"><div class="place-item-icon">📮</div><div class="place-item-content"><div class="place-item-name"><a href="https://www.google.com/search?q=onsen+passport+stamp+Kinosaki" target="_blank">Onsen passport stamp collecting</a></div><div class="place-item-desc">Your ryokan provides an onsen passport. Collect stamps at each bathhouse. Low-key satisfying.</div></div></div>
-      <div class="place-item"><div class="place-item-icon">🦀</div><div class="place-item-content"><div class="place-item-name"><a href="https://www.google.com/search?q=Kinosaki+morning+market" target="_blank">Morning market (朝市)</a></div><div class="place-item-desc">Small local market some mornings near the station. Fresh seafood, local produce, snacks.</div></div></div>
-    </div>
-  </div>
-
-  <!-- BATHS -->
-  <div class="section-block collapsed">
-    <div class="section-top">
-      <div class="section-icon">🛁</div>
-      <div class="section-title">Baths</div>
-      <div class="section-chevron">▼</div>
-    </div>
-    <div class="section-body">
-      <div class="callout callout-tip" style="margin-bottom:12px">💡 All 6 public bathhouses are 100% tattoo-friendly — no covering required anywhere. Your ryokan pass covers all of them. Pick one per evening, soak for 30–40 minutes, then you're done for the night.</div>
-      <div class="place-item"><div class="place-item-icon">⭐</div><div class="place-item-content"><div class="place-item-name"><a href="https://www.google.com/search?q=Gosho+no+Yu+Kinosaki+Onsen" target="_blank">Gosho no Yu (御所の湯)</a></div><div class="place-item-desc">The crown jewel. Only fully all-outdoor rotenburo in Kinosaki — three-tiered pools facing two cascading waterfalls, open sky above. Save for a special evening. <strong>Closed Thursdays.</strong></div></div></div>
-      <div class="place-item"><div class="place-item-icon">🛁</div><div class="place-item-content"><div class="place-item-name"><a href="https://www.google.com/search?q=Ichino+Yu+Kinosaki+Onsen" target="_blank">Ichino Yu (一の湯)</a></div><div class="place-item-desc">Built into a cave face. The most dramatic architecture in Kinosaki. Great first-night choice.</div></div></div>
-      <div class="place-item"><div class="place-item-icon">🛁</div><div class="place-item-content"><div class="place-item-name"><a href="https://www.google.com/search?q=Mandara+Yu+Kinosaki+Onsen" target="_blank">Mandara Yu (まんだら湯)</a></div><div class="place-item-desc">Oldest bathhouse in Kinosaki. Small, intimate, deeply traditional.</div></div></div>
-      <div class="place-item"><div class="place-item-icon">🛁</div><div class="place-item-content"><div class="place-item-name"><a href="https://www.google.com/search?q=Satono+Yu+Kinosaki+Onsen" target="_blank">Satono Yu (さとの湯)</a></div><div class="place-item-desc">Most modern, largest facility, multiple bath types including sauna. Good if you want variety in one visit.</div></div></div>
-      <div class="place-item"><div class="place-item-icon">🛁</div><div class="place-item-content"><div class="place-item-name"><a href="https://www.google.com/search?q=Yanagi+Yu+Kinosaki+Onsen" target="_blank">Yanagi Yu (柳湯)</a></div><div class="place-item-desc">Named for the weeping willow outside. Compact and beautiful.</div></div></div>
-      <div class="place-item"><div class="place-item-icon">🛁</div><div class="place-item-content"><div class="place-item-name"><a href="https://www.google.com/search?q=Jizo+Yu+Kinosaki+Onsen" target="_blank">Jizo Yu (地蔵湯)</a></div><div class="place-item-desc">Patron deity of bathers. Lovely tiled exterior.</div></div></div>
-      <div class="place-item"><div class="place-item-icon">🔒</div><div class="place-item-content"><div class="place-item-name"><a href="https://www.google.com/search?q=Morizuya+Inn+Kinosaki+Onsen" target="_blank">Morizuya Inn private cave onsen (森津屋旅館)</a></div><div class="place-item-desc">Your ryokan's private cave onsen — book for a time slot to soak together with no separation. Free for guests outside regular hours.</div></div></div>
-    </div>
-  </div>
-
-  <!-- TRANSIT -->
-  <div class="section-block collapsed">
-    <div class="section-top">
-      <div class="section-icon">🚆</div>
-      <div class="section-title">Transit & Essentials</div>
-      <div class="section-chevron">▼</div>
-    </div>
-    <div class="section-body">
-      <div class="sub-section">
-        <div class="sub-label">Getting around</div>
-        <div class="place-item"><div class="place-item-icon">🚆</div><div class="place-item-content"><div class="place-item-name">Osaka → Kinosaki</div><div class="place-item-desc">JR Kounotori Limited Express · ~2.5 hrs · Covered by Kansai Wide Area Pass · Reserve seats in advance</div></div></div>
-        <div class="place-item"><div class="place-item-icon">🚌</div><div class="place-item-content"><div class="place-item-name">Izushi day trip</div><div class="place-item-desc">Bus from Kinosaki Station · ~30 min · ~¥600 each way · Pay cash</div></div></div>
-        <div class="place-item"><div class="place-item-icon">🚡</div><div class="place-item-content"><div class="place-item-name">Kinosaki Ropeway</div><div class="place-item-desc">Short walk from center of town · ~¥900 round trip · Check hours seasonally</div></div></div>
-        <div class="place-item"><div class="place-item-icon">👟</div><div class="place-item-content"><div class="place-item-name">Everything else</div><div class="place-item-desc">All 6 bathhouses, the canal, your ryokan, the ropeway station — everything is walkable within 1km. You won't need transport in town.</div></div></div>
-      </div>
-      <div class="sub-section">
-        <div class="sub-label">Useful onsen phrases</div>
-        <div class="phrase-item"><span class="phrase-en">Private bath please</span><span class="phrase-jp">貸切風呂をお願いします</span><span class="phrase-read">Kashikiri buro wo onegaishimasu</span></div>
-        <div class="phrase-item"><span class="phrase-en">I have a tattoo</span><span class="phrase-jp">タトゥーがあります</span><span class="phrase-read">Tatuu ga arimasu</span></div>
-        <div class="phrase-item"><span class="phrase-en">Is it available?</span><span class="phrase-jp">空いていますか?</span><span class="phrase-read">Aite imasu ka?</span></div>
-        <div class="phrase-item"><span class="phrase-en">Hot spring</span><span class="phrase-jp">温泉</span><span class="phrase-read">Onsen</span></div>
-        <div class="phrase-item"><span class="phrase-en">Outdoor bath</span><span class="phrase-jp">露天風呂</span><span class="phrase-read">Rotenburo</span></div>
-        <div class="phrase-item"><span class="phrase-en">Bathhouse pass</span><span class="phrase-jp">外湯めぐりパス</span><span class="phrase-read">Soto-yu meguri pasu</span></div>
-      </div>
-    </div>
-  </div>
-</div>
-
-<!-- ═══ KYOTO ═══ -->
-<div class="city-block">
-  <div class="city-header">
-    <div class="city-name">Kyoto</div>
-    <div class="city-meta">Jan 26–30 &nbsp;·&nbsp; 🌙🌙🌙🌙</div>
-  </div>
-
-  <div class="city-intro">
-    <div class="city-intro-meta">Temples · ramen · hiking · the real Japan</div>
-    <div class="city-intro-note">Four nights — enough to move slowly. Kyoto rewards wandering. Go early to the famous spots, spend afternoons in neighborhoods. The ramen scene is excellent and distinctive from Osaka's.</div>
-    <div class="transit-inline">🚆 <strong>Getting here:</strong> JR Kounotori from Kinosaki → Kyoto · ~2.5 hrs · Covered by Kansai Wide Area Pass. City travel: Kyoto City Bus (¥230 flat fare, ICOCA) or subway.</div>
-  </div>
-
-  <!-- FOOD -->
-  <div class="section-block collapsed">
-    <div class="section-top">
-      <div class="section-icon">🍜</div>
-      <div class="section-title">Food</div>
-      <div class="section-chevron">▼</div>
-    </div>
-    <div class="section-body">
-      <div class="sub-section">
-        <div class="sub-label">Breakfast</div>
-        <div class="place-item"><div class="place-item-icon">☕</div><div class="place-item-content"><div class="place-item-name"><a href="https://www.google.com/search?q=%25+Arabica+coffee+Arashiyama+Kyoto" target="_blank">% Arabica — Arashiyama (% アラビカ京都 嵐山)</a></div><div class="place-item-desc">Riverside location, stunning espresso. Best morning coffee of the trip. Go early before the bamboo grove gets crowded.</div></div></div>
-        <div class="place-item"><div class="place-item-icon">🍱</div><div class="place-item-content"><div class="place-item-name"><a href="https://www.google.com/search?q=Isetan+depachika+Kyoto+Station" target="_blank">Isetan depachika — Kyoto Station (伊勢丹 地下)</a></div><div class="place-item-desc">Department store basement food hall. Prepared food counters, bento boxes, pastries. Genuinely great low-effort breakfast.</div></div></div>
-        <div class="place-item"><div class="place-item-icon">🍵</div><div class="place-item-content"><div class="place-item-name"><a href="https://www.google.com/search?q=kissaten+morning+set+Kyoto" target="_blank">Kissaten morning set (喫茶店モーニング)</a></div><div class="place-item-desc">Old-school Japanese coffee shops serve a "morning set" — thick toast, soft boiled egg, coffee for around ¥500. Find one near your hotel.</div></div></div>
-      </div>
-      <div class="sub-section">
-        <div class="sub-label">Lunch</div>
-        <div class="place-item"><div class="place-item-icon">🍜</div><div class="place-item-content"><div class="place-item-name"><a href="https://www.google.com/search?q=Omen+Nanzenji+udon+Kyoto" target="_blank">Omen Nanzenji (おめん 南禅寺)</a></div><div class="place-item-desc">Handmade udon in rich broth with toppings on the side. Hearty and warming. A Kyoto institution near Philosopher's Path.</div></div></div>
-        <div class="place-item"><div class="place-item-icon">🏮</div><div class="place-item-content"><div class="place-item-name"><a href="https://www.google.com/search?q=Nishiki+Market+Kyoto+food" target="_blank">Nishiki Market (錦市場)</a></div><div class="place-item-desc">Kyoto's 400-year-old covered market. Pickles, tofu, fresh yuba, grilled skewers, matcha everything. Go hungry, graze.</div></div></div>
-        <div class="place-item"><div class="place-item-icon">🍡</div><div class="place-item-content"><div class="place-item-name"><a href="https://www.google.com/search?q=tofu+kaiseki+lunch+Kyoto+affordable" target="_blank">Tofu kaiseki set lunch</a></div><div class="place-item-desc">Many Kyoto restaurants offer affordable kaiseki-style set lunches. Silken tofu, mountain vegetables, rice, miso. Lighter than the full dinner version but filling.</div></div></div>
-      </div>
-      <div class="sub-section">
-        <div class="sub-label">Dinner — ramen focus</div>
-        <div class="place-item"><div class="place-item-icon">🍜</div><div class="place-item-content"><div class="place-item-name"><a href="https://www.google.com/search?q=Kamodashi+Chukasoba+ROKU+Kyoto" target="_blank">Kamodashi Chukasoba ROKU (鴨だしラーメン ROKU)</a></div><div class="place-item-desc">Kyoto-style ramen by a Michelin-trained chef. Refined but hearty chicken broth. One of the best bowls in the city.</div></div></div>
-        <div class="place-item"><div class="place-item-icon">🍜</div><div class="place-item-content"><div class="place-item-name"><a href="https://www.google.com/search?q=Menya+Inoichi+Hanare+Kyoto+ramen" target="_blank">Menya Inoichi Hanare (麺屋猪一 離れ)</a></div><div class="place-item-desc">Delicate but deeply flavourful chicken and clam broth. Unusual and memorable. One of Kyoto's most talked-about bowls.</div></div></div>
-        <div class="place-item"><div class="place-item-icon">🍜</div><div class="place-item-content"><div class="place-item-name"><a href="https://www.google.com/search?q=Takayasu+ramen+Kyoto" target="_blank">Takayasu (高安)</a></div><div class="place-item-desc">Old-school Kyoto-style shoyu ramen, been open since the 1940s. Dark soy broth, thin noodles, green onion. Deeply local.</div></div></div>
-        <div class="place-item"><div class="place-item-icon">🍺</div><div class="place-item-content"><div class="place-item-name"><a href="https://www.google.com/search?q=izakaya+Kyoto+dinner" target="_blank">Izakaya (居酒屋) evening</a></div><div class="place-item-desc">Japanese pub with food. Edamame, karaage, yakitori, gyoza, cold beer. Look for a red lantern (赤ちょうちん) outside.</div></div></div>
-      </div>
-      <div class="sub-section">
-        <div class="sub-label">Snacks</div>
-        <div class="place-item"><div class="place-item-icon">🍵</div><div class="place-item-content"><div class="place-item-name"><a href="https://www.google.com/search?q=matcha+soft+serve+Kyoto+Nishiki" target="_blank">Matcha soft serve</a></div><div class="place-item-desc">Available everywhere on Nishiki Market and near tourist areas. Deep, bitter, excellent.</div></div></div>
-        <div class="place-item"><div class="place-item-icon">🍡</div><div class="place-item-content"><div class="place-item-name"><a href="https://www.google.com/search?q=yatsuhashi+Kyoto+traditional+sweet" target="_blank">Yatsuhashi (八ツ橋)</a></div><div class="place-item-desc">Kyoto's signature sweet — thin cinnamon rice crackers, or the soft raw version filled with red bean. Available everywhere.</div></div></div>
-      </div>
-    </div>
-  </div>
-
-  <!-- ATTRACTIONS -->
-  <div class="section-block collapsed">
-    <div class="section-top">
-      <div class="section-icon">🗺️</div>
-      <div class="section-title">Attractions</div>
-      <div class="section-chevron">▼</div>
-    </div>
-    <div class="section-body">
-      <div class="place-item"><div class="place-item-icon">🎋</div><div class="place-item-content"><div class="place-item-name"><a href="https://www.google.com/search?q=Arashiyama+Bamboo+Grove+Kyoto" target="_blank">Arashiyama Bamboo Grove (嵐山竹林)</a></div><div class="place-item-desc">Go at 8–9am — nearly empty in late January. Towering green stalks in winter light. Combine with Tenryu-ji temple garden next door.</div></div></div>
-      <div class="place-item"><div class="place-item-icon">🌿</div><div class="place-item-content"><div class="place-item-name"><a href="https://www.google.com/search?q=Philosopher%27s+Path+Kyoto" target="_blank">Philosopher's Path (哲学の道)</a></div><div class="place-item-desc">2km canal-side walkway connecting Ginkaku-ji and Nanzen-ji. Quiet in January, small cafes and galleries along the way.</div></div></div>
-      <div class="place-item"><div class="place-item-icon">⛩️</div><div class="place-item-content"><div class="place-item-name"><a href="https://www.google.com/search?q=Fushimi+Inari+Kyoto" target="_blank">Fushimi Inari (伏見稲荷大社)</a></div><div class="place-item-desc">Thousands of torii gates winding up a mountain. Go late afternoon when crowds thin. Upper sections in January are often misty and atmospheric. Free entry.</div></div></div>
-      <div class="place-item"><div class="place-item-icon">⛩️</div><div class="place-item-content"><div class="place-item-name"><a href="https://www.google.com/search?q=Kurama-dera+Temple+Kyoto+hike" target="_blank">Kurama-dera Temple → Kibune hike (鞍馬寺)</a></div><div class="place-item-desc">Hike up through the ancient mountain temple, traverse the ridge to Kibune valley. Moderate, 3–4 hrs, possibly icy in January. Eizan Railway from Demachiyanagi (~¥430, ICOCA).</div></div></div>
-      <div class="place-item"><div class="place-item-icon">⛩️</div><div class="place-item-content"><div class="place-item-name"><a href="https://www.google.com/search?q=Nanzen-ji+temple+Kyoto" target="_blank">Nanzen-ji (南禅寺)</a></div><div class="place-item-desc">One of Kyoto's great Zen temples. Free to wander the grounds. The brick aqueduct running through it is a strange and beautiful surprise.</div></div></div>
-      <div class="place-item"><div class="place-item-icon">🌿</div><div class="place-item-content"><div class="place-item-name"><a href="https://www.google.com/search?q=Gion+district+Kyoto+walk" target="_blank">Gion district (祇園)</a></div><div class="place-item-desc">Walking it early morning in winter is its own thing. Historic ochaya (teahouses), stone-paved Hanamikoji street. Best before 9am.</div></div></div>
-      <div class="place-item"><div class="place-item-icon">🏮</div><div class="place-item-content"><div class="place-item-name"><a href="https://www.google.com/search?q=Nishiki+Market+Kyoto" target="_blank">Nishiki Market (錦市場)</a></div><div class="place-item-desc">400-year-old covered market street. Good for a slow wander and grazing. Gets crowded by midday.</div></div></div>
-    </div>
-  </div>
-
-  <!-- ENTERTAINMENT -->
-  <div class="section-block collapsed">
-    <div class="section-top">
-      <div class="section-icon">🎭</div>
-      <div class="section-title">Entertainment</div>
-      <div class="section-chevron">▼</div>
-    </div>
-    <div class="section-body">
-      <div class="place-item"><div class="place-item-icon">🐒</div><div class="place-item-content"><div class="place-item-name"><a href="https://www.google.com/search?q=Iwatayama+Monkey+Park+Arashiyama+Kyoto" target="_blank">Iwatayama Monkey Park (岩田山モンキーパーク)</a></div><div class="place-item-desc">20-min hike up. At the top you're inside a wire-mesh hut — ~120 wild macaques roam free outside. You hand food through the wire. Ethical, no chains. ¥800 each.</div></div></div>
-      <div class="place-item"><div class="place-item-icon">🎨</div><div class="place-item-content"><div class="place-item-name"><a href="https://www.google.com/search?q=Hosoo+Gallery+Kyoto+textile+art" target="_blank">Hosoo Gallery (細尾ギャラリー)</a></div><div class="place-item-desc">Traditional Nishijin textiles as high art. Tiny and beautiful. A very Kyoto experience.</div></div></div>
-      <div class="place-item"><div class="place-item-icon">🎨</div><div class="place-item-content"><div class="place-item-name"><a href="https://www.google.com/search?q=Kyoto+National+Museum" target="_blank">Kyoto National Museum (京都国立博物館)</a></div><div class="place-item-desc">Strong Japanese art and artifacts. Rotating special exhibitions. Worth 1–2 hours if you like art history.</div></div></div>
-      <div class="place-item"><div class="place-item-icon">🎋</div><div class="place-item-content"><div class="place-item-name"><a href="https://www.google.com/search?q=Tenryu-ji+garden+Arashiyama" target="_blank">Tenryu-ji garden (天龍寺)</a></div><div class="place-item-desc">UNESCO World Heritage garden right next to the bamboo grove. One of Japan's greatest gardens — raked gravel, pond, Arashiyama mountain backdrop. ~¥500.</div></div></div>
-      <div class="place-item"><div class="place-item-icon">🏯</div><div class="place-item-content"><div class="place-item-name"><a href="https://www.google.com/search?q=Nijo+Castle+Kyoto" target="_blank">Nijo Castle (二条城)</a></div><div class="place-item-desc">Tokugawa shogunate palace with famous "nightingale floors" that squeak with every step — a historic security system. Interesting architecture and gardens.</div></div></div>
-    </div>
-  </div>
-
-  <!-- BATHS -->
-  <div class="section-block collapsed">
-    <div class="section-top">
-      <div class="section-icon">🛁</div>
-      <div class="section-title">Baths</div>
-      <div class="section-chevron">▼</div>
-    </div>
-    <div class="section-body">
-      <div class="place-item"><div class="place-item-icon">🛁</div><div class="place-item-content"><div class="place-item-name"><a href="https://www.google.com/search?q=Kurama+Hot+Spring+Kyoto" target="_blank">Kurama Hot Spring (くらま温泉)</a></div><div class="place-item-desc"><strong>Fully tattoo-friendly.</strong> Outdoor rotenburo in the mountain forest. Steam rising into cold air. ¥2,500 includes indoor + outdoor. Open until 7pm. Pair with the Kurama-Kibune hike.</div></div></div>
-      <div class="place-item"><div class="place-item-icon">🛁</div><div class="place-item-content"><div class="place-item-name"><a href="https://www.google.com/search?q=Funaoka+Onsen+Kyoto+tattoo+friendly" target="_blank">Funaoka Onsen (船岡温泉)</a></div><div class="place-item-desc"><strong>Fully tattoo-friendly, no covering.</strong> Built 1923, extraordinary wood carvings throughout. Multiple pools, cold plunge, outdoor bath, sauna. ~¥550. Opens 3pm weekdays (8am Sundays). <strong>Closed Tuesdays.</strong></div></div></div>
-    </div>
-  </div>
-
-  <!-- TRANSIT -->
-  <div class="section-block collapsed">
-    <div class="section-top">
-      <div class="section-icon">🚆</div>
-      <div class="section-title">Transit & Essentials</div>
-      <div class="section-chevron">▼</div>
-    </div>
-    <div class="section-body">
-      <div class="sub-section">
-        <div class="sub-label">Getting around</div>
-        <div class="place-item"><div class="place-item-icon">🚆</div><div class="place-item-content"><div class="place-item-name">Kinosaki → Kyoto</div><div class="place-item-desc">JR Kounotori Limited Express · ~2.5 hrs · Covered by Kansai Wide Area Pass</div></div></div>
-        <div class="place-item"><div class="place-item-icon">🚌</div><div class="place-item-content"><div class="place-item-name">City Bus</div><div class="place-item-desc">¥230 flat fare anywhere in the city. Tap ICOCA card. Covers Arashiyama, Gion, Fushimi Inari, Nishiki Market.</div></div></div>
-        <div class="place-item"><div class="place-item-icon">🚃</div><div class="place-item-content"><div class="place-item-name">Eizan Railway → Kurama</div><div class="place-item-desc">From Demachiyanagi Station · ~30 min · ~¥430 · Pay with ICOCA (not JR covered)</div></div></div>
-        <div class="place-item"><div class="place-item-icon">🚇</div><div class="place-item-content"><div class="place-item-name">Kyoto Subway</div><div class="place-item-desc">Two lines — Karasuma (north-south) and Tozai (east-west). ICOCA card. Good for Nijo Castle, Kyoto Station area.</div></div></div>
-      </div>
-      <div class="sub-section">
-        <div class="sub-label">Useful Kyoto phrases</div>
-        <div class="phrase-item"><span class="phrase-en">Temple</span><span class="phrase-jp">お寺</span><span class="phrase-read">O-tera</span></div>
-        <div class="phrase-item"><span class="phrase-en">Shrine</span><span class="phrase-jp">神社</span><span class="phrase-read">Jinja</span></div>
-        <div class="phrase-item"><span class="phrase-en">Garden</span><span class="phrase-jp">庭園</span><span class="phrase-read">Teien</span></div>
-        <div class="phrase-item"><span class="phrase-en">Which bus to...?</span><span class="phrase-jp">...へ行くバスは何番ですか?</span><span class="phrase-read">...e iku basu wa nan-ban desu ka?</span></div>
-        <div class="phrase-item"><span class="phrase-en">One ticket please</span><span class="phrase-jp">一枚ください</span><span class="phrase-read">Ichimai kudasai</span></div>
-      </div>
-    </div>
-  </div>
-</div>
-
-<!-- ═══ KUMANO ═══ -->
-<div class="city-block">
-  <div class="city-header">
-    <div class="city-name">Kumano Kodo + Yunomine Onsen</div>
-    <div class="city-meta">Jan 30–Feb 1 &nbsp;·&nbsp; 🌙🌙</div>
-  </div>
-
-  <div class="city-intro">
-    <div class="city-intro-meta">Ancient pilgrimage trail · oldest onsen in Japan · very remote</div>
-    <div class="city-intro-note">Two nights in the mountains of the Kii Peninsula. The Kumano Kodo is a 1,000-year-old pilgrimage route through ancient cedar forest — the route emperors walked. Yunomine is tiny (maybe 30 buildings) but the hot spring is extraordinary. This is the most remote stop on the trip.</div>
-    <div class="transit-inline">🚆 <strong>Getting here:</strong> JR Kuroshio Limited Express: Kyoto → Osaka → Kii-Tanabe · ~2.5 hrs · Kansai Wide Area Pass. Then local bus to Takijiri trailhead (~45 min). Activate Pass #2 today.</div>
-  </div>
-
-  <!-- FOOD -->
-  <div class="section-block collapsed">
-    <div class="section-top">
-      <div class="section-icon">🍜</div>
-      <div class="section-title">Food</div>
-      <div class="section-chevron">▼</div>
-    </div>
-    <div class="section-body">
-      <div class="sub-section">
-        <div class="sub-label">On the trail</div>
-        <div class="place-item"><div class="place-item-icon">🍱</div><div class="place-item-content"><div class="place-item-name"><a href="https://www.google.com/search?q=onigiri+convenience+store+Japan" target="_blank">Pack lunch from konbini</a></div><div class="place-item-desc">Buy onigiri and hot drinks at a 7-Eleven before the trailhead. There are no shops on the trail itself.</div></div></div>
-        <div class="place-item"><div class="place-item-icon">🏠</div><div class="place-item-content"><div class="place-item-name"><a href="https://www.google.com/search?q=minshuku+guesthouse+dinner+Kumano+Kodo" target="_blank">Minshuku guesthouse dinner (民宿)</a></div><div class="place-item-desc">Small family-run guesthouses along the route serve simple hearty dinners — rice, miso, mountain vegetables, grilled fish. Book ahead as options are limited.</div></div></div>
-      </div>
-      <div class="sub-section">
-        <div class="sub-label">In Yunomine</div>
-        <div class="place-item"><div class="place-item-icon">🍱</div><div class="place-item-content"><div class="place-item-name"><a href="https://www.google.com/search?q=Yunomine+Onsen+restaurant+dinner" target="_blank">Ryokan dinner at Yunomine</a></div><div class="place-item-desc">Most accommodation in Yunomine includes dinner. Mountain vegetables, river fish, miso. After a full day hiking this is exactly what you want.</div></div></div>
-        <div class="place-item"><div class="place-item-icon">🥚</div><div class="place-item-content"><div class="place-item-name"><a href="https://www.google.com/search?q=Tsuboyu+onsen+boiled+eggs+Yunomine" target="_blank">Onsen-boiled eggs</a></div><div class="place-item-desc">The spring water at Yunomine is so hot you can cook in it. Eggs are sold to boil in the stream. Very local experience.</div></div></div>
-      </div>
-    </div>
-  </div>
-
-  <!-- ATTRACTIONS -->
-  <div class="section-block collapsed">
-    <div class="section-top">
-      <div class="section-icon">🗺️</div>
-      <div class="section-title">Attractions</div>
-      <div class="section-chevron">▼</div>
-    </div>
-    <div class="section-body">
-      <div class="place-item"><div class="place-item-icon">🌲</div><div class="place-item-content"><div class="place-item-name"><a href="https://www.google.com/search?q=Kumano+Kodo+Nakahechi+route+hiking" target="_blank">Kumano Kodo — Nakahechi route (中辺路)</a></div><div class="place-item-desc">The main pilgrimage route. Towering ancient cedars, moss-covered stone steps, river gorges, shrine gates appearing from nowhere. February: near-zero crowds, ume blossoms beginning. 2-day walk from Takijiri to Hongu.</div></div></div>
-      <div class="place-item"><div class="place-item-icon">⛩️</div><div class="place-item-content"><div class="place-item-name"><a href="https://www.google.com/search?q=Kumano+Hongu+Taisha+shrine" target="_blank">Kumano Hongu Taisha (熊野本宮大社)</a></div><div class="place-item-desc">One of Japan's most sacred shrines, deep in the mountains. Arrive on foot the way pilgrims have for a thousand years.</div></div></div>
-      <div class="place-item"><div class="place-item-icon">⛩️</div><div class="place-item-content"><div class="place-item-name"><a href="https://www.google.com/search?q=Oyunohara+torii+gate+Kumano" target="_blank">Oyunohara (大斎原)</a></div><div class="place-item-desc">The old site of Hongu Taisha — now a field with a massive torii gate standing alone. Strange and powerful.</div></div></div>
-    </div>
-  </div>
-
-  <!-- ENTERTAINMENT -->
-  <div class="section-block collapsed">
-    <div class="section-top">
-      <div class="section-icon">🎭</div>
-      <div class="section-title">Entertainment</div>
-      <div class="section-chevron">▼</div>
-    </div>
-    <div class="section-body">
-      <div class="place-item"><div class="place-item-icon">🌸</div><div class="place-item-content"><div class="place-item-name"><a href="https://www.google.com/search?q=ume+plum+blossom+Kumano+February" target="_blank">Ume blossom watching (梅)</a></div><div class="place-item-desc">Late January into February brings plum blossoms through the forest — white dapples in the cedars. Considered in ancient times more important than cherry blossoms.</div></div></div>
-      <div class="place-item"><div class="place-item-icon">🥚</div><div class="place-item-content"><div class="place-item-name"><a href="https://www.google.com/search?q=Yunomine+Onsen+Tsuboyu+boiling+stream" target="_blank">The boiling stream at Yunomine</a></div><div class="place-item-desc">The stream running through the village is hot spring water. Watch it steam, cook an egg in it, just sit beside it. Genuinely unusual.</div></div></div>
-    </div>
-  </div>
-
-  <!-- BATHS -->
-  <div class="section-block collapsed">
-    <div class="section-top">
-      <div class="section-icon">🛁</div>
-      <div class="section-title">Baths</div>
-      <div class="section-chevron">▼</div>
-    </div>
-    <div class="section-body">
-      <div class="place-item"><div class="place-item-icon">⭐</div><div class="place-item-content"><div class="place-item-name"><a href="https://www.google.com/search?q=Tsuboyu+Yunomine+Onsen+UNESCO" target="_blank">Tsuboyu (つぼ湯) — Yunomine Onsen</a></div><div class="place-item-desc">The only UNESCO World Heritage listed onsen in the world. A tiny cave bath — book by the hour at the public bath counter and have it to yourselves. Water changes color through the day. Check tattoo policy when booking.</div></div></div>
-      <div class="place-item"><div class="place-item-icon">🛁</div><div class="place-item-content"><div class="place-item-name"><a href="https://www.google.com/search?q=Yunomine+Onsen+public+bath" target="_blank">Yunomine public bath (湯の峰温泉 共同浴場)</a></div><div class="place-item-desc">Small public bath in the village. One of the oldest hot springs in Japan — pilgrims have soaked here for over 1,000 years. Check tattoo policy on arrival.</div></div></div>
-    </div>
-  </div>
-
-  <!-- TRANSIT -->
-  <div class="section-block collapsed">
-    <div class="section-top">
-      <div class="section-icon">🚆</div>
-      <div class="section-title">Transit & Essentials</div>
-      <div class="section-chevron">▼</div>
-    </div>
-    <div class="section-body">
-      <div class="sub-section">
-        <div class="sub-label">Getting around</div>
-        <div class="place-item"><div class="place-item-icon">🚆</div><div class="place-item-content"><div class="place-item-name">Kyoto → Kii-Tanabe</div><div class="place-item-desc">JR Kuroshio Limited Express · ~2.5 hrs · Covered by Kansai Wide Area Pass</div></div></div>
-        <div class="place-item"><div class="place-item-icon">🚌</div><div class="place-item-content"><div class="place-item-name">Kii-Tanabe → Takijiri trailhead</div><div class="place-item-desc">Local Meiko Bus · ~45 min · ~¥900 · Pay cash · Check timetable at Kii-Tanabe Station</div></div></div>
-        <div class="place-item"><div class="place-item-icon">🚌</div><div class="place-item-content"><div class="place-item-name">Hongu → Yunomine Onsen</div><div class="place-item-desc">Local bus · ~10 min · or walk 30 min through the forest</div></div></div>
-        <div class="place-item"><div class="place-item-icon">🚌</div><div class="place-item-content"><div class="place-item-name">Yunomine → Kobe/Arima (depart)</div><div class="place-item-desc">Bus to Shingu Station · JR Kuroshio to Shin-Kobe · ~3 hrs total · Covered by pass</div></div></div>
-        <div class="place-item"><div class="place-item-icon">🎫</div><div class="place-item-content"><div class="place-item-name">Luggage forwarding (手荷物宅配)</div><div class="place-item-desc">Strongly recommended — send bags ahead to your next accommodation so you hike light. Available at most hotels and convenience stores. Book the day before.</div></div></div>
-      </div>
-      <div class="sub-section">
-        <div class="sub-label">Trail essentials</div>
-        <div class="phrase-item"><span class="phrase-en">Trail map</span><span class="phrase-jp">kumanotravel.com</span><span class="phrase-read">Free English maps at Kii-Tanabe Station</span></div>
-        <div class="phrase-item"><span class="phrase-en">I'm hiking the Kumano Kodo</span><span class="phrase-jp">熊野古道を歩いています</span><span class="phrase-read">Kumano Kodo wo aruite imasu</span></div>
-        <div class="phrase-item"><span class="phrase-en">Where is the trail?</span><span class="phrase-jp">古道はどこですか?</span><span class="phrase-read">Kodo wa doko desu ka?</span></div>
-      </div>
-    </div>
-  </div>
-</div>
-
-<!-- ═══ KOBE / ARIMA ═══ -->
-<div class="city-block">
-  <div class="city-header">
-    <div class="city-name">Kobe → Arima Onsen</div>
-    <div class="city-meta">Feb 1–3 &nbsp;·&nbsp; 🌙🌙</div>
-  </div>
-
-  <div class="city-intro">
-    <div class="city-intro-meta">Port city · Mt. Rokko hike · golden and silver springs</div>
-    <div class="city-intro-note">Kobe for a morning — distinctive from other Japanese cities, with its foreign merchant history and Chinatown. Then hike over Mt. Rokko and descend directly into Arima Onsen on the other side. Arrive sore and very happy.</div>
-    <div class="transit-inline">🚆 <strong>Getting here:</strong> Bus: Yunomine → Shingu Station · JR Kuroshio → Shin-Kobe · ~3 hrs · Covered by Kansai Wide Area Pass.</div>
-  </div>
-
-  <!-- FOOD -->
-  <div class="section-block collapsed">
-    <div class="section-top">
-      <div class="section-icon">🍜</div>
-      <div class="section-title">Food</div>
-      <div class="section-chevron">▼</div>
-    </div>
-    <div class="section-body">
-      <div class="sub-section">
-        <div class="sub-label">Breakfast</div>
-        <div class="place-item"><div class="place-item-icon">🥟</div><div class="place-item-content"><div class="place-item-name"><a href="https://www.google.com/search?q=Nankinmachi+Kobe+Chinatown+breakfast" target="_blank">Nankinmachi morning (南京町)</a></div><div class="place-item-desc">Kobe's Chinatown opens early. Steamed pork buns (nikuman), char siu, dumplings from street stalls. A different kind of breakfast.</div></div></div>
-        <div class="place-item"><div class="place-item-icon">🍱</div><div class="place-item-content"><div class="place-item-name"><a href="https://www.google.com/search?q=konbini+onigiri+Japan+pack+lunch+hike" target="_blank">Pack lunch for Rokko hike</a></div><div class="place-item-desc">Buy onigiri and hot drinks before heading to the trailhead. You'll be on the mountain all day.</div></div></div>
-      </div>
-      <div class="sub-section">
-        <div class="sub-label">Lunch & dinner</div>
-        <div class="place-item"><div class="place-item-icon">🥩</div><div class="place-item-content"><div class="place-item-name"><a href="https://www.google.com/search?q=Kobe+beef+teppanyaki+lunch+affordable" target="_blank">Kobe beef teppanyaki (神戸牛 鉄板焼き)</a></div><div class="place-item-desc">You're in Kobe. Lunch sets are more affordable than dinner — around ¥3,000–5,000 for a proper Kobe beef set.</div></div></div>
-        <div class="place-item"><div class="place-item-icon">🍜</div><div class="place-item-content"><div class="place-item-name"><a href="https://www.google.com/search?q=Ramen+Kokoro+Kobe" target="_blank">Ramen Kokoro (ラーメン こころ)</a></div><div class="place-item-desc">Kobe-style thick soy broth, hearty and rich. Very different from Kyoto's refined bowls.</div></div></div>
-        <div class="place-item"><div class="place-item-icon">🍱</div><div class="place-item-content"><div class="place-item-name"><a href="https://www.google.com/search?q=ryokan+kaiseki+dinner+Arima+Onsen" target="_blank">Ryokan kaiseki dinner — Arima</a></div><div class="place-item-desc">Multi-course traditional dinner included with your stay. Arima mountain vegetables, tofu, grilled fish, miso, rice. Eat in your yukata. After the hike you will sleep like rocks.</div></div></div>
-      </div>
-    </div>
-  </div>
-
-  <!-- ATTRACTIONS -->
-  <div class="section-block collapsed">
-    <div class="section-top">
-      <div class="section-icon">🗺️</div>
-      <div class="section-title">Attractions</div>
-      <div class="section-chevron">▼</div>
-    </div>
-    <div class="section-body">
-      <div class="place-item"><div class="place-item-icon">🏔️</div><div class="place-item-content"><div class="place-item-name"><a href="https://www.google.com/search?q=Mt+Rokko+traverse+hike+Ashiyagawa+Arima" target="_blank">Mt. Rokko traverse → Arima Onsen (六甲山)</a></div><div class="place-item-desc">Start at Ashiyagawa trailhead. Rocky sections with fixed chains, 4–5 hrs, panoramic views of Kobe and Osaka Bay. Possible frost in February. Descend directly into Arima Onsen. Most satisfying hike of the trip.</div></div></div>
-      <div class="place-item"><div class="place-item-icon">🏯</div><div class="place-item-content"><div class="place-item-name"><a href="https://www.google.com/search?q=Kitano+Ijinkan+Kobe" target="_blank">Kitano Ijinkan (北野異人館)</a></div><div class="place-item-desc">Hillside district of 19th-century Western-style mansions built by foreign merchants. Strangely beautiful, very quiet in February.</div></div></div>
-      <div class="place-item"><div class="place-item-icon">🥟</div><div class="place-item-content"><div class="place-item-name"><a href="https://www.google.com/search?q=Nankinmachi+Chinatown+Kobe" target="_blank">Nankinmachi — Kobe Chinatown (南京町)</a></div><div class="place-item-desc">Compact and lively. Street stalls with pork buns, dumplings, char siu. Great for a morning wander before the hike.</div></div></div>
-      <div class="place-item"><div class="place-item-icon">🌿</div><div class="place-item-content"><div class="place-item-name"><a href="https://www.google.com/search?q=Arima+Onsen+town+walk+stone+streets" target="_blank">Arima Onsen town wander</a></div><div class="place-item-desc">Stone-paved streets, small temples, sake shops, toy museum. A few hours of wandering before the train back.</div></div></div>
-    </div>
-  </div>
-
-  <!-- ENTERTAINMENT -->
-  <div class="section-block collapsed">
-    <div class="section-top">
-      <div class="section-icon">🎭</div>
-      <div class="section-title">Entertainment</div>
-      <div class="section-chevron">▼</div>
-    </div>
-    <div class="section-body">
-      <div class="place-item"><div class="place-item-icon">🎪</div><div class="place-item-content"><div class="place-item-name"><a href="https://www.google.com/search?q=Kobe+Oji+Zoo" target="_blank">Kobe Oji Zoo (王子動物園)</a></div><div class="place-item-desc">Compact, well-regarded zoo. Has giant pandas. Good if you have extra time in Kobe.</div></div></div>
-      <div class="place-item"><div class="place-item-icon">🎨</div><div class="place-item-content"><div class="place-item-name"><a href="https://www.google.com/search?q=Hyogo+Prefectural+Museum+of+Art+Kobe" target="_blank">Hyogo Prefectural Museum of Art (兵庫県立美術館)</a></div><div class="place-item-desc">Ando Tadao-designed building on the waterfront. Strong modern art collection. The building itself is worth seeing.</div></div></div>
-      <div class="place-item"><div class="place-item-icon">🍶</div><div class="place-item-content"><div class="place-item-name"><a href="https://www.google.com/search?q=Arima+Onsen+sake+shop+souvenir" target="_blank">Arima sake and craft shops</a></div><div class="place-item-desc">The town has small sake breweries and craft shops. Good for picking up a bottle or local souvenirs before leaving.</div></div></div>
-    </div>
-  </div>
-
-  <!-- BATHS -->
-  <div class="section-block collapsed">
-    <div class="section-top">
-      <div class="section-icon">🛁</div>
-      <div class="section-title">Baths</div>
-      <div class="section-chevron">▼</div>
-    </div>
-    <div class="section-body">
-      <div class="place-item"><div class="place-item-icon">🛁</div><div class="place-item-content"><div class="place-item-name"><a href="https://www.google.com/search?q=Kin+no+Yu+Arima+Onsen+tattoo" target="_blank">Kin no Yu — Golden Spring (金の湯)</a></div><div class="place-item-desc"><strong>Fully tattoo-friendly.</strong> Iron-rich, rust-brown mineral water. One of Japan's most distinctive hot springs. ~¥800. Open until 9pm. Arrive straight off the mountain.</div></div></div>
-      <div class="place-item"><div class="place-item-icon">🛁</div><div class="place-item-content"><div class="place-item-name"><a href="https://www.google.com/search?q=Gin+no+Yu+Arima+Onsen+silver+spring" target="_blank">Gin no Yu — Silver Spring (銀の湯)</a></div><div class="place-item-desc"><strong>Fully tattoo-friendly.</strong> Different mineral profile, lighter-colored water. ~¥550. 10-min walk from Kin no Yu. Do both in the same evening.</div></div></div>
-      <div class="place-item"><div class="place-item-icon">🔒</div><div class="place-item-content"><div class="place-item-name"><a href="https://www.google.com/search?q=Negiya+Ryofukaku+Arima+Onsen+private+bath+tattoo" target="_blank">Private kashikiri bath — Negiya Ryofukaku or Gekkoen Korokan</a></div><div class="place-item-desc">Both offer private rental baths for tattooed guests — ¥3,000–5,000 per 45–60 min session. Soak together, no stickers. Book ahead.</div></div></div>
-    </div>
-  </div>
-
-  <!-- TRANSIT -->
-  <div class="section-block collapsed">
-    <div class="section-top">
-      <div class="section-icon">🚆</div>
-      <div class="section-title">Transit & Essentials</div>
-      <div class="section-chevron">▼</div>
-    </div>
-    <div class="section-body">
-      <div class="sub-section">
-        <div class="sub-label">Getting around</div>
-        <div class="place-item"><div class="place-item-icon">🚆</div><div class="place-item-content"><div class="place-item-name">Kumano → Shin-Kobe</div><div class="place-item-desc">Bus to Shingu + JR Kuroshio · ~3 hrs · Covered by Kansai Wide Area Pass</div></div></div>
-        <div class="place-item"><div class="place-item-icon">🚆</div><div class="place-item-content"><div class="place-item-name">Kobe → Rokko trailhead</div><div class="place-item-desc">JR Kobe Line to Ashiya (~25 min) · then bus to trailhead (~¥230 cash)</div></div></div>
-        <div class="place-item"><div class="place-item-icon">🚌</div><div class="place-item-content"><div class="place-item-name">Arima Onsen → Kobe / Osaka</div><div class="place-item-desc">Kobe City Bus or Shinki Bus from Arima Onsen bus stop · ~40 min to Shin-Kobe · Pay cash</div></div></div>
-        <div class="place-item"><div class="place-item-icon">🚆</div><div class="place-item-content"><div class="place-item-name">Return to Osaka</div><div class="place-item-desc">Shin-Kobe → Osaka Station · JR ~20 min · Covered by pass</div></div></div>
-      </div>
-      <div class="sub-section">
-        <div class="sub-label">Useful phrases — Kobe / Arima</div>
-        <div class="phrase-item"><span class="phrase-en">Where is the trailhead?</span><span class="phrase-jp">登山口はどこですか?</span><span class="phrase-read">Tozanguchi wa doko desu ka?</span></div>
-        <div class="phrase-item"><span class="phrase-en">One night please</span><span class="phrase-jp">一泊お願いします</span><span class="phrase-read">Ippaku onegaishimasu</span></div>
-        <div class="phrase-item"><span class="phrase-en">Kobe beef</span><span class="phrase-jp">神戸牛</span><span class="phrase-read">Kobe-gyu</span></div>
-      </div>
-    </div>
-  </div>
-</div>
-
-<!-- ═══ ESSENTIAL NOTES ═══ -->
-<div class="tips-section">
-  <div class="tips-title">Essential notes</div>
-  <div class="tip"><div class="tip-icon">🎫</div><div><strong>Kansai Wide Area Pass</strong> (5-day, ¥12,000/person) × 2 per person. Activate #1 on Jan 24 (Kinosaki train). Activate #2 on Jan 30 (Kumano train). Buy in advance via Klook or JR West official site before Portland.</div></div>
-  <div class="tip"><div class="tip-icon">💳</div><div><strong>ICOCA card</strong> — pick up at KIX on arrival. Load ¥10,000–15,000. Works on every subway, bus, local train, and convenience store.</div></div>
-  <div class="tip"><div class="tip-icon">🛁</div><div><strong>Tattoo summary:</strong> Solaniwa — stickers for communal, private kashikiri available. Tateba + Irifune (Osaka), Funaoka + Kurama (Kyoto), Kin no Yu + Gin no Yu (Arima), all 6 Kinosaki bathhouses — fully tattoo-friendly, no covering needed.</div></div>
-  <div class="tip"><div class="tip-icon">👘</div><div><strong>Kinosaki ryokan — book ASAP.</strong> Morizuya Inn (morizuya.com) — 4.8 stars, 8 generations family-owned, private cave onsen. February is peak crab season and fills months ahead.</div></div>
-  <div class="tip"><div class="tip-icon">🥾</div><div><strong>Hiking boots</strong> — Waterproof, mid-height, Vibram soles. Salomon X Ultra 5 Mid GTX (~$190) or Merrell Moab 3 Mid WP (~$130). Break them in well before January.</div></div>
-  <div class="tip"><div class="tip-icon">🧥</div><div><strong>Cold weather</strong> — Osaka/Kyoto: 3–8°C. Kinosaki (Sea of Japan coast): 2–5°C, possible snow. Kumano (Kii Peninsula): milder, 5–10°C. Pack serious insulated jacket, thermals, hat, gloves, wool socks.</div></div>
-  <div class="tip"><div class="tip-icon">💴</div><div><strong>Cash</strong> — Japan is largely cash-based outside cities. Carry ¥20,000–30,000 at all times. 7-Eleven and Japan Post ATMs accept foreign cards.</div></div>
-  <div class="tip"><div class="tip-icon">🍜</div><div><strong>Ramen cheat sheet:</strong> Tonkotsu = rich pork bone broth (milky, hearty). Shoyu = soy sauce broth (lighter, not fishy). Miso = fermented soybean (earthy, warming). Spicy tantanmen = sesame + chili. Start with shoyu or tonkotsu.</div></div>
-</div>
-
-</main>
-
-<script>
+// ── Collapse toggle ───────────────────────────────────────────────────
 document.querySelectorAll('.section-top').forEach(function(top) {
   top.addEventListener('click', function() {
     top.closest('.section-block').classList.toggle('collapsed');
   });
 });
 </script>
-
+<style>
+.city-tip {
+  background: white;
+  border: 1px solid #e8e3dc;
+  border-radius: 6px;
+  padding: 4px 8px;
+  font-family: 'Inter', sans-serif;
+  font-size: 0.8rem;
+  box-shadow: 0 1px 4px rgba(0,0,0,0.1);
+}
+</style>
 </body>
 </html>
