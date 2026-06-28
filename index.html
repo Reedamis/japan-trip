@@ -7,338 +7,87 @@
 <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/leaflet@1.9.4/dist/leaflet.css"/>
 <style>
 @import url('https://fonts.googleapis.com/css2?family=Noto+Serif+JP:wght@400;600&family=Inter:wght@400;500;600&display=swap');
-
 :root {
-  --water: #2d5a6b;
-  --ember: #c4622d;
-  --moss: #4a6741;
-  --gold: #b8860b;
-  --mist: #f0ede8;
-  --steam: #e8e3dc;
-  --ink: #1a1a1a;
-  --muted: #6b6560;
+  --water: #2d5a6b; --ember: #c4622d; --moss: #4a6741; --gold: #b8860b;
+  --mist: #f0ede8; --steam: #e8e3dc; --ink: #1a1a1a; --muted: #6b6560;
 }
-
 * { box-sizing: border-box; margin: 0; padding: 0; }
-
-body {
-  background: var(--mist);
-  color: var(--ink);
-  font-family: 'Inter', sans-serif;
-  font-size: 15px;
-  line-height: 1.7;
-}
-
-.site-header {
-  background: var(--water);
-  color: white;
-  padding: 36px 24px 28px;
-  text-align: center;
-}
-.site-header h1 {
-  font-family: 'Noto Serif JP', serif;
-  font-size: 2rem;
-  font-weight: 600;
-  letter-spacing: 0.02em;
-  margin-bottom: 6px;
-}
-.site-header .subtitle {
-  font-size: 0.95rem;
-  opacity: 0.82;
-  margin-bottom: 14px;
-}
-.tags {
-  display: flex;
-  flex-wrap: wrap;
-  justify-content: center;
-  gap: 8px;
-}
-.tag {
-  background: rgba(255,255,255,0.15);
-  border: 1px solid rgba(255,255,255,0.3);
-  border-radius: 20px;
-  padding: 3px 12px;
-  font-size: 0.78rem;
-  letter-spacing: 0.03em;
-}
-
-.trip-selector {
-  display: flex;
-  justify-content: center;
-  gap: 12px;
-  flex-wrap: wrap;
-  padding: 28px 20px 0;
-}
-.trip-btn {
-  background: white;
-  border: 2px solid var(--steam);
-  border-radius: 8px;
-  padding: 10px 22px;
-  font-family: 'Inter', sans-serif;
-  font-size: 0.88rem;
-  font-weight: 500;
-  cursor: pointer;
-  color: var(--muted);
-  transition: all 0.2s;
-}
-.trip-btn.active {
-  background: var(--water);
-  border-color: var(--water);
-  color: white;
-}
-.trip-btn:hover:not(.active) {
-  border-color: var(--water);
-  color: var(--water);
-}
-
+body { background: var(--mist); color: var(--ink); font-family: 'Inter', sans-serif; font-size: 15px; line-height: 1.7; }
+.site-header { background: var(--water); color: white; padding: 36px 24px 28px; text-align: center; }
+.site-header h1 { font-family: 'Noto Serif JP', serif; font-size: 2rem; font-weight: 600; letter-spacing: 0.02em; margin-bottom: 6px; }
+.site-header .subtitle { font-size: 0.95rem; opacity: 0.82; margin-bottom: 14px; }
+.tags { display: flex; flex-wrap: wrap; justify-content: center; gap: 8px; }
+.tag { background: rgba(255,255,255,0.15); border: 1px solid rgba(255,255,255,0.3); border-radius: 20px; padding: 3px 12px; font-size: 0.78rem; }
+.trip-selector { display: flex; justify-content: center; gap: 12px; flex-wrap: wrap; padding: 28px 20px 0; }
+.trip-btn { background: white; border: 2px solid var(--steam); border-radius: 8px; padding: 10px 22px; font-family: 'Inter', sans-serif; font-size: 0.88rem; font-weight: 500; cursor: pointer; color: var(--muted); transition: all 0.2s; }
+.trip-btn.active { background: var(--water); border-color: var(--water); color: white; }
+.trip-btn:hover:not(.active) { border-color: var(--water); color: var(--water); }
 .trip-panel { display: none; }
 .trip-panel.active { display: block; }
-
-.map-wrap {
-  margin: 24px auto;
-  max-width: 960px;
-  padding: 0 20px;
-}
-#map1, #map2, #map3 {
-  height: 420px;
-  border-radius: 10px;
-  border: 1px solid var(--steam);
-  box-shadow: 0 2px 12px rgba(0,0,0,0.08);
-}
-
-.trip-intro {
-  max-width: 960px;
-  margin: 0 auto 8px;
-  padding: 0 20px;
-}
-.trip-intro-card {
-  background: white;
-  border-radius: 10px;
-  border-left: 4px solid var(--water);
-  padding: 18px 22px;
-  box-shadow: 0 1px 6px rgba(0,0,0,0.06);
-}
-.trip-intro-card h2 {
-  font-family: 'Noto Serif JP', serif;
-  font-size: 1.2rem;
-  color: var(--water);
-  margin-bottom: 6px;
-}
+.map-wrap { margin: 24px auto; max-width: 960px; padding: 0 20px; }
+#map1, #map2, #map3 { height: 420px; border-radius: 10px; border: 1px solid var(--steam); box-shadow: 0 2px 12px rgba(0,0,0,0.08); }
+.trip-intro { max-width: 960px; margin: 0 auto 8px; padding: 0 20px; }
+.trip-intro-card { background: white; border-radius: 10px; border-left: 4px solid var(--water); padding: 18px 22px; box-shadow: 0 1px 6px rgba(0,0,0,0.06); }
+.trip-intro-card h2 { font-family: 'Noto Serif JP', serif; font-size: 1.2rem; color: var(--water); margin-bottom: 6px; }
 .trip-intro-card p { color: var(--muted); font-size: 0.9rem; }
-.trip-meta {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 16px;
-  margin-top: 12px;
-}
+.trip-meta { display: flex; flex-wrap: wrap; gap: 16px; margin-top: 12px; }
 .trip-meta-item { font-size: 0.82rem; color: var(--muted); }
 .trip-meta-item strong { color: var(--ink); }
-
-.content {
-  max-width: 960px;
-  margin: 0 auto;
-  padding: 0 20px 60px;
-}
-
+.booking-strip { background: white; border-radius: 10px; border: 1px solid var(--steam); padding: 16px 20px; margin: 12px auto; max-width: 960px; display: flex; flex-wrap: wrap; gap: 10px; align-items: center; box-shadow: 0 1px 6px rgba(0,0,0,0.05); }
+.booking-strip span { font-size: 0.88rem; color: var(--muted); flex: 1; min-width: 200px; }
+.booking-link { background: var(--water); color: white; text-decoration: none; padding: 8px 16px; border-radius: 7px; font-size: 0.83rem; font-weight: 600; white-space: nowrap; }
+.booking-link:hover { opacity: 0.88; }
+.content { max-width: 960px; margin: 0 auto; padding: 0 20px 60px; }
 .city-block { margin-top: 36px; }
 .city-header { margin-bottom: 16px; }
-.city-name {
-  font-family: 'Noto Serif JP', serif;
-  font-size: 1.7rem;
-  font-weight: 600;
-  color: var(--water);
-}
+.city-name { font-family: 'Noto Serif JP', serif; font-size: 1.7rem; font-weight: 600; color: var(--water); }
 .city-dates { font-size: 0.88rem; color: var(--muted); margin-top: 2px; }
-.city-intro {
-  margin-top: 10px;
-  font-size: 0.93rem;
-  color: var(--ink);
-  max-width: 720px;
-}
-.city-transit-note {
-  display: inline-block;
-  margin-top: 8px;
-  font-size: 0.82rem;
-  color: var(--gold);
-  font-weight: 500;
-}
-
-.section-block {
-  background: white;
-  border-radius: 10px;
-  border-left: 4px solid var(--steam);
-  box-shadow: 0 1px 6px rgba(0,0,0,0.05);
-  margin-bottom: 10px;
-  overflow: hidden;
-}
-.section-block.food    { border-left-color: var(--ember); }
-.section-block.attr    { border-left-color: var(--moss); }
-.section-block.ent     { border-left-color: var(--water); }
-.section-block.bath    { border-left-color: #7b5ea7; }
-.section-block.hike    { border-left-color: var(--moss); }
+.city-intro { margin-top: 10px; font-size: 0.93rem; color: var(--ink); max-width: 720px; }
+.city-transit-note { display: inline-block; margin-top: 8px; font-size: 0.82rem; color: var(--gold); font-weight: 500; }
+.section-block { background: white; border-radius: 10px; border-left: 4px solid var(--steam); box-shadow: 0 1px 6px rgba(0,0,0,0.05); margin-bottom: 10px; overflow: hidden; }
+.section-block.food { border-left-color: var(--ember); }
+.section-block.attr { border-left-color: var(--moss); }
+.section-block.bath { border-left-color: #7b5ea7; }
+.section-block.hike { border-left-color: var(--moss); }
 .section-block.transit { border-left-color: var(--gold); }
-
-.section-top {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  padding: 14px 18px;
-  cursor: pointer;
-  user-select: none;
-}
+.section-top { display: flex; align-items: center; justify-content: space-between; padding: 14px 18px; cursor: pointer; user-select: none; }
 .section-top h3 { font-size: 0.97rem; font-weight: 600; color: var(--ink); }
 .chevron { font-size: 0.75rem; color: var(--muted); transition: transform 0.2s; }
 .section-block.collapsed .chevron { transform: rotate(-90deg); }
 .section-block.collapsed .section-body { display: none; }
-
-.section-body {
-  padding: 0 18px 16px;
-  border-top: 1px solid var(--steam);
-}
-
-.sublabel {
-  font-size: 0.73rem;
-  font-weight: 600;
-  letter-spacing: 0.08em;
-  text-transform: uppercase;
-  color: var(--muted);
-  margin: 14px 0 6px;
-}
-
-.place-item {
-  display: grid;
-  grid-template-columns: 22px 1fr;
-  gap: 6px;
-  margin-bottom: 10px;
-  align-items: start;
-}
+.section-body { padding: 0 18px 16px; border-top: 1px solid var(--steam); }
+.sublabel { font-size: 0.73rem; font-weight: 600; letter-spacing: 0.08em; text-transform: uppercase; color: var(--muted); margin: 14px 0 6px; }
+.place-item { display: grid; grid-template-columns: 22px 1fr; gap: 6px; margin-bottom: 10px; align-items: start; }
 .place-icon { font-size: 1rem; padding-top: 1px; }
-.place-name {
-  font-weight: 500;
-  color: var(--ink);
-  text-decoration: none;
-}
+.place-name { font-weight: 500; color: var(--ink); text-decoration: none; }
 .place-name:hover { text-decoration: underline; }
 .place-desc { font-size: 0.85rem; color: var(--muted); margin-top: 1px; }
-
-.hl-onsen  { color: #7b5ea7; font-weight: 500; }
-.hl-hike   { color: var(--moss); font-weight: 500; }
-.hl-travel { color: var(--gold); font-weight: 500; }
+.hl-onsen { color: #7b5ea7; font-weight: 500; }
+.hl-hike { color: var(--moss); font-weight: 500; }
 .hl-bakery { color: var(--ember); font-weight: 500; }
-
-.phrase-grid {
-  display: grid;
-  grid-template-columns: 1fr 1fr 1fr;
-  gap: 6px 12px;
-  font-size: 0.83rem;
-  margin-top: 8px;
-}
-.phrase-grid .ph-header {
-  font-weight: 600;
-  color: var(--muted);
-  font-size: 0.73rem;
-  text-transform: uppercase;
-  letter-spacing: 0.06em;
-  border-bottom: 1px solid var(--steam);
-  padding-bottom: 4px;
-  margin-bottom: 4px;
-}
+.phrase-grid { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 6px 12px; font-size: 0.83rem; margin-top: 8px; }
+.phrase-grid .ph-header { font-weight: 600; color: var(--muted); font-size: 0.73rem; text-transform: uppercase; letter-spacing: 0.06em; border-bottom: 1px solid var(--steam); padding-bottom: 4px; margin-bottom: 4px; }
 .phrase-grid .ph-en { color: var(--ink); }
-.phrase-grid .ph-jp { font-size: 0.88rem; }
 .phrase-grid .ph-ro { color: var(--muted); font-style: italic; }
-
-.transport-row {
-  display: flex;
-  align-items: center;
-  gap: 10px;
-  background: var(--mist);
-  border-radius: 7px;
-  padding: 10px 14px;
-  margin-bottom: 10px;
-  font-size: 0.88rem;
-}
-.transport-badge {
-  font-size: 0.72rem;
-  font-weight: 600;
-  letter-spacing: 0.07em;
-  text-transform: uppercase;
-  padding: 2px 8px;
-  border-radius: 12px;
-  white-space: nowrap;
-}
-.badge-fly   { background: #dbeafe; color: #1d4ed8; }
+.transport-row { display: flex; align-items: center; gap: 10px; background: var(--mist); border-radius: 7px; padding: 10px 14px; margin-bottom: 10px; font-size: 0.88rem; }
+.transport-badge { font-size: 0.72rem; font-weight: 600; letter-spacing: 0.07em; text-transform: uppercase; padding: 2px 8px; border-radius: 12px; white-space: nowrap; }
+.badge-fly { background: #dbeafe; color: #1d4ed8; }
 .badge-train { background: #dcfce7; color: #166534; }
-.badge-bus   { background: #fef9c3; color: #854d0e; }
-.badge-walk  { background: #f3e8ff; color: #6b21a8; }
-.badge-car   { background: #ffe4e6; color: #9f1239; }
-
+.badge-bus { background: #fef9c3; color: #854d0e; }
+.badge-walk { background: #f3e8ff; color: #6b21a8; }
+.badge-car { background: #ffe4e6; color: #9f1239; }
 .notes-section { margin-top: 36px; }
-.notes-section h2 {
-  font-family: 'Noto Serif JP', serif;
-  font-size: 1.25rem;
-  color: var(--water);
-  margin-bottom: 14px;
-}
-.note-card {
-  background: white;
-  border-radius: 10px;
-  border-left: 4px solid var(--water);
-  padding: 14px 18px;
-  margin-bottom: 10px;
-  box-shadow: 0 1px 6px rgba(0,0,0,0.05);
-  font-size: 0.9rem;
-}
+.notes-section h2 { font-family: 'Noto Serif JP', serif; font-size: 1.25rem; color: var(--water); margin-bottom: 14px; }
+.note-card { background: white; border-radius: 10px; border-left: 4px solid var(--water); padding: 14px 18px; margin-bottom: 10px; box-shadow: 0 1px 6px rgba(0,0,0,0.05); font-size: 0.9rem; }
 .note-card strong { display: block; margin-bottom: 4px; color: var(--ink); }
 .note-card p { color: var(--muted); }
-
-.city-divider {
-  border: none;
-  border-top: 1px dashed var(--steam);
-  margin: 32px 0 0;
-}
-
-.booking-strip {
-  background: white;
-  border-radius: 10px;
-  border: 1px solid var(--steam);
-  padding: 16px 20px;
-  margin: 20px auto;
-  max-width: 960px;
-  display: flex;
-  flex-wrap: wrap;
-  gap: 10px;
-  align-items: center;
-  box-shadow: 0 1px 6px rgba(0,0,0,0.05);
-}
-.booking-strip span { font-size: 0.88rem; color: var(--muted); flex: 1; min-width: 200px; }
-.booking-link {
-  background: var(--water);
-  color: white;
-  text-decoration: none;
-  padding: 8px 16px;
-  border-radius: 7px;
-  font-size: 0.83rem;
-  font-weight: 600;
-  white-space: nowrap;
-}
-.booking-link:hover { opacity: 0.88; }
-
-.city-tip {
-  background: white;
-  border: 1px solid #e8e3dc;
-  border-radius: 6px;
-  padding: 4px 8px;
-  font-family: 'Inter', sans-serif;
-  font-size: 0.8rem;
-  box-shadow: 0 1px 4px rgba(0,0,0,0.1);
-}
-
+.city-divider { border: none; border-top: 1px dashed var(--steam); margin: 32px 0 0; }
+.city-tip { background: white; border: 1px solid #e8e3dc; border-radius: 6px; padding: 4px 8px; font-family: 'Inter', sans-serif; font-size: 0.8rem; box-shadow: 0 1px 4px rgba(0,0,0,0.1); }
 @media (max-width: 600px) {
   .site-header h1 { font-size: 1.5rem; }
   .city-name { font-size: 1.35rem; }
   .phrase-grid { grid-template-columns: 1fr 1fr; }
   .phrase-grid .ph-ro { display: none; }
-  .trip-meta { flex-direction: column; gap: 6px; }
 }
 </style>
 </head>
@@ -363,93 +112,79 @@ body {
   <button class="trip-btn" onclick="showTrip(3)">🇫🇷🇦🇹 Trip 3 — Lyon + Annecy + Salzburg</button>
 </div>
 
-<!-- ============================================================ -->
-<!-- TRIP 1: ALSACE + BADEN-BADEN + SALZBURG -->
-<!-- ============================================================ -->
+<!-- ===== TRIP 1 ===== -->
 <div class="trip-panel active" id="trip1">
-
   <div class="map-wrap"><div id="map1"></div></div>
-
   <div class="trip-intro">
     <div class="trip-intro-card">
       <h2>Trip 1 — Alsace → Baden-Baden → Salzburg</h2>
-      <p>The thermal corridor. Fairy-tale Alsatian wine villages and kougelhopf bakeries give way to Baden-Baden — one of Europe's great spa cities, built on Roman hot springs — then east into Salzburg, Austria's most beautiful small city, ringed by Alpine hiking trails and a short train ride from the legendary Bad Gastein thermal resort. The whole trip flows east along a natural geographic arc.</p>
+      <p>The thermal corridor. Fairy-tale Alsatian wine villages and kougelhopf bakeries give way to Baden-Baden — one of Europe's great spa cities built on Roman hot springs — then east into Salzburg, Austria's most beautiful small city, ringed by Alpine hiking trails and a short train ride from the legendary Bad Gastein thermal resort.</p>
       <div class="trip-meta">
-        <div class="trip-meta-item"><strong>Fly in:</strong> PDX → Frankfurt (FRA) or Zürich (ZRH) → Strasbourg/Basel</div>
+        <div class="trip-meta-item"><strong>Fly in:</strong> PDX → Frankfurt (FRA) → Basel (BSL)</div>
         <div class="trip-meta-item"><strong>Fly out:</strong> Salzburg (SZG) → Frankfurt → PDX</div>
-        <div class="trip-meta-item"><strong>Open-jaw ticket:</strong> Into Basel (BSL) / Out of Salzburg (SZG)</div>
         <div class="trip-meta-item"><strong>Ground transport:</strong> Train throughout — no internal flights needed</div>
       </div>
     </div>
   </div>
-
   <div class="booking-strip">
-    <span>✈️ Open-jaw: PDX → Basel (BSL) in &nbsp;/&nbsp; Salzburg (SZG) → PDX out — search as multi-city</span>
+    <span>✈️ Open-jaw: PDX → Basel (BSL) in &nbsp;/&nbsp; Salzburg (SZG) → PDX out</span>
     <a class="booking-link" href="https://www.google.com/flights#flt=PDX.BSL.2027-01-21*SZG.PDX.2027-01-30;c:USD;e:1;sd:1;t:f" target="_blank">Search Google Flights</a>
     <a class="booking-link" href="https://www.kayak.com/flights/PDX-BSL/2027-01-21/SZG-PDX/2027-01-30" target="_blank">Search Kayak</a>
   </div>
-
   <div class="content">
 
     <div class="city-block">
       <div class="city-header">
         <div class="city-name">✈️ Travel Day</div>
-        <div class="city-dates">Thursday, Day 1 — Portland → Basel/Strasbourg</div>
-        <p class="city-intro">PDX to Basel (BSL) or Strasbourg (SXB) via Frankfurt or Zürich. Basel EuroAirport is the easier entry — it's actually on the French side of the border and serves France, Switzerland, and Germany. From the airport, Strasbourg is 1h by train, Colmar is 45 min.</p>
-        <span class="city-transit-note">✈️ PDX → FRA → BSL is typically the cleanest routing. Lufthansa or Swiss.</span>
+        <div class="city-dates">Thursday, Day 1 — Portland → Basel</div>
+        <p class="city-intro">PDX to Basel (BSL) via Frankfurt. Basel EuroAirport sits on the French side of the border and serves France, Switzerland, and Germany. From the airport, Strasbourg is 1h by train, Colmar is 45 min.</p>
+        <span class="city-transit-note">✈️ PDX → FRA → BSL. Lufthansa or Swiss are the cleanest options.</span>
       </div>
     </div>
 
     <hr class="city-divider">
 
-    <!-- STRASBOURG -->
     <div class="city-block">
       <div class="city-header">
         <div class="city-name"><a href="https://www.google.com/search?q=Strasbourg+France+city" target="_blank" class="place-name">Strasbourg</a></div>
         <div class="city-dates">Friday–Saturday, Days 2–3 🌙🌙</div>
-        <p class="city-intro">Your base for Alsace. Strasbourg is a canal city of half-timbered houses, a soaring Gothic cathedral, and warm bouchons (traditional Alsatian restaurants) on every corner. The old town — Grande Île — is a UNESCO-listed island surrounded by canals. January is cold and quiet, the Christmas market crowds are gone, and the city feels genuinely local. Excellent bakeries on every block.</p>
-        <span class="city-transit-note">✈️ Arriving via Basel airport + train, or direct into SXB</span>
+        <p class="city-intro">Your base for Alsace. A canal city of half-timbered houses, a soaring Gothic cathedral, and warm bouchons on every corner. The old town — Grande Île — is a UNESCO-listed island surrounded by canals. January is cold and quiet, the Christmas market crowds are gone, and the city feels genuinely local.</p>
+        <span class="city-transit-note">✈️ Arriving via Basel airport + 1h train</span>
       </div>
-
       <div class="section-block food collapsed">
         <div class="section-top"><h3>🥐 Bakeries & Food</h3><span class="chevron">▼</span></div>
         <div class="section-body">
-          <div class="sublabel">The Bakeries — This Is Why You're Here</div>
+          <div class="sublabel">The Bakeries</div>
           <div class="place-item"><span class="place-icon">🥐</span><div class="place-content"><a href="https://www.google.com/search?q=kougelhopf+Alsace+bakery+Strasbourg" target="_blank" class="place-name">Kougelhopf</a><p class="place-desc"><span class="hl-bakery">The Alsatian crown pastry.</span> A ring-shaped brioche studded with raisins and almonds, dusted with powdered sugar. Every boulangerie makes one. Eat it warm, with butter, at the counter.</p></div></div>
-          <div class="place-item"><span class="place-icon">🥨</span><div class="place-content"><a href="https://www.google.com/search?q=bretzel+pretzel+Strasbourg+bakery" target="_blank" class="place-name">Bretzel (Alsatian pretzel)</a><p class="place-desc">Alsace is the pretzel's homeland. Soft, chewy, with a proper lye crust and coarse salt. Nothing like what you get at a stadium. Pick one up from any boulangerie for the walk.</p></div></div>
-          <div class="place-item"><span class="place-icon">🍞</span><div class="place-content"><a href="https://www.google.com/search?q=pain+d+epices+gingerbread+Alsace+bakery" target="_blank" class="place-name">Pain d'épices (spiced bread)</a><p class="place-desc">Alsatian spiced gingerbread — denser and more complex than what you might know. Often flavoured with anise, cinnamon, and honey. Found in every bakery and market stall.</p></div></div>
-          <div class="sublabel">Restaurant Food</div>
-          <div class="place-item"><span class="place-icon">🥗</span><div class="place-content"><a href="https://www.google.com/search?q=tarte+flambee+flammekueche+Strasbourg+restaurant" target="_blank" class="place-name">Tarte flambée (Flammekueche)</a><p class="place-desc">Alsace's answer to pizza — thin crispy dough, crème fraîche, lardons, and onions. Order multiples, they're thin and addictive. The definitive bouchon dish.</p></div></div>
-          <div class="place-item"><span class="place-icon">🥬</span><div class="place-content"><a href="https://www.google.com/search?q=choucroute+garnie+Strasbourg+Alsace" target="_blank" class="place-name">Choucroute garnie</a><p class="place-desc">Alsatian sauerkraut piled with pork knuckle, sausages, and potatoes. A proper winter dish. Pairs with a glass of Alsatian Riesling.</p></div></div>
-          <div class="place-item"><span class="place-icon">🍷</span><div class="place-content"><a href="https://www.google.com/search?q=Alsace+Riesling+Gewurztraminer+wine+bar+Strasbourg" target="_blank" class="place-name">Alsatian wine bars</div><p class="place-desc">Riesling, Gewurztraminer, Pinot Gris — Alsace whites are some of France's best. Wine bars in the Grande Île serve them by the glass alongside small plates.</p></div></div>
+          <div class="place-item"><span class="place-icon">🥨</span><div class="place-content"><a href="https://www.google.com/search?q=bretzel+pretzel+Strasbourg+bakery" target="_blank" class="place-name">Bretzel</a><p class="place-desc">Alsace is the pretzel's homeland. Soft, chewy, proper lye crust and coarse salt. Pick one up from any boulangerie for the walk every morning.</p></div></div>
+          <div class="place-item"><span class="place-icon">🍞</span><div class="place-content"><a href="https://www.google.com/search?q=pain+d+epices+gingerbread+Alsace+bakery" target="_blank" class="place-name">Pain d'épices</a><p class="place-desc">Alsatian spiced gingerbread flavoured with anise, cinnamon, and honey. Found in every bakery and market stall.</p></div></div>
+          <div class="sublabel">Restaurants</div>
+          <div class="place-item"><span class="place-icon">🥗</span><div class="place-content"><a href="https://www.google.com/search?q=tarte+flambee+flammekueche+Strasbourg+restaurant" target="_blank" class="place-name">Tarte flambée</a><p class="place-desc">Thin crispy dough, crème fraîche, lardons, onions. Order multiples — they're thin and addictive. The definitive bouchon dish.</p></div></div>
+          <div class="place-item"><span class="place-icon">🥬</span><div class="place-content"><a href="https://www.google.com/search?q=choucroute+garnie+Strasbourg+Alsace" target="_blank" class="place-name">Choucroute garnie</a><p class="place-desc">Alsatian sauerkraut piled with pork knuckle, sausages, and potatoes. A proper winter dish with a glass of Alsatian Riesling.</p></div></div>
         </div>
       </div>
-
       <div class="section-block attr collapsed">
         <div class="section-top"><h3>🗺️ Attractions</h3><span class="chevron">▼</span></div>
         <div class="section-body">
-          <div class="place-item"><span class="place-icon">⛪</span><div class="place-content"><a href="https://www.google.com/search?q=Strasbourg+Cathedral+Notre+Dame+Gothic" target="_blank" class="place-name">Strasbourg Cathedral</a><p class="place-desc">One of the tallest medieval buildings in the world. The Gothic facade took 250 years to build and is extraordinary up close. Climb to the platform (332 steps) for views across the Rhine plain into Germany.</p></div></div>
-          <div class="place-item"><span class="place-icon">🏘️</span><div class="place-content"><a href="https://www.google.com/search?q=Petite+France+Strasbourg+canal+half+timbered" target="_blank" class="place-name">La Petite France</a><p class="place-desc">The most beautiful corner of Strasbourg — half-timbered houses reflected in still canals, lock gates, weir walkways. Empty in January. The kind of place where you stop walking and just stand there.</p></div></div>
-          <div class="place-item"><span class="place-icon">🖼️</span><div class="place-content"><a href="https://www.google.com/search?q=Musee+Alsacien+Strasbourg+folk+museum" target="_blank" class="place-name">Musée Alsacien</a><p class="place-desc">Three connected 17th-century townhouses turned folk museum. Covers Alsatian craft traditions, furniture, costumes, and religious objects. Small, warm, and deeply local — perfect for a cold afternoon.</p></div></div>
+          <div class="place-item"><span class="place-icon">⛪</span><div class="place-content"><a href="https://www.google.com/search?q=Strasbourg+Cathedral+Notre+Dame+Gothic" target="_blank" class="place-name">Strasbourg Cathedral</a><p class="place-desc">One of the tallest medieval buildings in the world. The Gothic facade took 250 years to build. Climb to the platform for views across the Rhine plain into Germany.</p></div></div>
+          <div class="place-item"><span class="place-icon">🏘️</span><div class="place-content"><a href="https://www.google.com/search?q=Petite+France+Strasbourg+canal+half+timbered" target="_blank" class="place-name">La Petite France</a><p class="place-desc">Half-timbered houses reflected in still canals, lock gates, weir walkways. Empty in January. The kind of place where you just stop and stand there.</p></div></div>
+          <div class="place-item"><span class="place-icon">🖼️</span><div class="place-content"><a href="https://www.google.com/search?q=Musee+Alsacien+Strasbourg+folk+museum" target="_blank" class="place-name">Musée Alsacien</a><p class="place-desc">Three connected 17th-century townhouses turned folk museum. Small, warm, and deeply local — perfect for a cold afternoon.</p></div></div>
         </div>
       </div>
-
       <div class="section-block bath collapsed">
         <div class="section-top"><h3>🛁 Baths</h3><span class="chevron">▼</span></div>
         <div class="section-body">
-          <div class="place-item"><span class="place-icon">♨️</span><div class="place-content"><a href="https://www.google.com/search?q=Les+Bains+Municipaux+Strasbourg+Art+Nouveau+thermal" target="_blank" class="place-name">Les Bains Municipaux</a><p class="place-desc"><span class="hl-onsen">Strasbourg's historic municipal baths — an Art Nouveau building from 1908.</span> Hot pools, steam rooms, locals-only vibe. Very affordable, zero pretension. This is what bathhouse culture actually looks like before it becomes a luxury brand. <span class="hl-onsen">Tattoo policy: relaxed.</span></p></div></div>
-          <div class="place-item"><span class="place-icon">♨️</span><div class="place-content"><a href="https://www.google.com/search?q=Niederbronn+les+Bains+thermal+spa+town+Alsace" target="_blank" class="place-name">Niederbronn-les-Bains (40 min north)</a><p class="place-desc"><span class="hl-onsen">A small spa town built around Roman-origin thermal springs.</span> The whole village exists because of the baths. Quiet, genuinely charming, and a great half-day excursion from Strasbourg. The springs have been in use since the 1st century AD.</p></div></div>
+          <div class="place-item"><span class="place-icon">♨️</span><div class="place-content"><a href="https://www.google.com/search?q=Les+Bains+Municipaux+Strasbourg+Art+Nouveau+thermal" target="_blank" class="place-name">Les Bains Municipaux</a><p class="place-desc"><span class="hl-onsen">Strasbourg's historic municipal baths — an Art Nouveau building from 1908.</span> Hot pools, steam rooms, locals-only vibe. Very affordable, zero pretension. <span class="hl-onsen">Tattoo policy: relaxed.</span></p></div></div>
+          <div class="place-item"><span class="place-icon">♨️</span><div class="place-content"><a href="https://www.google.com/search?q=Niederbronn+les+Bains+thermal+spa+town+Alsace" target="_blank" class="place-name">Niederbronn-les-Bains</a><p class="place-desc"><span class="hl-onsen">Roman-origin thermal springs 40 min north of Strasbourg.</span> A small spa town built entirely around the baths. Quiet, genuine, almost no tourists in January.</p></div></div>
         </div>
       </div>
-
       <div class="section-block hike collapsed">
         <div class="section-top"><h3>🥾 Hiking</h3><span class="chevron">▼</span></div>
         <div class="section-body">
-          <div class="place-item"><span class="place-icon">⛰️</span><div class="place-content"><a href="https://www.google.com/search?q=Vosges+mountains+hiking+trails+Alsace+winter" target="_blank" class="place-name">Vosges Mountains day hikes</a><p class="place-desc"><span class="hl-hike">The Vosges ridge runs directly west of Strasbourg.</span> Round forested hills with clear trails, viewpoints over the Rhine plain, and old castle ruins at the tops. January hiking is crisp and uncrowded — bring microspikes if there's been snow. The GR5 trail runs the whole length.</p></div></div>
-          <div class="place-item"><span class="place-icon">🏰</span><div class="place-content"><a href="https://www.google.com/search?q=Haut+Koenigsbourg+castle+hike+Alsace+Vosges" target="_blank" class="place-name">Haut-Kœnigsbourg Castle hike</a><p class="place-desc">A medieval castle perched on a Vosges summit at 755m. Combine the castle visit with a short hike through the forest below it. Views extend across the Rhine to the Black Forest on clear days.</p></div></div>
+          <div class="place-item"><span class="place-icon">⛰️</span><div class="place-content"><a href="https://www.google.com/search?q=Vosges+mountains+hiking+trails+Alsace+winter" target="_blank" class="place-name">Vosges Mountains day hikes</a><p class="place-desc"><span class="hl-hike">The Vosges ridge runs directly west of Strasbourg.</span> Round forested hills, clear trails, viewpoints over the Rhine plain, old castle ruins at the summits. January hiking is crisp and uncrowded — bring microspikes if there's been snow.</p></div></div>
+          <div class="place-item"><span class="place-icon">🏰</span><div class="place-content"><a href="https://www.google.com/search?q=Haut+Koenigsbourg+castle+hike+Alsace+Vosges" target="_blank" class="place-name">Haut-Kœnigsbourg Castle hike</a><p class="place-desc">Medieval castle on a Vosges summit at 755m. Combine the castle visit with a forest hike below. Views across the Rhine to the Black Forest on clear days.</p></div></div>
         </div>
       </div>
-
       <div class="section-block transit collapsed">
         <div class="section-top"><h3>🚆 Transit & Phrases</h3><span class="chevron">▼</span></div>
         <div class="section-body">
@@ -458,10 +193,10 @@ body {
           <div class="sublabel">Key Phrases — French</div>
           <div class="phrase-grid">
             <span class="ph-header">English</span><span class="ph-header">French</span><span class="ph-header">Pronunciation</span>
-            <span class="ph-en">One kougelhopf please</span><span class="ph-jp">Un kougelhopf, s'il vous plaît</span><span class="ph-ro">un KOO-gul-hopf seel voo PLAY</span>
-            <span class="ph-en">Where is the bakery?</span><span class="ph-jp">Où est la boulangerie?</span><span class="ph-ro">oo ay la boo-lon-zhuh-REE</span>
-            <span class="ph-en">The bill please</span><span class="ph-jp">L'addition, s'il vous plaît</span><span class="ph-ro">lah-dee-SYON seel voo PLAY</span>
-            <span class="ph-en">Is it open?</span><span class="ph-jp">C'est ouvert?</span><span class="ph-ro">say oo-VAIR</span>
+            <span class="ph-en">One kougelhopf please</span><span>Un kougelhopf, s'il vous plaît</span><span class="ph-ro">un KOO-gul-hopf seel voo PLAY</span>
+            <span class="ph-en">Where is the bakery?</span><span>Où est la boulangerie?</span><span class="ph-ro">oo ay la boo-lon-zhuh-REE</span>
+            <span class="ph-en">The bill please</span><span>L'addition, s'il vous plaît</span><span class="ph-ro">lah-dee-SYON seel voo PLAY</span>
+            <span class="ph-en">Is it open?</span><span>C'est ouvert?</span><span class="ph-ro">say oo-VAIR</span>
           </div>
         </div>
       </div>
@@ -469,81 +204,70 @@ body {
 
     <hr class="city-divider">
 
-    <!-- ALSACE WINE VILLAGES -->
     <div class="city-block">
       <div class="city-header">
-        <div class="city-name">Alsace Wine Villages</div>
+        <div class="city-name"><a href="https://www.google.com/search?q=Alsace+wine+route+villages+France" target="_blank" class="place-name">Alsace Wine Villages</a></div>
         <div class="city-dates">Sunday, Day 4 🌙 — Day Trip from Strasbourg</div>
-        <p class="city-intro">The Route des Vins d'Alsace runs south through a string of medieval wine villages so pretty they look fictional. Half-timbered houses, cobbled lanes, geranium-lined in summer and frost-quiet in January. Each village is tiny and takes about an hour to walk properly. Hit two or three in a day.</p>
+        <p class="city-intro">The Route des Vins d'Alsace runs south through a string of medieval wine villages so pretty they look fictional. Half-timbered houses, cobbled lanes, frost-quiet in January. Each village takes about an hour to walk properly — hit two or three in a day.</p>
         <span class="city-transit-note">🚗 Rent a car for the day from Strasbourg — villages are 15–30 min apart along the route.</span>
       </div>
-
       <div class="section-block attr collapsed">
         <div class="section-top"><h3>🗺️ Villages</h3><span class="chevron">▼</span></div>
         <div class="section-body">
-          <div class="place-item"><span class="place-icon">🏘️</span><div class="place-content"><a href="https://www.google.com/search?q=Riquewihr+Alsace+France+wine+village" target="_blank" class="place-name">Riquewihr</a><p class="place-desc">A walled village almost unchanged since the 16th century. No cars inside the walls. Every building is half-timbered, every street is cobblestone. Wine shops and excellent pâtisseries. In January it is practically yours alone.</p></div></div>
-          <div class="place-item"><span class="place-icon">🏘️</span><div class="place-content"><a href="https://www.google.com/search?q=Eguisheim+Alsace+France+most+beautiful+village" target="_blank" class="place-name">Eguisheim</a><p class="place-desc">Built in concentric rings around a castle courtyard. One of France's officially designated "most beautiful villages." Tiny, circular, and extremely charming. The boulangerie here is exceptional.</p></div></div>
-          <div class="place-item"><span class="place-icon">🏘️</span><div class="place-content"><a href="https://www.google.com/search?q=Kaysersberg+Alsace+France+village+pastry" target="_blank" class="place-name">Kaysersberg</a><p class="place-desc">A slightly larger village with a ruined castle on the hill above it, a fortified bridge over the river, and some of the best pâtisseries on the entire wine route. Good lunch stop.</p></div></div>
-          <div class="place-item"><span class="place-icon">🏙️</span><div class="place-content"><a href="https://www.google.com/search?q=Colmar+Alsace+France+Little+Venice+canal" target="_blank" class="place-name">Colmar</a><p class="place-desc">The main hub of the route — a small city rather than a village, but worth a few hours. "Little Venice" canal district, excellent covered market, and more bakeries per block than seems reasonable.</p></div></div>
+          <div class="place-item"><span class="place-icon">🏘️</span><div class="place-content"><a href="https://www.google.com/search?q=Riquewihr+Alsace+France+wine+village" target="_blank" class="place-name">Riquewihr</a><p class="place-desc">A walled village almost unchanged since the 16th century. No cars inside the walls. Wine shops and excellent pâtisseries. In January it is practically yours alone.</p></div></div>
+          <div class="place-item"><span class="place-icon">🏘️</span><div class="place-content"><a href="https://www.google.com/search?q=Eguisheim+Alsace+France+most+beautiful+village" target="_blank" class="place-name">Eguisheim</a><p class="place-desc">Built in concentric rings around a castle courtyard. One of France's officially designated most beautiful villages. The boulangerie here is exceptional.</p></div></div>
+          <div class="place-item"><span class="place-icon">🏘️</span><div class="place-content"><a href="https://www.google.com/search?q=Kaysersberg+Alsace+France+village+pastry" target="_blank" class="place-name">Kaysersberg</a><p class="place-desc">Ruined castle above, fortified bridge over the river, some of the best pâtisseries on the entire wine route. Good lunch stop.</p></div></div>
+          <div class="place-item"><span class="place-icon">🏙️</span><div class="place-content"><a href="https://www.google.com/search?q=Colmar+Alsace+France+Little+Venice+canal" target="_blank" class="place-name">Colmar</a><p class="place-desc">The main hub of the route. "Little Venice" canal district, excellent covered market, more bakeries per block than seems reasonable.</p></div></div>
         </div>
       </div>
-
       <div class="section-block food collapsed">
         <div class="section-top"><h3>🥐 Bakeries Along the Route</h3><span class="chevron">▼</span></div>
         <div class="section-body">
-          <div class="place-item"><span class="place-icon">🍰</span><div class="place-content"><a href="https://www.google.com/search?q=tarte+aux+quetsches+Alsace+plum+tart+bakery" target="_blank" class="place-name">Tarte aux quetsches (plum tart)</a><p class="place-desc">The Alsatian regional fruit tart — a short pastry shell with local quetsche plums. January versions use preserved fruit. Found in every village pâtisserie along the route.</p></div></div>
-          <div class="place-item"><span class="place-icon">🍪</span><div class="place-content"><a href="https://www.google.com/search?q=bredele+Alsace+Christmas+cookies+January+bakery" target="_blank" class="place-name">Bredele (Alsatian butter cookies)</a><p class="place-desc">Small spiced butter cookies in dozens of shapes — still around in January as boulangeries work through their winter stock. Anise, cinnamon, almond. Buy a bag for the drive.</p></div></div>
+          <div class="place-item"><span class="place-icon">🍰</span><div class="place-content"><a href="https://www.google.com/search?q=tarte+aux+quetsches+Alsace+plum+tart+bakery" target="_blank" class="place-name">Tarte aux quetsches</a><p class="place-desc">Alsatian plum tart — short pastry shell with preserved quetsche plums. Found in every village pâtisserie along the route.</p></div></div>
+          <div class="place-item"><span class="place-icon">🍪</span><div class="place-content"><a href="https://www.google.com/search?q=bredele+Alsace+spiced+butter+cookies+bakery" target="_blank" class="place-name">Bredele</a><p class="place-desc">Small spiced Alsatian butter cookies — anise, cinnamon, almond. Still in stock in January. Buy a bag for the drive.</p></div></div>
         </div>
       </div>
     </div>
 
     <hr class="city-divider">
 
-    <!-- BADEN-BADEN -->
     <div class="city-block">
       <div class="city-header">
         <div class="city-name"><a href="https://www.google.com/search?q=Baden-Baden+Germany+spa+city" target="_blank" class="place-name">Baden-Baden</a></div>
         <div class="city-dates">Monday–Tuesday, Days 5–6 🌙🌙</div>
-        <p class="city-intro">Technically Germany, but it fits so naturally into this arc that skipping it would be a mistake. Baden-Baden is one of Europe's great spa cities — built on Roman thermal springs that have been in continuous use since the 1st century. It's small, elegant, set in the Black Forest hills, and the two bath complexes here (Caracalla and Friedrichsbad) are genuinely world-class. Napoleon III came here. Brahms composed here. In January it's quiet, affordable, and exactly what you're looking for.</p>
-        <span class="city-transit-note">🚂 Train from Strasbourg: 45 min direct. Incredibly easy.</span>
+        <p class="city-intro">Technically Germany, but it fits so naturally into this arc that skipping it would be a mistake. Baden-Baden is one of Europe's great spa cities — built on Roman thermal springs in continuous use since the 1st century. Small, elegant, set in the Black Forest hills. Napoleon III came here. Brahms composed here. In January it's quiet, affordable, and exactly what you're looking for.</p>
+        <span class="city-transit-note">🚂 Train from Strasbourg: 45 min direct.</span>
       </div>
-
       <div class="section-block bath collapsed">
         <div class="section-top"><h3>🛁 Baths — The Whole Point</h3><span class="chevron">▼</span></div>
         <div class="section-body">
-          <div class="place-item"><span class="place-icon">♨️</span><div class="place-content"><a href="https://www.google.com/search?q=Friedrichsbad+Baden-Baden+Roman+Irish+bath" target="_blank" class="place-name">Friedrichsbad (Roman-Irish Bath)</a><p class="place-desc"><span class="hl-onsen">The bucket list bathhouse.</span> A 19th-century palatial spa built directly over the Roman springs. No swimwear — the 17-stage bathing ritual (hot rooms, warm rooms, brushdown massage, cool plunge, rest) takes about 3 hours. Mark Twain wrote about this place. Utterly unlike anything else. <span class="hl-onsen">Tattoo policy: tattoos are accepted. No swimwear required or permitted in most areas.</span></p></div></div>
-          <div class="place-item"><span class="place-icon">♨️</span><div class="place-content"><a href="https://www.google.com/search?q=Caracalla+Spa+Baden-Baden+modern+thermal" target="_blank" class="place-name">Caracalla Spa</a><p class="place-desc"><span class="hl-onsen">The modern complement to Friedrichsbad.</span> Same thermal water, swimwear-friendly, indoor and outdoor pools, grottos, saunas, and a relaxation area. More accessible if Friedrichsbad's nudity requirement feels like a lot. <span class="hl-onsen">Tattoo policy: welcoming.</span></p></div></div>
-          <div class="place-item"><span class="place-icon">♨️</span><div class="place-content"><a href="https://www.google.com/search?q=Roman+bath+ruins+Romerplatz+Baden-Baden" target="_blank" class="place-name">Roman Bath ruins (Römerplatz)</a><p class="place-desc">The original Roman bathhouse beneath the modern city — partially excavated and open to visit. Puts the whole spa tradition in context. Free or very cheap.</p></div></div>
+          <div class="place-item"><span class="place-icon">♨️</span><div class="place-content"><a href="https://www.google.com/search?q=Friedrichsbad+Baden-Baden+Roman+Irish+bath" target="_blank" class="place-name">Friedrichsbad</a><p class="place-desc"><span class="hl-onsen">The bucket list bathhouse.</span> A 19th-century palatial spa built over Roman springs. No swimwear — the 17-stage bathing ritual (hot rooms, warm rooms, brushdown massage, cool plunge, rest) takes about 3 hours. Mark Twain wrote about this place. <span class="hl-onsen">Tattoo policy: accepted.</span></p></div></div>
+          <div class="place-item"><span class="place-icon">♨️</span><div class="place-content"><a href="https://www.google.com/search?q=Caracalla+Spa+Baden-Baden+modern+thermal" target="_blank" class="place-name">Caracalla Spa</a><p class="place-desc"><span class="hl-onsen">The modern complement — same thermal water, swimwear-friendly.</span> Indoor and outdoor pools, grottos, saunas, relaxation area. More accessible if Friedrichsbad's nudity requirement feels like a lot. <span class="hl-onsen">Tattoo policy: welcoming.</span></p></div></div>
         </div>
       </div>
-
       <div class="section-block food collapsed">
         <div class="section-top"><h3>🥐 Bakeries & Food</h3><span class="chevron">▼</span></div>
         <div class="section-body">
-          <div class="place-item"><span class="place-icon">🥐</span><div class="place-content"><a href="https://www.google.com/search?q=Black+Forest+bakeries+Baden-Baden+Schwarzwalder" target="_blank" class="place-name">Black Forest bakeries</a><p class="place-desc"><span class="hl-bakery">Baden-Baden sits at the edge of the Schwarzwald.</span> Bakeries here do Schwarzwälder Kirschtorte (Black Forest cake), dense rye breads, and cream-heavy pastries. The quality is high and the portions are serious.</p></div></div>
-          <div class="place-item"><span class="place-icon">🍽️</span><div class="place-content"><a href="https://www.google.com/search?q=Baden-Baden+restaurants+Kurhaus+dining" target="_blank" class="place-name">Restaurants near the Kurhaus</a><p class="place-desc">The elegant casino and Kurhaus district has excellent restaurants — German comfort food done well. Maultaschen (stuffed pasta), Flammekuchen (the German version of tarte flambée), and good local wine.</p></div></div>
+          <div class="place-item"><span class="place-icon">🥐</span><div class="place-content"><a href="https://www.google.com/search?q=Black+Forest+bakeries+Baden-Baden+Schwarzwalder+Kirschtorte" target="_blank" class="place-name">Black Forest bakeries</a><p class="place-desc"><span class="hl-bakery">Baden-Baden sits at the edge of the Schwarzwald.</span> Schwarzwälder Kirschtorte (Black Forest cake), dense rye breads, cream-heavy pastries. The quality is high and the portions are serious.</p></div></div>
         </div>
       </div>
-
       <div class="section-block hike collapsed">
         <div class="section-top"><h3>🥾 Hiking</h3><span class="chevron">▼</span></div>
         <div class="section-body">
-          <div class="place-item"><span class="place-icon">🌲</span><div class="place-content"><a href="https://www.google.com/search?q=Black+Forest+hiking+trails+Baden-Baden+winter" target="_blank" class="place-name">Black Forest trails from town</a><p class="place-desc"><span class="hl-hike">Trails start directly from the edge of Baden-Baden.</span> The Merkur mountain (668m) is a 2-hour return hike with panoramic views — or take the funicular up and walk down. The Lichtentaler Allee riverside walk is flat, beautiful, and good for a morning warm-up.</p></div></div>
-          <div class="place-item"><span class="place-icon">⛰️</span><div class="place-content"><a href="https://www.google.com/search?q=Merkur+mountain+Baden-Baden+funicular+hike" target="_blank" class="place-name">Merkur Mountain</a><p class="place-desc">The local peak above Baden-Baden. Funicular runs year-round. Walk up through beech forest, take the funicular down, stop at the spa on the way back. Classic Baden-Baden afternoon.</p></div></div>
+          <div class="place-item"><span class="place-icon">🌲</span><div class="place-content"><a href="https://www.google.com/search?q=Black+Forest+hiking+trails+Baden-Baden+winter" target="_blank" class="place-name">Black Forest trails</a><p class="place-desc"><span class="hl-hike">Trails start directly from the edge of Baden-Baden.</span> The Merkur mountain (668m) is a 2-hour return hike with panoramic views, or take the funicular up and walk down.</p></div></div>
+          <div class="place-item"><span class="place-icon">⛰️</span><div class="place-content"><a href="https://www.google.com/search?q=Merkur+mountain+Baden-Baden+funicular+hike" target="_blank" class="place-name">Merkur Mountain</a><p class="place-desc">The local peak above Baden-Baden. Funicular runs year-round. Walk up through beech forest, take the funicular down, stop at the spa on the way back.</p></div></div>
         </div>
       </div>
-
       <div class="section-block transit collapsed">
         <div class="section-top"><h3>🚆 Transit & Phrases</h3><span class="chevron">▼</span></div>
         <div class="section-body">
-          <div class="transport-row"><span class="transport-badge badge-train">Train</span>Strasbourg → Baden-Baden: 45 min. Baden-Baden → Salzburg: ~3h via Karlsruhe and Munich.</div>
+          <div class="transport-row"><span class="transport-badge badge-train">Train</span>Baden-Baden → Salzburg: ~3h via Karlsruhe and Munich.</div>
           <div class="sublabel">Key Phrases — German</div>
           <div class="phrase-grid">
             <span class="ph-header">English</span><span class="ph-header">German</span><span class="ph-header">Pronunciation</span>
-            <span class="ph-en">One Black Forest cake please</span><span class="ph-jp">Ein Stück Schwarzwälder, bitte</span><span class="ph-ro">ine shtük SHVARTZ-vel-der BIT-teh</span>
-            <span class="ph-en">Where are the baths?</span><span class="ph-jp">Wo sind die Thermen?</span><span class="ph-ro">voh zint dee TER-men</span>
-            <span class="ph-en">The bill, please</span><span class="ph-jp">Die Rechnung, bitte</span><span class="ph-ro">dee RECH-nung BIT-teh</span>
-            <span class="ph-en">Is the trail open?</span><span class="ph-jp">Ist der Weg offen?</span><span class="ph-ro">ist dair vayg OFF-en</span>
+            <span class="ph-en">One Black Forest cake please</span><span>Ein Stück Schwarzwälder, bitte</span><span class="ph-ro">ine shtük SHVARTZ-vel-der BIT-teh</span>
+            <span class="ph-en">Where are the baths?</span><span>Wo sind die Thermen?</span><span class="ph-ro">voh zint dee TER-men</span>
+            <span class="ph-en">The bill please</span><span>Die Rechnung, bitte</span><span class="ph-ro">dee RECH-nung BIT-teh</span>
           </div>
         </div>
       </div>
@@ -551,66 +275,53 @@ body {
 
     <hr class="city-divider">
 
-    <!-- SALZBURG -->
     <div class="city-block">
       <div class="city-header">
         <div class="city-name"><a href="https://www.google.com/search?q=Salzburg+Austria+city" target="_blank" class="place-name">Salzburg</a></div>
         <div class="city-dates">Wednesday–Friday, Days 7–9 🌙🌙🌙</div>
-        <p class="city-intro">Austria's most beautiful city — and crucially, its most manageable. Salzburg is compact, walkable, and set at the foot of the Alps with the Salzach river running through its centre. The Baroque old town is UNESCO-listed, the food markets are excellent, and the hiking starts immediately outside the city. A short train ride south takes you into the Alps and Bad Gastein — one of Europe's most dramatic thermal spa towns, set in a steep Alpine gorge with waterfalls frozen in January.</p>
-        <span class="city-transit-note">🚂 Train from Baden-Baden via Munich: ~3h. Comfortable and scenic.</span>
+        <p class="city-intro">Austria's most beautiful city and most manageable. Compact, walkable, set at the foot of the Alps with the Salzach river running through its centre. The Baroque old town is UNESCO-listed, the food markets are excellent, and Bad Gastein — one of Europe's most dramatic thermal spa towns — is a short train ride south.</p>
+        <span class="city-transit-note">🚂 Train from Baden-Baden via Munich: ~3h.</span>
       </div>
-
       <div class="section-block food collapsed">
         <div class="section-top"><h3>🥐 Bakeries & Food</h3><span class="chevron">▼</span></div>
         <div class="section-body">
-          <div class="sublabel">Austrian Bakery Culture</div>
-          <div class="place-item"><span class="place-icon">🥐</span><div class="place-content"><a href="https://www.google.com/search?q=Austrian+bakeries+Salzburg+Kipferl+Semmel" target="_blank" class="place-name">Kipferl and Semmel</a><p class="place-desc"><span class="hl-bakery">Austrian breakfast bakeries are exceptional.</span> Kipferl are crescent rolls (the croissant's ancestor), Semmel are soft white rolls with a distinctive six-pointed score. Get them warm from any Bäckerei before 9am. Eat with butter and apricot jam.</p></div></div>
-          <div class="place-item"><span class="place-icon">🍫</span><div class="place-content"><a href="https://www.google.com/search?q=Mozartkugel+chocolate+Salzburg+Austria" target="_blank" class="place-name">Mozartkugeln</a><p class="place-desc">Salzburg's famous chocolate — marzipan and nougat centre, dark chocolate shell. Invented here in 1890. The original Fürst version (in silver foil) is sold only from the original shop. Worth seeking out over the tourist versions.</p></div></div>
-          <div class="place-item"><span class="place-icon">🎂</span><div class="place-content"><a href="https://www.google.com/search?q=Salzburger+Nockerl+dessert+Austria" target="_blank" class="place-name">Salzburger Nockerl</a><p class="place-desc">A soufflé-style dessert — three golden peaks of egg white and sugar, served tableside. The peaks represent the three hills above Salzburg. Theatrical, delicious, and very Austrian.</p></div></div>
-          <div class="sublabel">Markets</div>
-          <div class="place-item"><span class="place-icon">🛒</span><div class="place-content"><a href="https://www.google.com/search?q=Salzburg+Green+Market+Universitatsplatz+food+market" target="_blank" class="place-name">Green Market (Universitätsplatz)</a><p class="place-desc">Daily outdoor market in the heart of the old town. Local cheese, bread, sausage, and pastries. The most atmospheric place for breakfast in Salzburg — pick up provisions and eat standing.</p></div></div>
+          <div class="place-item"><span class="place-icon">🥐</span><div class="place-content"><a href="https://www.google.com/search?q=Austrian+bakeries+Salzburg+Kipferl+Semmel" target="_blank" class="place-name">Kipferl, Semmel & Germknödel</a><p class="place-desc"><span class="hl-bakery">Austrian bakery culture is exceptional.</span> Kipferl are crescent rolls (the croissant's ancestor), Semmel are soft white rolls. Germknödel are steamed dumplings filled with plum jam and dusted with poppy seed butter — absurdly good.</p></div></div>
+          <div class="place-item"><span class="place-icon">🍫</span><div class="place-content"><a href="https://www.google.com/search?q=Mozartkugel+original+Furst+Salzburg" target="_blank" class="place-name">Original Mozartkugeln — Fürst</a><p class="place-desc">Marzipan and nougat centre, dark chocolate shell. Invented here in 1890. The original Fürst version (silver foil) is sold only at the original shop — completely different from tourist versions.</p></div></div>
+          <div class="place-item"><span class="place-icon">🛒</span><div class="place-content"><a href="https://www.google.com/search?q=Green+Market+Salzburg+Universitatsplatz+food" target="_blank" class="place-name">Green Market (Universitätsplatz)</a><p class="place-desc">Daily outdoor market in the old town. Local cheese, bread, charcuterie, pastries. The best breakfast in Salzburg — eat standing at the stalls.</p></div></div>
         </div>
       </div>
-
-      <div class="section-block attr collapsed">
-        <div class="section-top"><h3>🗺️ Attractions</h3><span class="chevron">▼</span></div>
-        <div class="section-body">
-          <div class="place-item"><span class="place-icon">🏰</span><div class="place-content"><a href="https://www.google.com/search?q=Hohensalzburg+Fortress+Salzburg+Austria" target="_blank" class="place-name">Hohensalzburg Fortress</a><p class="place-desc">The enormous medieval fortress above the city — one of the largest and best-preserved in Europe. Take the funicular up, walk down through the old town. The views over the Alps in January are stunning.</p></div></div>
-          <div class="place-item"><span class="place-icon">🏛️</span><div class="place-content"><a href="https://www.google.com/search?q=Salzburg+old+town+Getreidegasse+Austria" target="_blank" class="place-name">Getreidegasse & Old Town</a><p class="place-desc">The main shopping street of the old town — lined with guild signs in wrought iron and buildings unchanged since Mozart's time. His birthplace is here. The whole street is a museum without an entrance fee.</p></div></div>
-          <div class="place-item"><span class="place-icon">🌿</span><div class="place-content"><a href="https://www.google.com/search?q=Mirabell+Palace+Gardens+Salzburg" target="_blank" class="place-name">Mirabell Palace & Gardens</a><p class="place-desc">Baroque palace with formal gardens. In January the gardens are quiet and frost-dusted but the palace interior is open and warm. The Sound of Music filmed the "Do-Re-Mi" sequence here.</p></div></div>
-        </div>
-      </div>
-
       <div class="section-block bath collapsed">
         <div class="section-top"><h3>🛁 Baths</h3><span class="chevron">▼</span></div>
         <div class="section-body">
-          <div class="place-item"><span class="place-icon">♨️</span><div class="place-content"><a href="https://www.google.com/search?q=Bad+Gastein+thermal+spa+Austria+Alps" target="_blank" class="place-name">Bad Gastein — Day Trip (⭐ Don't Skip)</a><p class="place-desc"><span class="hl-onsen">One of Europe's most dramatic thermal spa experiences.</span> Bad Gastein is a spa town built vertically into an Alpine gorge — Belle Époque hotels stacked up a steep hillside with a waterfall crashing down the centre. The thermal water is radon-rich and genuinely warm. The Felsentherme complex is the main bath facility. January means snow on the peaks, mist over the gorge, and the thermal pools steaming against frozen air. About 1.5h by train south of Salzburg. <span class="hl-onsen">Tattoo policy: welcoming.</span></p></div></div>
-          <div class="place-item"><span class="place-icon">♨️</span><div class="place-content"><a href="https://www.google.com/search?q=Salzburg+Paracelsusbad+thermal+pool" target="_blank" class="place-name">Paracelsusbad Salzburg</a><p class="place-desc"><span class="hl-onsen">The city's own thermal bath complex.</span> Outdoor and indoor pools, sauna, good for an evening session without the train trip. A solid backup if Bad Gastein day trip doesn't fit the schedule.</p></div></div>
+          <div class="place-item"><span class="place-icon">♨️</span><div class="place-content"><a href="https://www.google.com/search?q=Bad+Gastein+thermal+spa+gorge+waterfall+Austria" target="_blank" class="place-name">Bad Gastein — Day Trip ⭐</a><p class="place-desc"><span class="hl-onsen">Don't skip this.</span> A Victorian spa town built vertically into an Alpine gorge with a waterfall crashing down its centre. Radon-rich thermal water, Belle Époque hotels stacked up the cliff walls, outdoor pools steaming against frozen January air. The Felsentherme is the main bath complex. 1.5h south by direct train. <span class="hl-onsen">Tattoo policy: welcoming.</span></p></div></div>
+          <div class="place-item"><span class="place-icon">♨️</span><div class="place-content"><a href="https://www.google.com/search?q=Paracelsusbad+Salzburg+thermal+pool" target="_blank" class="place-name">Paracelsusbad, Salzburg</a><p class="place-desc"><span class="hl-onsen">Salzburg's own thermal pool complex.</span> Indoor and outdoor pools, sauna. Good for an evening session without the train trip.</p></div></div>
         </div>
       </div>
-
       <div class="section-block hike collapsed">
         <div class="section-top"><h3>🥾 Hiking</h3><span class="chevron">▼</span></div>
         <div class="section-body">
-          <div class="place-item"><span class="place-icon">⛰️</span><div class="place-content"><a href="https://www.google.com/search?q=Untersberg+mountain+hike+Salzburg+winter" target="_blank" class="place-name">Untersberg Mountain</a><p class="place-desc"><span class="hl-hike">The iconic peak directly south of Salzburg.</span> Cable car goes to 1776m — from there trails lead across the plateau with views into Bavaria and the Austrian Alps. In January bring proper gear — it's genuine Alpine terrain up top. The walk back down to the valley is about 3 hours.</p></div></div>
-          <div class="place-item"><span class="place-icon">🌊</span><div class="place-content"><a href="https://www.google.com/search?q=Salzach+river+walk+Salzburg+Austria" target="_blank" class="place-name">Salzach River Walk</a><p class="place-desc">Flat, beautiful, and easy. Walk the riverside path south from the old town for an hour and you're already into farm country with Alpine views. A good morning warm-up before the fortress climb.</p></div></div>
-          <div class="place-item"><span class="place-icon">🏔️</span><div class="place-content"><a href="https://www.google.com/search?q=Bad+Gastein+winter+hiking+gorge+waterfall" target="_blank" class="place-name">Bad Gastein Gorge Walk</a><p class="place-desc"><span class="hl-hike">The waterfall gorge trail in Bad Gastein is hikeable year-round.</span> The frozen spray on the cliff walls in January is extraordinary. Pair with a bath session after — you've earned it.</p></div></div>
+          <div class="place-item"><span class="place-icon">⛰️</span><div class="place-content"><a href="https://www.google.com/search?q=Untersberg+mountain+Salzburg+cable+car+winter" target="_blank" class="place-name">Untersberg Mountain</a><p class="place-desc"><span class="hl-hike">Cable car to 1776m, then trails across the Alpine plateau.</span> Views into Bavaria and across the Austrian Alps. Proper January terrain — bring microspikes.</p></div></div>
+          <div class="place-item"><span class="place-icon">🌊</span><div class="place-content"><a href="https://www.google.com/search?q=Bad+Gastein+gorge+waterfall+walk+winter" target="_blank" class="place-name">Bad Gastein Gorge Walk</a><p class="place-desc"><span class="hl-hike">The waterfall gorge trail is hikeable year-round.</span> Frozen spray on the cliff walls in January. Pair with a Felsentherme session after.</p></div></div>
         </div>
       </div>
-
+      <div class="section-block attr collapsed">
+        <div class="section-top"><h3>🗺️ Attractions</h3><span class="chevron">▼</span></div>
+        <div class="section-body">
+          <div class="place-item"><span class="place-icon">🏰</span><div class="place-content"><a href="https://www.google.com/search?q=Hohensalzburg+Fortress+Salzburg+Austria" target="_blank" class="place-name">Hohensalzburg Fortress</a><p class="place-desc">One of Europe's largest and best-preserved medieval fortresses. Take the funicular up, walk down through the old town. Alpine views in winter are outstanding.</p></div></div>
+          <div class="place-item"><span class="place-icon">🏛️</span><div class="place-content"><a href="https://www.google.com/search?q=Getreidegasse+Mozart+birthplace+Salzburg" target="_blank" class="place-name">Getreidegasse & Mozart's Birthplace</a><p class="place-desc">The main old town street — unchanged since Mozart's time, lined with wrought-iron guild signs. His birthplace is here. The street is a museum without an entrance fee.</p></div></div>
+        </div>
+      </div>
       <div class="section-block transit collapsed">
         <div class="section-top"><h3>🚆 Transit & Phrases</h3><span class="chevron">▼</span></div>
         <div class="section-body">
-          <div class="transport-row"><span class="transport-badge badge-train">Train</span>Salzburg to Bad Gastein: 1h30 by ÖBB train. Direct, scenic, book on oebb.at.</div>
-          <div class="transport-row"><span class="transport-badge badge-walk">Walk</span>Salzburg old town is entirely walkable. Most sights within 15 min of each other.</div>
-          <div class="transport-row"><span class="transport-badge badge-fly">Fly</span>Salzburg airport (SZG) is 20 min from the old town by bus. Easy departure day.</div>
+          <div class="transport-row"><span class="transport-badge badge-train">Train</span>Salzburg to Bad Gastein: 1h30 by ÖBB, direct. Book on oebb.at.</div>
+          <div class="transport-row"><span class="transport-badge badge-fly">Fly</span>Salzburg airport (SZG) is 20 min from the old town by bus.</div>
           <div class="sublabel">Key Phrases — Austrian German</div>
           <div class="phrase-grid">
             <span class="ph-header">English</span><span class="ph-header">German</span><span class="ph-header">Pronunciation</span>
-            <span class="ph-en">Two rolls please</span><span class="ph-jp">Zwei Semmeln, bitte</span><span class="ph-ro">tsvye ZEM-eln BIT-teh</span>
-            <span class="ph-en">Where are the thermal baths?</span><span class="ph-jp">Wo sind die Therme?</span><span class="ph-ro">voh zint dee TER-meh</span>
-            <span class="ph-en">Is the trail safe in winter?</span><span class="ph-jp">Ist der Weg im Winter sicher?</span><span class="ph-ro">ist dair vayg im VIN-ter ZI-kher</span>
-            <span class="ph-en">One more, thank you</span><span class="ph-jp">Noch eines, danke</span><span class="ph-ro">nokh EYE-nes DAHN-keh</span>
+            <span class="ph-en">Two rolls please</span><span>Zwei Semmeln, bitte</span><span class="ph-ro">tsvye ZEM-eln BIT-teh</span>
+            <span class="ph-en">Where are the thermal baths?</span><span>Wo sind die Therme?</span><span class="ph-ro">voh zint dee TER-meh</span>
+            <span class="ph-en">Is the trail safe in winter?</span><span>Ist der Weg im Winter sicher?</span><span class="ph-ro">ist dair vayg im VIN-ter ZI-kher</span>
           </div>
         </div>
       </div>
@@ -622,205 +333,167 @@ body {
       <div class="city-header">
         <div class="city-name">✈️ Travel Home</div>
         <div class="city-dates">Saturday, Day 10 — Salzburg → Portland</div>
-        <p class="city-intro">Salzburg airport (SZG) is tiny and easy — 20 min from the old town by bus. Fly to Frankfurt or Munich, then direct to PDX. Morning departure recommended.</p>
-        <span class="city-transit-note">✈️ SZG → FRA or MUC → PDX. Lufthansa is the natural choice from this routing.</span>
+        <p class="city-intro">Salzburg airport (SZG) is tiny and easy — 20 min from the old town by bus. Fly to Frankfurt or Munich, then direct to PDX.</p>
+        <span class="city-transit-note">✈️ SZG → FRA or MUC → PDX. Lufthansa is the natural choice.</span>
       </div>
     </div>
 
     <div class="notes-section">
       <h2>Essential Notes — Trip 1</h2>
-      <div class="note-card"><strong>💶 Currency</strong><p>France and Germany use Euro. Austria uses Euro. One currency the whole trip — easy.</p></div>
-      <div class="note-card"><strong>🌡️ January Weather</strong><p>Strasbourg and Baden-Baden: 0–5°C, possibly frosty. Salzburg: -2 to 5°C, likely some snow. Bad Gastein: proper Alpine winter. Pack real layers, waterproof boots, and enjoy it — the baths hit differently when it's cold outside.</p></div>
-      <div class="note-card"><strong>♨️ Friedrichsbad Booking</strong><p>Book in advance at carasana.de — it fills up, especially weekends. The nudity aspect is non-negotiable; everyone is in the same situation and it's genuinely not awkward after 5 minutes.</p></div>
-      <div class="note-card"><strong>🚂 Train Booking</strong><p>France: SNCF Connect app. Germany: DB Navigator app. Austria: oebb.at. All three systems connect seamlessly — you can book cross-border tickets on DB Navigator for the whole Baden-Baden → Salzburg leg.</p></div>
-      <div class="note-card"><strong>🥾 Hiking Gear</strong><p>Microspikes or screw-in boot cleats are worth packing for January Alpine trails. Not always needed but invaluable if there's been recent snow. Pack layers that compress small.</p></div>
+      <div class="note-card"><strong>💶 Currency</strong><p>France, Germany, and Austria all use Euro. One currency the whole trip.</p></div>
+      <div class="note-card"><strong>🌡️ January Weather</strong><p>Strasbourg and Baden-Baden: 0–5°C, possibly frosty. Salzburg: -2 to 5°C, likely some snow. Bad Gastein: proper Alpine winter. The baths hit differently when it's cold outside.</p></div>
+      <div class="note-card"><strong>♨️ Friedrichsbad Booking</strong><p>Book in advance at carasana.de — it fills up, especially weekends. The nudity aspect is non-negotiable but genuinely not awkward after five minutes.</p></div>
+      <div class="note-card"><strong>🚂 Train Booking</strong><p>France: SNCF Connect app. Germany: DB Navigator app. Austria: oebb.at. Book cross-border tickets on DB Navigator for the Baden-Baden → Salzburg leg.</p></div>
+      <div class="note-card"><strong>🥾 Hiking Gear</strong><p>Microspikes or screw-in boot cleats for January Alpine trails. Not always needed but invaluable if there's been recent snow.</p></div>
     </div>
 
   </div>
 </div>
 
-<!-- ============================================================ -->
-<!-- TRIP 2: ALSACE + SWISS EDGE + INNSBRUCK -->
-<!-- ============================================================ -->
+<!-- ===== TRIP 2 ===== -->
 <div class="trip-panel" id="trip2">
-
   <div class="map-wrap"><div id="map2"></div></div>
-
   <div class="trip-intro">
     <div class="trip-intro-card">
       <h2>Trip 2 — Alsace → Swiss Edge → Innsbruck</h2>
-      <p>The mountain immersion. After Alsace's wine villages and bakeries, you cross into Switzerland briefly — Basel, Bern, or the Bernese Oberland edge — then drop into Austria via the Inn valley to Innsbruck. Innsbruck is smaller and more dramatic than Salzburg, ringed tightly by the Alps, and the Tyrol has some of the best thermal bath culture in Austria. Slower pace, more hiking, deeper into the mountains.</p>
+      <p>The mountain immersion. After Alsace's wine villages and bakeries, you cross into Switzerland — Bern's medieval arcades and Interlaken's Bernese Oberland Alps — then drop into Innsbruck, the Tyrolean capital ringed tightly by 2000m peaks, with some of Austria's best thermal bath culture nearby.</p>
       <div class="trip-meta">
-        <div class="trip-meta-item"><strong>Fly in:</strong> PDX → Zürich (ZRH) → Strasbourg/Basel</div>
+        <div class="trip-meta-item"><strong>Fly in:</strong> PDX → Zürich (ZRH) → Basel (BSL)</div>
         <div class="trip-meta-item"><strong>Fly out:</strong> Innsbruck (INN) or Munich (MUC) → PDX</div>
-        <div class="trip-meta-item"><strong>Open-jaw ticket:</strong> Into Basel (BSL) / Out of Innsbruck (INN) or Munich (MUC)</div>
         <div class="trip-meta-item"><strong>Ground transport:</strong> Train throughout — Switzerland and Austria rail is excellent</div>
       </div>
     </div>
   </div>
-
   <div class="booking-strip">
-    <span>✈️ Open-jaw: PDX → Basel (BSL) in &nbsp;/&nbsp; Innsbruck (INN) → PDX out — search as multi-city</span>
+    <span>✈️ Open-jaw: PDX → Basel (BSL) in &nbsp;/&nbsp; Innsbruck (INN) → PDX out</span>
     <a class="booking-link" href="https://www.google.com/flights#flt=PDX.BSL.2027-01-21*INN.PDX.2027-01-30;c:USD;e:1;sd:1;t:f" target="_blank">Search Google Flights</a>
     <a class="booking-link" href="https://www.kayak.com/flights/PDX-BSL/2027-01-21/INN-PDX/2027-01-30" target="_blank">Search Kayak</a>
   </div>
-
   <div class="content">
 
     <div class="city-block">
       <div class="city-header">
         <div class="city-name">✈️ Travel Day</div>
         <div class="city-dates">Thursday, Day 1 — Portland → Basel</div>
-        <p class="city-intro">PDX to Basel (BSL) via Zürich. Swiss International Air Lines flies PDX → ZRH, then it's a short connection to Basel. Basel EuroAirport is right on the French border — train into Strasbourg takes 1 hour.</p>
+        <p class="city-intro">PDX to Basel via Zürich. Swiss International Air Lines flies PDX → ZRH, then a short connection to Basel. From Basel airport, Strasbourg is 1 hour by train.</p>
         <span class="city-transit-note">✈️ PDX → ZRH → BSL. Swiss Air is the cleanest routing from Portland.</span>
       </div>
     </div>
 
     <hr class="city-divider">
 
-    <!-- STRASBOURG + ALSACE VILLAGES -->
     <div class="city-block">
       <div class="city-header">
         <div class="city-name"><a href="https://www.google.com/search?q=Strasbourg+France" target="_blank" class="place-name">Strasbourg</a> + <a href="https://www.google.com/search?q=Alsace+wine+route+villages+France" target="_blank" class="place-name">Alsace Villages</a></div>
         <div class="city-dates">Friday–Sunday, Days 2–4 🌙🌙🌙</div>
-        <p class="city-intro">Three days in Alsace. Strasbourg as your base for the first two nights, then a full day on the wine route. Same Alsace content as Trip 1 — cathedral, Petite France, bakeries, bouchons, Vosges hiking, thermal baths — but with an extra day to go deeper into the villages.</p>
-        <span class="city-transit-note">✈️ Arriving via Basel airport. 🚂 Basel → Strasbourg: 1h by train.</span>
+        <p class="city-intro">Three days in Alsace. Strasbourg as your base — cathedral, Petite France, bakeries, bouchons, Vosges hiking, municipal thermal baths. A full day on the wine route for village hopping. Same excellent Alsatian content as Trip 1 with an extra day to go deeper.</p>
+        <span class="city-transit-note">🚂 Basel → Strasbourg: 1h. Wine villages by rental car.</span>
       </div>
-
       <div class="section-block food collapsed">
         <div class="section-top"><h3>🥐 Bakeries & Food</h3><span class="chevron">▼</span></div>
         <div class="section-body">
-          <div class="place-item"><span class="place-icon">🥐</span><div class="place-content"><a href="https://www.google.com/search?q=kougelhopf+brioche+Alsace+bakery" target="_blank" class="place-name">Kougelhopf</a><p class="place-desc"><span class="hl-bakery">The Alsatian crown pastry — ring-shaped brioche with raisins, almonds, and powdered sugar.</span> Every boulangerie. Eat warm, with butter.</p></div></div>
-          <div class="place-item"><span class="place-icon">🥨</span><div class="place-content"><a href="https://www.google.com/search?q=bretzel+Alsace+soft+pretzel+bakery" target="_blank" class="place-name">Bretzel</a><p class="place-desc">The original soft pretzel, from Alsace. Lye crust, coarse salt, chewy interior. Nothing like stadium versions. Pick one up for the walk every morning.</p></div></div>
-          <div class="place-item"><span class="place-icon">🥗</span><div class="place-content"><a href="https://www.google.com/search?q=tarte+flambee+Alsace+bouchon+restaurant" target="_blank" class="place-name">Tarte flambée</a><p class="place-desc">Thin crispy dough, crème fraîche, lardons, onion. The Alsatian bouchon staple. Order multiple.</p></div></div>
+          <div class="place-item"><span class="place-icon">🥐</span><div class="place-content"><a href="https://www.google.com/search?q=kougelhopf+brioche+Alsace+bakery" target="_blank" class="place-name">Kougelhopf</a><p class="place-desc"><span class="hl-bakery">The Alsatian crown pastry.</span> Ring-shaped brioche with raisins, almonds, powdered sugar. Every boulangerie. Eat warm with butter.</p></div></div>
+          <div class="place-item"><span class="place-icon">🥨</span><div class="place-content"><a href="https://www.google.com/search?q=bretzel+Alsace+soft+pretzel+bakery" target="_blank" class="place-name">Bretzel</a><p class="place-desc">The original soft pretzel from Alsace. Lye crust, coarse salt, chewy interior. Pick one up every morning.</p></div></div>
+          <div class="place-item"><span class="place-icon">🥗</span><div class="place-content"><a href="https://www.google.com/search?q=tarte+flambee+Alsace+bouchon+restaurant" target="_blank" class="place-name">Tarte flambée</a><p class="place-desc">Thin crispy dough, crème fraîche, lardons, onion. Order multiple. The Alsatian bouchon staple.</p></div></div>
         </div>
       </div>
-
       <div class="section-block attr collapsed">
         <div class="section-top"><h3>🗺️ Highlights</h3><span class="chevron">▼</span></div>
         <div class="section-body">
           <div class="place-item"><span class="place-icon">⛪</span><div class="place-content"><a href="https://www.google.com/search?q=Strasbourg+Cathedral+Gothic+France" target="_blank" class="place-name">Strasbourg Cathedral</a><p class="place-desc">Gothic masterpiece, 250 years in the building. Climb to the platform for Rhine valley views.</p></div></div>
           <div class="place-item"><span class="place-icon">🏘️</span><div class="place-content"><a href="https://www.google.com/search?q=Petite+France+Strasbourg+canals" target="_blank" class="place-name">La Petite France</a><p class="place-desc">Half-timbered canal district. Empty in January. Extremely beautiful.</p></div></div>
-          <div class="place-item"><span class="place-icon">🏘️</span><div class="place-content"><a href="https://www.google.com/search?q=Riquewihr+Eguisheim+Alsace+wine+villages" target="_blank" class="place-name">Wine Villages — Riquewihr, Eguisheim, Kaysersberg</a><p class="place-desc">Day trip south along the Route des Vins. Medieval walled villages with excellent pâtisseries. Rent a car for the day.</p></div></div>
+          <div class="place-item"><span class="place-icon">🏘️</span><div class="place-content"><a href="https://www.google.com/search?q=Riquewihr+Eguisheim+Kaysersberg+Alsace+wine+villages" target="_blank" class="place-name">Wine Villages — Riquewihr, Eguisheim, Kaysersberg</a><p class="place-desc">Day trip south along the Route des Vins. Medieval walled villages with excellent pâtisseries. Rent a car for the day.</p></div></div>
         </div>
       </div>
-
       <div class="section-block bath collapsed">
         <div class="section-top"><h3>🛁 Baths</h3><span class="chevron">▼</span></div>
         <div class="section-body">
-          <div class="place-item"><span class="place-icon">♨️</span><div class="place-content"><a href="https://www.google.com/search?q=Les+Bains+Municipaux+Strasbourg+thermal+baths" target="_blank" class="place-name">Les Bains Municipaux, Strasbourg</a><p class="place-desc"><span class="hl-onsen">1908 Art Nouveau municipal baths. Hot pools, steam, locals-only vibe.</span> Very affordable. The real bathhouse experience before the luxury versions in Austria.</p></div></div>
-          <div class="place-item"><span class="place-icon">♨️</span><div class="place-content"><a href="https://www.google.com/search?q=Niederbronn+les+Bains+Alsace+Roman+thermal+springs" target="_blank" class="place-name">Niederbronn-les-Bains</a><p class="place-desc"><span class="hl-onsen">Roman-origin thermal springs, 40 min north of Strasbourg.</span> Tiny spa town, completely genuine, almost no tourists in January.</p></div></div>
+          <div class="place-item"><span class="place-icon">♨️</span><div class="place-content"><a href="https://www.google.com/search?q=Les+Bains+Municipaux+Strasbourg+thermal+baths" target="_blank" class="place-name">Les Bains Municipaux</a><p class="place-desc"><span class="hl-onsen">1908 Art Nouveau municipal baths. Hot pools, steam, locals-only vibe. Very affordable.</span></p></div></div>
+          <div class="place-item"><span class="place-icon">♨️</span><div class="place-content"><a href="https://www.google.com/search?q=Niederbronn+les+Bains+Alsace+Roman+thermal+springs" target="_blank" class="place-name">Niederbronn-les-Bains</a><p class="place-desc"><span class="hl-onsen">Roman-origin thermal springs 40 min north of Strasbourg.</span> Tiny spa town, completely genuine, almost no tourists in January.</p></div></div>
         </div>
       </div>
-
       <div class="section-block hike collapsed">
         <div class="section-top"><h3>🥾 Hiking</h3><span class="chevron">▼</span></div>
         <div class="section-body">
-          <div class="place-item"><span class="place-icon">⛰️</span><div class="place-content"><a href="https://www.google.com/search?q=Vosges+mountains+hiking+day+trips+Strasbourg" target="_blank" class="place-name">Vosges Mountains</a><p class="place-desc"><span class="hl-hike">30 min west of Strasbourg by car.</span> Forested ridge hiking with castle ruins on the summits. The GR5 long-distance trail runs the full length. Clear winter views into the Rhine plain.</p></div></div>
+          <div class="place-item"><span class="place-icon">⛰️</span><div class="place-content"><a href="https://www.google.com/search?q=Vosges+mountains+hiking+day+trips+Strasbourg" target="_blank" class="place-name">Vosges Mountains</a><p class="place-desc"><span class="hl-hike">30 min west of Strasbourg by car.</span> Forested ridge hiking with castle ruins on the summits. Clear winter views into the Rhine plain.</p></div></div>
         </div>
       </div>
     </div>
 
     <hr class="city-divider">
 
-    <!-- BERN / INTERLAKEN EDGE -->
     <div class="city-block">
       <div class="city-header">
-        <div class="city-name"><a href="https://www.google.com/search?q=Bern+Switzerland+old+town" target="_blank" class="place-name">Bern</a> + <a href="https://www.google.com/search?q=Interlaken+Switzerland+Alps+winter" target="_blank" class="place-name">Interlaken edge</a></div>
+        <div class="city-name"><a href="https://www.google.com/search?q=Bern+Switzerland+old+town" target="_blank" class="place-name">Bern</a> + <a href="https://www.google.com/search?q=Interlaken+Switzerland+Alps+winter" target="_blank" class="place-name">Interlaken</a></div>
         <div class="city-dates">Monday–Tuesday, Days 5–6 🌙🌙</div>
-        <p class="city-intro">Cross into Switzerland. Bern is the Swiss capital and one of Europe's best-preserved medieval cities — six kilometres of covered arcaded walkways line the old town streets, all UNESCO-listed. It's compact, walkable, and genuinely beautiful. From Bern, Interlaken is 50 minutes by train and gives access to the Bernese Oberland — the most dramatic Alpine scenery in Switzerland. January means snow-capped peaks, few tourists, and excellent bakeries.</p>
-        <span class="city-transit-note">🚂 Train from Strasbourg → Basel → Bern: about 2h total. Clean connection.</span>
+        <p class="city-intro">Cross into Switzerland. Bern is the Swiss capital and one of Europe's best-preserved medieval cities — six kilometres of covered arcaded walkways line the old town streets, all UNESCO-listed. From Bern, Interlaken is 50 minutes by train and gives access to the Bernese Oberland — the Eiger, Mönch, and Jungfrau directly above. January means snow-capped peaks, few tourists, and excellent bakeries.</p>
+        <span class="city-transit-note">🚂 Strasbourg → Basel → Bern: about 2h. Bern → Interlaken: 50 min.</span>
       </div>
-
       <div class="section-block food collapsed">
         <div class="section-top"><h3>🥐 Bakeries & Food</h3><span class="chevron">▼</span></div>
         <div class="section-body">
-          <div class="place-item"><span class="place-icon">🥐</span><div class="place-content"><a href="https://www.google.com/search?q=Swiss+bakeries+Bern+Gipfeli+croissant" target="_blank" class="place-name">Gipfeli (Swiss croissant)</a><p class="place-desc"><span class="hl-bakery">Switzerland's version of the croissant — slightly denser, more buttery, less flaky.</span> Swiss bakeries (Bäckerei) open early and the Gipfeli situation is serious. The quality is exceptional across the board.</p></div></div>
-          <div class="place-item"><span class="place-icon">🧀</span><div class="place-content"><a href="https://www.google.com/search?q=Swiss+cheese+fondue+raclette+Bern+restaurant" target="_blank" class="place-name">Fondue and Raclette</a><p class="place-desc">January in Switzerland is peak fondue season. Melted Gruyère or Emmental in a communal pot, bread dipped in — perfect after a cold morning of walking the arcades. Raclette (scraped melted cheese over potatoes) is the simpler weeknight version.</p></div></div>
-          <div class="place-item"><span class="place-icon">🐻</span><div class="place-content"><a href="https://www.google.com/search?q=Bern+market+Bundesplatz+food+Switzerland" target="_blank" class="place-name">Bern markets (Bundesplatz)</a><p class="place-desc">Bern's outdoor markets operate year-round around the Federal Palace square. Local cheese, bread, and seasonal produce. Good for a slow morning browse.</p></div></div>
+          <div class="place-item"><span class="place-icon">🥐</span><div class="place-content"><a href="https://www.google.com/search?q=Swiss+bakeries+Bern+Gipfeli+croissant" target="_blank" class="place-name">Gipfeli</a><p class="place-desc"><span class="hl-bakery">Switzerland's version of the croissant — slightly denser, more buttery.</span> Swiss bakeries open early and the Gipfeli situation is serious.</p></div></div>
+          <div class="place-item"><span class="place-icon">🧀</span><div class="place-content"><a href="https://www.google.com/search?q=Swiss+cheese+fondue+raclette+Bern+restaurant" target="_blank" class="place-name">Fondue & Raclette</a><p class="place-desc">January in Switzerland is peak fondue season. Melted Gruyère in a communal pot, bread dipped in — perfect after a cold morning in the arcades.</p></div></div>
         </div>
       </div>
-
       <div class="section-block attr collapsed">
         <div class="section-top"><h3>🗺️ Attractions</h3><span class="chevron">▼</span></div>
         <div class="section-body">
-          <div class="place-item"><span class="place-icon">🏛️</span><div class="place-content"><a href="https://www.google.com/search?q=Bern+old+town+arcades+Lauben+UNESCO" target="_blank" class="place-name">Bern's UNESCO Arcades (Lauben)</a><p class="place-desc">Six kilometres of covered stone walkways running through the old town. Built in the 12th century to keep shoppers dry. The whole city centre is navigable under cover — remarkable urban design that still works perfectly.</p></div></div>
-          <div class="place-item"><span class="place-icon">🐻</span><div class="place-content"><a href="https://www.google.com/search?q=Bern+Bear+Park+Rosengarten+viewpoint" target="_blank" class="place-name">Bear Park & Rosengarten viewpoint</a><p class="place-desc">Bern's heraldic animal is the bear — live bears live in a riverside enclosure below the old town. The Rosengarten above it has the best viewpoint over the Aare river bend and the Alps behind.</p></div></div>
-          <div class="place-item"><span class="place-icon">🏔️</span><div class="place-content"><a href="https://www.google.com/search?q=Interlaken+Switzerland+Jungfrau+Alps+day+trip" target="_blank" class="place-name">Interlaken + Jungfrau views (day trip)</a><p class="place-desc">50 min by train from Bern. Interlaken sits between two lakes with the Eiger, Mönch, and Jungfrau directly above. January means the peaks are white and the valley is quiet. You don't need to ski to enjoy this — just being there is enough.</p></div></div>
+          <div class="place-item"><span class="place-icon">🏛️</span><div class="place-content"><a href="https://www.google.com/search?q=Bern+old+town+arcades+Lauben+UNESCO" target="_blank" class="place-name">Bern's Arcades (Lauben)</a><p class="place-desc">Six kilometres of covered stone walkways through the old town, built in the 12th century. The whole city centre is navigable under cover — remarkable urban design that still works perfectly.</p></div></div>
+          <div class="place-item"><span class="place-icon">🏔️</span><div class="place-content"><a href="https://www.google.com/search?q=Interlaken+Switzerland+Jungfrau+Alps+day+trip" target="_blank" class="place-name">Interlaken + Jungfrau views</a><p class="place-desc">Interlaken sits between two lakes with the Eiger, Mönch, and Jungfrau directly above. January means the peaks are white and the valley is quiet. You don't need to ski to enjoy this.</p></div></div>
         </div>
       </div>
-
       <div class="section-block hike collapsed">
         <div class="section-top"><h3>🥾 Hiking</h3><span class="chevron">▼</span></div>
         <div class="section-body">
-          <div class="place-item"><span class="place-icon">🌊</span><div class="place-content"><a href="https://www.google.com/search?q=Bern+Aare+river+walk+hiking+path" target="_blank" class="place-name">Aare River Loop, Bern</a><p class="place-desc"><span class="hl-hike">Flat riverside walking path around the Aare river peninsula</span> that the old town sits on. About 4km, beautiful even in winter, with views up to the old town walls. Good warm-up walk on arrival day.</p></div></div>
-          <div class="place-item"><span class="place-icon">🏔️</span><div class="place-content"><a href="https://www.google.com/search?q=Harder+Kulm+Interlaken+hike+winter" target="_blank" class="place-name">Harder Kulm above Interlaken</a><p class="place-desc"><span class="hl-hike">A ridge above Interlaken with views of all three main Bernese Alps peaks.</span> Funicular goes up, trail comes down. In January bring traction devices — the descent can be icy. Worth it for the panorama.</p></div></div>
-        </div>
-      </div>
-
-      <div class="section-block transit collapsed">
-        <div class="section-top"><h3>🚆 Transit & Phrases</h3><span class="chevron">▼</span></div>
-        <div class="section-body">
-          <div class="transport-row"><span class="transport-badge badge-train">Train</span>Bern → Interlaken: 50 min. Bern → Innsbruck: ~4h via Zürich and the Arlberg pass route. Scenic.</div>
-          <div class="sublabel">Key Phrases — Swiss German / French</div>
-          <div class="phrase-grid">
-            <span class="ph-header">English</span><span class="ph-header">Swiss German</span><span class="ph-header">Pronunciation</span>
-            <span class="ph-en">Two croissants please</span><span class="ph-jp">Zwei Gipfeli, bitte</span><span class="ph-ro">tsvye GIP-feli BIT-teh</span>
-            <span class="ph-en">Where is the old town?</span><span class="ph-jp">Wo isch d'Altstadt?</span><span class="ph-ro">voh ish DALT-shtaht</span>
-            <span class="ph-en">How much does it cost?</span><span class="ph-jp">Wie viel kostet das?</span><span class="ph-ro">vee feel KOS-tet dahs</span>
-          </div>
+          <div class="place-item"><span class="place-icon">🌊</span><div class="place-content"><a href="https://www.google.com/search?q=Bern+Aare+river+walk+hiking+path" target="_blank" class="place-name">Aare River Loop, Bern</a><p class="place-desc"><span class="hl-hike">Flat riverside path around the Aare peninsula the old town sits on.</span> About 4km, beautiful in winter, views up to the old town walls.</p></div></div>
+          <div class="place-item"><span class="place-icon">🏔️</span><div class="place-content"><a href="https://www.google.com/search?q=Harder+Kulm+Interlaken+hike+winter" target="_blank" class="place-name">Harder Kulm above Interlaken</a><p class="place-desc"><span class="hl-hike">A ridge above Interlaken with views of all three main Bernese Alps peaks.</span> Funicular goes up, trail comes down. Bring traction devices in January.</p></div></div>
         </div>
       </div>
     </div>
 
     <hr class="city-divider">
 
-    <!-- INNSBRUCK -->
     <div class="city-block">
       <div class="city-header">
         <div class="city-name"><a href="https://www.google.com/search?q=Innsbruck+Austria+Tyrol+Alps" target="_blank" class="place-name">Innsbruck</a></div>
         <div class="city-dates">Wednesday–Friday, Days 7–9 🌙🌙🌙</div>
-        <p class="city-intro">The Tyrolean capital — smaller and more dramatically Alpine than Salzburg. Innsbruck sits in a narrow valley with 2000-metre peaks rising directly above the rooftops. The old town is compact and beautiful, the food market is excellent, and the surrounding Tyrol has some of Austria's best thermal bath villages. Wattens (just 15 min by train) has the Swarovski Crystal Worlds, an genuinely bizarre and wonderful underground art installation. The hiking starts immediately at the city's edge.</p>
-        <span class="city-transit-note">🚂 Train from Bern via Zürich: ~4h. The Arlberg route through the mountains is one of the great European train journeys.</span>
+        <p class="city-intro">The Tyrolean capital — smaller and more dramatically Alpine than Salzburg. Innsbruck sits in a narrow valley with 2000-metre peaks rising directly above the rooftops. The old town is compact and beautiful, the food market excellent, and the surrounding Tyrol has some of Austria's best thermal bath villages. The cable car from the city centre reaches 2256m in 20 minutes.</p>
+        <span class="city-transit-note">🚂 Bern → Zürich → Innsbruck: ~4h. The Arlberg route through the mountains is one of the great European train journeys.</span>
       </div>
-
       <div class="section-block food collapsed">
         <div class="section-top"><h3>🥐 Bakeries & Food</h3><span class="chevron">▼</span></div>
         <div class="section-body">
-          <div class="place-item"><span class="place-icon">🥐</span><div class="place-content"><a href="https://www.google.com/search?q=Austrian+bakery+Innsbruck+Kipferl+Semmel+Bäckerei" target="_blank" class="place-name">Tyrolean Bäckereien</a><p class="place-desc"><span class="hl-bakery">Austrian bakery culture is exceptional and Innsbruck has excellent ones.</span> Kipferl (crescent rolls), Semmel (soft scored rolls), and Germknödel (sweet steamed dumplings filled with plum jam, dusted with poppy seed and butter). Get the Germknödel — it's absurdly good.</p></div></div>
-          <div class="place-item"><span class="place-icon">🥩</span><div class="place-content"><a href="https://www.google.com/search?q=Tyrolean+Gröstl+Innsbruck+Austria+traditional+food" target="_blank" class="place-name">Tiroler Gröstl</a><p class="place-desc">The Tyrolean mountain dish — diced potatoes and beef pan-fried with onions and caraway, topped with a fried egg. Hearty, warming, and exactly what you want after a cold morning hike.</p></div></div>
-          <div class="place-item"><span class="place-icon">🛒</span><div class="place-content"><a href="https://www.google.com/search?q=Innsbruck+market+Markthalle+food+hall" target="_blank" class="place-name">Markthalle Innsbruck</a><p class="place-desc">Innsbruck's covered food hall. Local cheese, bread, Tyrolean ham (Speck), fresh pasta, pastries. Open weekday mornings. The best breakfast in the city.</p></div></div>
+          <div class="place-item"><span class="place-icon">🥐</span><div class="place-content"><a href="https://www.google.com/search?q=Austrian+bakery+Innsbruck+Kipferl+Germknodel" target="_blank" class="place-name">Tyrolean Bäckereien</a><p class="place-desc"><span class="hl-bakery">Austrian bakery culture is exceptional.</span> Kipferl, Semmel, and Germknödel — steamed dumplings filled with plum jam, topped with poppy seed and butter. Get the Germknödel.</p></div></div>
+          <div class="place-item"><span class="place-icon">🥩</span><div class="place-content"><a href="https://www.google.com/search?q=Tyrolean+Gröstl+Innsbruck+Austria" target="_blank" class="place-name">Tiroler Gröstl</a><p class="place-desc">Diced potatoes and beef pan-fried with onions and caraway, topped with a fried egg. The Tyrolean mountain dish. Perfect after a cold hike.</p></div></div>
+          <div class="place-item"><span class="place-icon">🛒</span><div class="place-content"><a href="https://www.google.com/search?q=Innsbruck+Markthalle+food+hall" target="_blank" class="place-name">Markthalle Innsbruck</a><p class="place-desc">Innsbruck's covered food hall. Local cheese, bread, Tyrolean Speck, fresh pasta, pastries. Open weekday mornings. Best breakfast in the city.</p></div></div>
         </div>
       </div>
-
       <div class="section-block bath collapsed">
         <div class="section-top"><h3>🛁 Baths</h3><span class="chevron">▼</span></div>
         <div class="section-body">
-          <div class="place-item"><span class="place-icon">♨️</span><div class="place-content"><a href="https://www.google.com/search?q=Aqua+Dome+Längenfeld+Tyrol+Austria+thermal+spa" target="_blank" class="place-name">Aqua Dome, Längenfeld ⭐</a><p class="place-desc"><span class="hl-onsen">One of the most architecturally striking thermal spas in the world.</span> Three futuristic bowl-shaped outdoor pools perched above an Alpine valley, filled with thermal water, steam rising into the mountain air. About 1h from Innsbruck by bus or car. <span class="hl-onsen">Tattoo policy: welcoming. Swimwear required in main pools, textile-free sauna area available.</span></p></div></div>
-          <div class="place-item"><span class="place-icon">♨️</span><div class="place-content"><a href="https://www.google.com/search?q=Stubay+thermal+spa+Stubaital+Innsbruck+day+trip" target="_blank" class="place-name">Stubaital Thermal Baths (Stubay)</a><p class="place-desc"><span class="hl-onsen">30 min south of Innsbruck by bus.</span> The Stubaital valley has a well-regarded thermal complex combined with a ski area — but the baths are open to non-skiers. Good option if Aqua Dome feels far.</p></div></div>
+          <div class="place-item"><span class="place-icon">♨️</span><div class="place-content"><a href="https://www.google.com/search?q=Aqua+Dome+Längenfeld+Tyrol+Austria+thermal+spa" target="_blank" class="place-name">Aqua Dome, Längenfeld ⭐</a><p class="place-desc"><span class="hl-onsen">One of the most architecturally striking thermal spas in the world.</span> Three futuristic bowl-shaped outdoor pools perched above an Alpine valley, thermal water steaming into the mountain air. About 1h from Innsbruck. <span class="hl-onsen">Tattoo policy: welcoming.</span></p></div></div>
+          <div class="place-item"><span class="place-icon">♨️</span><div class="place-content"><a href="https://www.google.com/search?q=Stubay+thermal+spa+Stubaital+Innsbruck" target="_blank" class="place-name">Stubaital Thermal Baths</a><p class="place-desc"><span class="hl-onsen">30 min south of Innsbruck by bus.</span> Well-regarded thermal complex in a ski valley — open to non-skiers.</p></div></div>
         </div>
       </div>
-
       <div class="section-block hike collapsed">
         <div class="section-top"><h3>🥾 Hiking</h3><span class="chevron">▼</span></div>
         <div class="section-body">
-          <div class="place-item"><span class="place-icon">⛰️</span><div class="place-content"><a href="https://www.google.com/search?q=Nordkette+cable+car+hike+Innsbruck+winter" target="_blank" class="place-name">Nordkette — Cable Car + Ridge Walk</a><p class="place-desc"><span class="hl-hike">The cable car from the city centre takes you to 2256m in 20 minutes.</span> From the top, the ridge walk across the Hafelekar gives views over Innsbruck, the Inn Valley, and the Stubai Alps. In January this is proper Alpine terrain — crampons or microspikes required above the cable car station. Extraordinary.</p></div></div>
-          <div class="place-item"><span class="place-icon">🌊</span><div class="place-content"><a href="https://www.google.com/search?q=Inn+river+walk+Innsbruck+cycling+path" target="_blank" class="place-name">Inn River Path</a><p class="place-desc"><span class="hl-hike">Flat riverside walking and cycling path along the Inn.</span> Easy, beautiful, good morning warm-up. The view back toward the old town with the mountains behind it is the postcard shot of Innsbruck.</p></div></div>
+          <div class="place-item"><span class="place-icon">⛰️</span><div class="place-content"><a href="https://www.google.com/search?q=Nordkette+cable+car+hike+Innsbruck+winter" target="_blank" class="place-name">Nordkette Ridge Walk</a><p class="place-desc"><span class="hl-hike">Cable car from the city centre to 2256m in 20 minutes.</span> Ridge walk across the Hafelekar with views over Innsbruck and the Stubai Alps. Proper Alpine terrain in January — microspikes required.</p></div></div>
+          <div class="place-item"><span class="place-icon">🌊</span><div class="place-content"><a href="https://www.google.com/search?q=Inn+river+walk+Innsbruck" target="_blank" class="place-name">Inn River Path</a><p class="place-desc"><span class="hl-hike">Flat riverside path along the Inn.</span> The view back toward the old town with the mountains behind it is the postcard shot of Innsbruck.</p></div></div>
         </div>
       </div>
-
       <div class="section-block transit collapsed">
         <div class="section-top"><h3>🚆 Transit & Phrases</h3><span class="chevron">▼</span></div>
         <div class="section-body">
-          <div class="transport-row"><span class="transport-badge badge-train">Train</span>Innsbruck to Längenfeld (Aqua Dome): 1h by bus. Innsbruck to Stubaital: 30 min by STB bus.</div>
-          <div class="transport-row"><span class="transport-badge badge-fly">Fly</span>Innsbruck airport (INN) is 5 min from the old town. Munich airport (MUC) is 2h by train and has more PDX flight options.</div>
+          <div class="transport-row"><span class="transport-badge badge-train">Train</span>Innsbruck to Längenfeld (Aqua Dome): 1h by bus. To Stubaital: 30 min by STB bus.</div>
+          <div class="transport-row"><span class="transport-badge badge-fly">Fly</span>Innsbruck airport (INN) is 5 min from the old town. Munich (MUC) is 2h by train with more PDX flight options.</div>
           <div class="sublabel">Key Phrases — Austrian German</div>
           <div class="phrase-grid">
             <span class="ph-header">English</span><span class="ph-header">German</span><span class="ph-header">Pronunciation</span>
-            <span class="ph-en">One steamed dumpling please</span><span class="ph-jp">Einen Germknödel, bitte</span><span class="ph-ro">EYE-nen GAIRM-kner-del BIT-teh</span>
-            <span class="ph-en">Is the cable car running?</span><span class="ph-jp">Fährt die Seilbahn?</span><span class="ph-ro">fairt dee ZYL-bahn</span>
-            <span class="ph-en">Where is the thermal bath?</span><span class="ph-jp">Wo ist die Therme?</span><span class="ph-ro">voh ist dee TER-meh</span>
-            <span class="ph-en">Very beautiful!</span><span class="ph-jp">Sehr schön!</span><span class="ph-ro">zair SHERN</span>
+            <span class="ph-en">One steamed dumpling please</span><span>Einen Germknödel, bitte</span><span class="ph-ro">EYE-nen GAIRM-kner-del BIT-teh</span>
+            <span class="ph-en">Is the cable car running?</span><span>Fährt die Seilbahn?</span><span class="ph-ro">fairt dee ZYL-bahn</span>
+            <span class="ph-en">Where is the thermal bath?</span><span>Wo ist die Therme?</span><span class="ph-ro">voh ist dee TER-meh</span>
           </div>
         </div>
       </div>
@@ -832,110 +505,90 @@ body {
       <div class="city-header">
         <div class="city-name">✈️ Travel Home</div>
         <div class="city-dates">Saturday, Day 10 — Innsbruck or Munich → Portland</div>
-        <p class="city-intro">Innsbruck airport (INN) is 5 min from the old town but has limited transatlantic connections. Munich (MUC) is 2 hours by train and has direct or easy-connection flights to PDX. Book accordingly.</p>
+        <p class="city-intro">Innsbruck airport (INN) is 5 min from the old town. Munich (MUC) is 2h by train with more PDX connection options.</p>
         <span class="city-transit-note">✈️ INN or MUC → PDX via Frankfurt or London.</span>
       </div>
     </div>
 
     <div class="notes-section">
       <h2>Essential Notes — Trip 2</h2>
-      <div class="note-card"><strong>💶💷 Currency</strong><p>France and Austria use Euro. Switzerland uses Swiss Franc (CHF) — budget roughly 20–30% more for Swiss days as prices are higher than France or Austria.</p></div>
-      <div class="note-card"><strong>🏔️ Alpine Safety in January</strong><p>The Nordkette above Innsbruck and Harder Kulm above Interlaken are real Alpine environments in January. Check conditions before going up, bring microspikes, and don't push past your comfort level. The views are worth the preparation.</p></div>
-      <div class="note-card"><strong>♨️ Aqua Dome Booking</strong><p>Book the Aqua Dome in advance at aqua-dome.at — it's popular even in winter. The bus connection from Innsbruck is called the Ötztal bus and runs regularly.</p></div>
-      <div class="note-card"><strong>🚂 Switzerland Rail</strong><p>Swiss trains are famously punctual and comfortable. The SBB app handles all Swiss train tickets. The Bern → Innsbruck route via Zürich and the Arlberg tunnel is one of the great European train journeys — get a window seat.</p></div>
+      <div class="note-card"><strong>💶💷 Currency</strong><p>France and Austria use Euro. Switzerland uses Swiss Franc (CHF) — budget roughly 20–30% more for Swiss days.</p></div>
+      <div class="note-card"><strong>🏔️ Alpine Safety in January</strong><p>The Nordkette above Innsbruck and Harder Kulm above Interlaken are real Alpine environments. Check conditions, bring microspikes, don't push past your comfort level.</p></div>
+      <div class="note-card"><strong>♨️ Aqua Dome Booking</strong><p>Book in advance at aqua-dome.at — popular even in winter. The Ötztal bus connects Innsbruck.</p></div>
+      <div class="note-card"><strong>🚂 Switzerland Rail</strong><p>Swiss trains are famously punctual. Use the SBB app. The Bern → Innsbruck route via Zürich and the Arlberg tunnel is one of the great European train journeys — get a window seat.</p></div>
     </div>
 
   </div>
 </div>
 
-<!-- ============================================================ -->
-<!-- TRIP 3: LYON + ANNECY + SALZBURG -->
-<!-- ============================================================ -->
+<!-- ===== TRIP 3 ===== -->
 <div class="trip-panel" id="trip3">
-
   <div class="map-wrap"><div id="map3"></div></div>
-
   <div class="trip-intro">
     <div class="trip-intro-card">
       <h2>Trip 3 — Lyon + Annecy + Salzburg</h2>
-      <p>The food capital route. Fly into Lyon — France's undisputed culinary capital, home of the bouchon tradition and the country's best street-level food culture. Then east to Annecy, a town so beautiful it looks painted, on the clearest lake in Europe, ringed by Alps. Then Salzburg for the Austrian finale — architecture, markets, and a day trip to Bad Gastein's thermal gorge. The most food-focused of the three options, with equally strong hiking and bath culture.</p>
+      <p>The food capital route. Fly into Lyon — France's undisputed culinary capital. Then east to Annecy, a town so beautiful it looks painted, on the clearest lake in Europe, ringed by Alps. Then Salzburg for the Austrian finale — architecture, markets, and a day trip to Bad Gastein's thermal gorge. Most food-focused of the three, with equally strong hiking and bath culture.</p>
       <div class="trip-meta">
         <div class="trip-meta-item"><strong>Fly in:</strong> PDX → Paris (CDG) → Lyon (LYS)</div>
-        <div class="trip-meta-item"><strong>Fly out:</strong> Salzburg (SZG) → Munich (MUC) → PDX</div>
-        <div class="trip-meta-item"><strong>Open-jaw ticket:</strong> Into Lyon (LYS) / Out of Salzburg (SZG) or Munich (MUC)</div>
+        <div class="trip-meta-item"><strong>Fly out:</strong> Salzburg (SZG) or Munich (MUC) → PDX</div>
         <div class="trip-meta-item"><strong>Ground transport:</strong> Train throughout</div>
       </div>
     </div>
   </div>
-
   <div class="booking-strip">
-    <span>✈️ Open-jaw: PDX → Lyon (LYS) in &nbsp;/&nbsp; Salzburg (SZG) → PDX out — search as multi-city</span>
+    <span>✈️ Open-jaw: PDX → Lyon (LYS) in &nbsp;/&nbsp; Salzburg (SZG) → PDX out</span>
     <a class="booking-link" href="https://www.google.com/flights#flt=PDX.LYS.2027-01-21*SZG.PDX.2027-01-30;c:USD;e:1;sd:1;t:f" target="_blank">Search Google Flights</a>
     <a class="booking-link" href="https://www.kayak.com/flights/PDX-LYS/2027-01-21/SZG-PDX/2027-01-30" target="_blank">Search Kayak</a>
   </div>
-
   <div class="content">
 
     <div class="city-block">
       <div class="city-header">
         <div class="city-name">✈️ Travel Day</div>
         <div class="city-dates">Thursday, Day 1 — Portland → Lyon</div>
-        <p class="city-intro">PDX to Lyon (LYS) via Paris CDG. Air France flies PDX → CDG, then a short connection to Lyon. Alternatively fly into Paris and take the TGV to Lyon — 2 hours, runs constantly. Arrive Day 2 morning.</p>
-        <span class="city-transit-note">✈️ PDX → CDG → LYS. Air France or Delta through Paris is the cleanest option.</span>
+        <p class="city-intro">PDX to Lyon (LYS) via Paris CDG. Air France flies PDX → CDG, then a short connection to Lyon. Alternatively fly into Paris and take the TGV to Lyon — 2 hours, runs constantly.</p>
+        <span class="city-transit-note">✈️ PDX → CDG → LYS. Air France or Delta through Paris.</span>
       </div>
     </div>
 
     <hr class="city-divider">
 
-    <!-- LYON -->
     <div class="city-block">
       <div class="city-header">
         <div class="city-name"><a href="https://www.google.com/search?q=Lyon+France+food+city" target="_blank" class="place-name">Lyon</a></div>
         <div class="city-dates">Friday–Sunday, Days 2–4 🌙🌙🌙</div>
-        <p class="city-intro">France's real food capital. Paris is glamorous but Lyon is where the serious eating happens — the bouchon tradition (working-class bistros serving rich, unfussy food) was invented here, and the city has more great restaurants per capita than anywhere in France. Paul Bocuse built his empire here. The old town (Vieux-Lyon) is a Renaissance quarter of narrow traboules (hidden passageways) and stone courtyards. Three days is not too many.</p>
-        <span class="city-transit-note">✈️ Arriving via Paris CDG and connection, or TGV from Paris.</span>
+        <p class="city-intro">France's real food capital. The bouchon tradition was invented here, and the city has more great restaurants per capita than anywhere in France. The old town (Vieux-Lyon) is a Renaissance quarter of narrow traboules — hidden passageways through buildings — and stone courtyards. Three days is not too many.</p>
+        <span class="city-transit-note">✈️ Arriving via Paris CDG connection or TGV from Paris.</span>
       </div>
-
       <div class="section-block food collapsed">
-        <div class="section-top"><h3>🥐 Bakeries & Food — Lyon Is The Point</h3><span class="chevron">▼</span></div>
+        <div class="section-top"><h3>🥐 Bakeries & Food</h3><span class="chevron">▼</span></div>
         <div class="section-body">
           <div class="sublabel">The Bouchon Tradition</div>
-          <div class="place-item"><span class="place-icon">🍽️</span><div class="place-content"><a href="https://www.google.com/search?q=Lyon+bouchon+restaurants+traditional+Lyonnais" target="_blank" class="place-name">Bouchons Lyonnais</a><p class="place-desc"><span class="hl-bakery">The bouchon is Lyon's soul.</span> Small, warm bistros serving traditional working-class Lyonnais cooking — quenelles de brochet (pike dumplings in cream sauce), salade lyonnaise (frisée with lardons and a poached egg), andouillette sausage, coq au vin. Certified bouchons display an official plaque. Lunch is the main meal.</p></div></div>
-          <div class="place-item"><span class="place-icon">🧀</span><div class="place-content"><a href="https://www.google.com/search?q=Halles+Paul+Bocuse+Lyon+food+market" target="_blank" class="place-name">Les Halles Paul Bocuse</a><p class="place-desc">Lyon's covered food market — named after the city's most famous chef. 60 stalls of exceptional cheese, charcuterie, pastry, fish, and produce. Go on a weekday morning. This is the best food market in France.</p></div></div>
+          <div class="place-item"><span class="place-icon">🍽️</span><div class="place-content"><a href="https://www.google.com/search?q=Lyon+bouchon+restaurants+traditional+Lyonnais" target="_blank" class="place-name">Bouchons Lyonnais</a><p class="place-desc"><span class="hl-bakery">The bouchon is Lyon's soul.</span> Small warm bistros serving Lyonnais classics — quenelles de brochet (pike dumplings in cream sauce), salade lyonnaise (frisée with lardons and poached egg), coq au vin. Certified bouchons display an official plaque. Lunch is the main meal.</p></div></div>
+          <div class="place-item"><span class="place-icon">🧀</span><div class="place-content"><a href="https://www.google.com/search?q=Halles+Paul+Bocuse+Lyon+food+market" target="_blank" class="place-name">Les Halles Paul Bocuse</a><p class="place-desc">Lyon's covered food market — named after the city's most famous chef. 60 stalls of exceptional cheese, charcuterie, pastry, fish, and produce. Go weekday mornings. The best food market in France.</p></div></div>
           <div class="sublabel">Bakeries</div>
-          <div class="place-item"><span class="place-icon">🥐</span><div class="place-content"><a href="https://www.google.com/search?q=Lyon+bakeries+boulangeries+praline+tart" target="_blank" class="place-name">Tarte à la praline (pink praline tart)</a><p class="place-desc"><span class="hl-bakery">The Lyonnais pastry signature.</span> A shortcrust shell filled with crushed pink pralines that melt into a caramelised filling. Bright pink, slightly alarming, utterly delicious. Every boulangerie in Lyon makes one.</p></div></div>
-          <div class="place-item"><span class="place-icon">🍩</span><div class="place-content"><a href="https://www.google.com/search?q=bugnes+Lyon+pastry+fried+dough+Mardi+Gras" target="_blank" class="place-name">Bugnes</a><p class="place-desc">Lyon's fried dough pastry — thin, crispy, dusted with powdered sugar. A January / pre-Mardi-Gras tradition in Lyon. Light and addictive. Pick up a bag at any bakery.</p></div></div>
+          <div class="place-item"><span class="place-icon">🥐</span><div class="place-content"><a href="https://www.google.com/search?q=Lyon+tarte+praline+pink+praline+tart+bakery" target="_blank" class="place-name">Tarte à la praline</a><p class="place-desc"><span class="hl-bakery">The Lyonnais pastry signature.</span> Shortcrust shell filled with crushed pink pralines that melt into a caramelised filling. Bright pink, slightly alarming, utterly delicious. Every boulangerie in Lyon makes one.</p></div></div>
+          <div class="place-item"><span class="place-icon">🍩</span><div class="place-content"><a href="https://www.google.com/search?q=bugnes+Lyon+fried+dough+pastry+January" target="_blank" class="place-name">Bugnes</a><p class="place-desc">Lyon's fried dough pastry — thin, crispy, dusted with powdered sugar. A January tradition. Light and addictive. Buy a bag at any bakery.</p></div></div>
         </div>
       </div>
-
       <div class="section-block attr collapsed">
         <div class="section-top"><h3>🗺️ Attractions</h3><span class="chevron">▼</span></div>
         <div class="section-body">
-          <div class="place-item"><span class="place-icon">🏘️</span><div class="place-content"><a href="https://www.google.com/search?q=Vieux+Lyon+old+town+traboules+UNESCO" target="_blank" class="place-name">Vieux-Lyon & Traboules</a><p class="place-desc">The Renaissance old town is UNESCO-listed and remarkable. The traboules are hidden passageways cutting through buildings from street to courtyard to street — a secret network built by silk merchants. Many are open to walk through. Allow half a day to explore properly.</p></div></div>
-          <div class="place-item"><span class="place-icon">⛪</span><div class="place-content"><a href="https://www.google.com/search?q=Fourviere+Basilica+Lyon+hill+view" target="_blank" class="place-name">Fourvière Basilica & Roman Theatres</a><p class="place-desc">The hill above the old town has a 19th-century basilica and two well-preserved Roman theatres from the 1st century BC. The views over Lyon from the esplanade are exceptional in clear January weather.</p></div></div>
-          <div class="place-item"><span class="place-icon">🏛️</span><div class="place-content"><a href="https://www.google.com/search?q=Presqu+ile+Lyon+peninsula+city+walking" target="_blank" class="place-name">Presqu'île (the peninsula)</a><p class="place-desc">The heart of modern Lyon — a long peninsula between two rivers. The Place des Terreaux, the covered passages (like Alsatian arcades but grander), the best restaurant streets, and the main shopping area. Easy walking.</p></div></div>
+          <div class="place-item"><span class="place-icon">🏘️</span><div class="place-content"><a href="https://www.google.com/search?q=Vieux+Lyon+old+town+traboules+UNESCO" target="_blank" class="place-name">Vieux-Lyon & Traboules</a><p class="place-desc">UNESCO-listed Renaissance old town. The traboules are hidden passageways cutting through buildings from street to courtyard — a secret network built by silk merchants. Many are open to walk through.</p></div></div>
+          <div class="place-item"><span class="place-icon">⛪</span><div class="place-content"><a href="https://www.google.com/search?q=Fourviere+Basilica+Lyon+hill+Roman+theatres" target="_blank" class="place-name">Fourvière Hill & Roman Theatres</a><p class="place-desc">19th-century basilica and two well-preserved Roman theatres from the 1st century BC. The views over Lyon in clear January weather are exceptional.</p></div></div>
         </div>
       </div>
-
-      <div class="section-block bath collapsed">
-        <div class="section-top"><h3>🛁 Baths</h3><span class="chevron">▼</span></div>
-        <div class="section-body">
-          <div class="place-item"><span class="place-icon">♨️</span><div class="place-content"><a href="https://www.google.com/search?q=spa+hammam+Lyon+France+thermal" target="_blank" class="place-name">Hammam & Spa options, Lyon</a><p class="place-desc"><span class="hl-onsen">Lyon has several well-regarded hammam and spa options in the city.</span> Not a thermal town per se, but the hammam tradition is strong. Good for an evening session after a heavy bouchon lunch. The serious thermal baths come later in the trip.</p></div></div>
-        </div>
-      </div>
-
       <div class="section-block transit collapsed">
         <div class="section-top"><h3>🚆 Transit & Phrases</h3><span class="chevron">▼</span></div>
         <div class="section-body">
-          <div class="transport-row"><span class="transport-badge badge-walk">Walk</span>Vieux-Lyon and Presqu'île are walkable. The Fourvière hill has a funicular (Le Ficelle) from the old town.</div>
-          <div class="transport-row"><span class="transport-badge badge-train">Train</span>Lyon to Annecy: 2h by TGV. Lyon to Paris: 2h by TGV if you want a day trip (but probably skip Paris).</div>
+          <div class="transport-row"><span class="transport-badge badge-walk">Walk</span>Vieux-Lyon and Presqu'île are walkable. Fourvière hill has a funicular (Le Ficelle) from the old town.</div>
+          <div class="transport-row"><span class="transport-badge badge-train">Train</span>Lyon to Annecy: 2h by direct train.</div>
           <div class="sublabel">Key Phrases — French</div>
           <div class="phrase-grid">
             <span class="ph-header">English</span><span class="ph-header">French</span><span class="ph-header">Pronunciation</span>
-            <span class="ph-en">One pink praline tart please</span><span class="ph-jp">Une tarte à la praline, s'il vous plaît</span><span class="ph-ro">oon tart ah la pra-LEEN seel voo PLAY</span>
-            <span class="ph-en">Where is the food market?</span><span class="ph-jp">Où sont les Halles?</span><span class="ph-ro">oo son lay AL</span>
-            <span class="ph-en">A bouchon recommendation?</span><span class="ph-jp">Un bouchon à recommander?</span><span class="ph-ro">un boo-SHON ah reh-ko-mon-DAY</span>
-            <span class="ph-en">Is this a certified bouchon?</span><span class="ph-jp">C'est un vrai bouchon?</span><span class="ph-ro">say un vray boo-SHON</span>
+            <span class="ph-en">One pink praline tart please</span><span>Une tarte à la praline, s'il vous plaît</span><span class="ph-ro">oon tart ah la pra-LEEN seel voo PLAY</span>
+            <span class="ph-en">Where is the food market?</span><span>Où sont les Halles?</span><span class="ph-ro">oo son lay AL</span>
+            <span class="ph-en">Is this a certified bouchon?</span><span>C'est un vrai bouchon?</span><span class="ph-ro">say un vray boo-SHON</span>
           </div>
         </div>
       </div>
@@ -943,120 +596,92 @@ body {
 
     <hr class="city-divider">
 
-    <!-- ANNECY -->
     <div class="city-block">
       <div class="city-header">
         <div class="city-name"><a href="https://www.google.com/search?q=Annecy+France+lake+Alps" target="_blank" class="place-name">Annecy</a></div>
         <div class="city-dates">Monday–Tuesday, Days 5–6 🌙🌙</div>
-        <p class="city-intro">Often called the Venice of the Alps — which sounds like tourist copy but is genuinely accurate. Annecy is built around canals feeding into the clearest, cleanest lake in Europe, with the Alps rising sharply on three sides. The old town is small and beautiful, the lake path is one of the great easy walks in France, and the mountains above offer serious hiking. In January the crowds are completely gone, the lake is glassy and cold, and the surrounding peaks are snow-covered. Exceptional bakeries throughout.</p>
-        <span class="city-transit-note">🚂 Train from Lyon: 2h. Simple direct service.</span>
+        <p class="city-intro">Often called the Venice of the Alps — which sounds like tourist copy but is genuinely accurate. Built around canals feeding into the clearest lake in Europe, with the Alps rising on three sides. The old town is small and beautiful, the lake path is one of the great easy walks in France, and the mountains above offer serious hiking. January: crowds completely gone, lake glassy and cold, surrounding peaks snow-covered.</p>
+        <span class="city-transit-note">🚂 Train from Lyon: 2h direct.</span>
       </div>
-
       <div class="section-block food collapsed">
         <div class="section-top"><h3>🥐 Bakeries & Food</h3><span class="chevron">▼</span></div>
         <div class="section-body">
-          <div class="place-item"><span class="place-icon">🥐</span><div class="place-content"><a href="https://www.google.com/search?q=Annecy+bakeries+boulangeries+Savoie+pastry" target="_blank" class="place-name">Savoyard pastries and bread</a><p class="place-desc"><span class="hl-bakery">Annecy is in the Savoie region — the Alpine bread and pastry tradition here is distinct from the rest of France.</span> Dense rye breads, Saint-Genix brioche (a brioche studded with pink pralines — the Savoyard version of the Lyonnais tart), and excellent croissants everywhere.</p></div></div>
-          <div class="place-item"><span class="place-icon">🧀</span><div class="place-content"><a href="https://www.google.com/search?q=Reblochon+cheese+Beaufort+Savoie+Annecy+market" target="_blank" class="place-name">Savoyard cheese — Reblochon & Beaufort</a><p class="place-desc">The Savoie is cheese country. Reblochon (the cheese in tartiflette), Beaufort (a firm Alpine cheese aged in mountain caves), Tomme de Savoie. The Tuesday and Friday markets in Annecy are outstanding for cheese shopping.</p></div></div>
-          <div class="place-item"><span class="place-icon">🥔</span><div class="place-content"><a href="https://www.google.com/search?q=tartiflette+Savoie+Annecy+restaurant+Alps" target="_blank" class="place-name">Tartiflette</a><p class="place-desc">The Alpine comfort dish — potatoes, Reblochon cheese, lardons, and onions baked until bubbling. The perfect meal after a cold lake walk. Every restaurant in Annecy does it.</p></div></div>
+          <div class="place-item"><span class="place-icon">🥐</span><div class="place-content"><a href="https://www.google.com/search?q=Annecy+bakeries+Saint+Genix+brioche+Savoie" target="_blank" class="place-name">Saint-Genix brioche</a><p class="place-desc"><span class="hl-bakery">The Savoyard pastry signature — brioche studded with pink pralines.</span> Found throughout Annecy's excellent boulangeries. Also look for dense Savoyard rye bread and outstanding croissants.</p></div></div>
+          <div class="place-item"><span class="place-icon">🧀</span><div class="place-content"><a href="https://www.google.com/search?q=Reblochon+Beaufort+cheese+Savoie+Annecy+market" target="_blank" class="place-name">Reblochon & Beaufort cheese</a><p class="place-desc">The Savoie is serious cheese country. Tuesday and Friday markets in Annecy are outstanding for local producers.</p></div></div>
+          <div class="place-item"><span class="place-icon">🥔</span><div class="place-content"><a href="https://www.google.com/search?q=tartiflette+Savoie+Annecy+restaurant" target="_blank" class="place-name">Tartiflette</a><p class="place-desc">Potatoes, Reblochon cheese, lardons, and onions baked until bubbling. The Alpine comfort dish. Every restaurant in Annecy does it.</p></div></div>
         </div>
       </div>
-
       <div class="section-block attr collapsed">
         <div class="section-top"><h3>🗺️ Attractions</h3><span class="chevron">▼</span></div>
         <div class="section-body">
-          <div class="place-item"><span class="place-icon">🏰</span><div class="place-content"><a href="https://www.google.com/search?q=Palais+de+l+Isle+Annecy+old+prison+canal" target="_blank" class="place-name">Palais de l'Isle</a><p class="place-desc">A 12th-century prison building sitting on a triangular island in the middle of the main canal. The most-photographed building in Annecy. Genuinely striking from every angle — especially reflected in the still winter canal water.</p></div></div>
-          <div class="place-item"><span class="place-icon">🏰</span><div class="place-content"><a href="https://www.google.com/search?q=Annecy+chateau+castle+museum+lake+views" target="_blank" class="place-name">Château d'Annecy</a><p class="place-desc">The hilltop castle above the old town — part museum, part viewpoint over the lake and Alps. The view from the terrace is exactly the image you have in your head when someone says "Annecy."</p></div></div>
-          <div class="place-item"><span class="place-icon">🌊</span><div class="place-content"><a href="https://www.google.com/search?q=Annecy+lake+path+walk+Lac+d+Annecy" target="_blank" class="place-name">Lake Path (Voie Verte)</a><p class="place-desc">A flat, paved path running along the entire lake edge. In January the light on the water and the snow-capped mountains behind is extraordinary. Easy walking or cycling — bike hire available year-round.</p></div></div>
+          <div class="place-item"><span class="place-icon">🏰</span><div class="place-content"><a href="https://www.google.com/search?q=Palais+de+l+Isle+Annecy+canal+prison" target="_blank" class="place-name">Palais de l'Isle</a><p class="place-desc">A 12th-century prison on a triangular island in the main canal. The most-photographed building in Annecy — especially striking reflected in the still winter water.</p></div></div>
+          <div class="place-item"><span class="place-icon">🌊</span><div class="place-content"><a href="https://www.google.com/search?q=Annecy+lake+path+walk+Lac+d+Annecy" target="_blank" class="place-name">Lake Path (Voie Verte)</a><p class="place-desc">Flat paved path along the lake edge. In January the light on the water and the snow-capped mountains behind is extraordinary. Bike hire available year-round.</p></div></div>
         </div>
       </div>
-
       <div class="section-block bath collapsed">
         <div class="section-top"><h3>🛁 Baths</h3><span class="chevron">▼</span></div>
         <div class="section-body">
-          <div class="place-item"><span class="place-icon">♨️</span><div class="place-content"><a href="https://www.google.com/search?q=Centre+Aquatique+Annecy+thermal+pool+spa" target="_blank" class="place-name">Centre Aquatique d'Annecy</a><p class="place-desc"><span class="hl-onsen">Annecy's main aquatic and spa centre.</span> Heated pools, sauna, and steam rooms with mountain views. More municipal than luxury but very well run. Good for a recovery session after a hike.</p></div></div>
-          <div class="place-item"><span class="place-icon">♨️</span><div class="place-content"><a href="https://www.google.com/search?q=Aix+les+Bains+thermal+spa+Savoie+France" target="_blank" class="place-name">Aix-les-Bains (40 min, serious thermal town)</a><p class="place-desc"><span class="hl-onsen">A proper Roman-origin thermal spa town 40 minutes from Annecy.</span> The Thermes Nationaux d'Aix-les-Bains has been in continuous operation since the Romans — sulfurous springs, proper spa facilities, and a beautiful lakeside setting. Worth the detour.</p></div></div>
+          <div class="place-item"><span class="place-icon">♨️</span><div class="place-content"><a href="https://www.google.com/search?q=Aix+les+Bains+thermal+spa+Savoie+France" target="_blank" class="place-name">Aix-les-Bains (40 min)</a><p class="place-desc"><span class="hl-onsen">A proper Roman-origin thermal spa town 40 min from Annecy.</span> The Thermes Nationaux has been in continuous operation since the Romans — sulphurous springs, proper spa facilities, beautiful lakeside setting. Worth the detour.</p></div></div>
         </div>
       </div>
-
       <div class="section-block hike collapsed">
         <div class="section-top"><h3>🥾 Hiking</h3><span class="chevron">▼</span></div>
         <div class="section-body">
-          <div class="place-item"><span class="place-icon">⛰️</span><div class="place-content"><a href="https://www.google.com/search?q=Mont+Veyrier+hike+Annecy+lake+views" target="_blank" class="place-name">Mont Veyrier</a><p class="place-desc"><span class="hl-hike">A 2–3 hour return hike directly from town, up through forest to a ridge with spectacular views over Lac d'Annecy.</span> The lake laid out below with the Alps behind it in January snow is genuinely one of the great views in the Alps. Bring microspikes if there's been recent snow.</p></div></div>
-          <div class="place-item"><span class="place-icon">🌊</span><div class="place-content"><a href="https://www.google.com/search?q=Annecy+lake+loop+walk+cycling+path" target="_blank" class="place-name">Lake Loop Walk</a><p class="place-desc"><span class="hl-hike">The flat path around the lake is about 35km for the full loop</span> — but you can walk any section and turn back. A morning walk south from town along the eastern shore, 10km return, is beautiful and easy.</p></div></div>
-        </div>
-      </div>
-
-      <div class="section-block transit collapsed">
-        <div class="section-top"><h3>🚆 Transit & Phrases</h3><span class="chevron">▼</span></div>
-        <div class="section-body">
-          <div class="transport-row"><span class="transport-badge badge-train">Train</span>Annecy to Geneva: 1h45. Annecy to Salzburg via Geneva and Zürich: ~6h total — a long but gorgeous train day through the Alps.</div>
-          <div class="sublabel">Key Phrases — French</div>
-          <div class="phrase-grid">
-            <span class="ph-header">English</span><span class="ph-header">French</span><span class="ph-header">Pronunciation</span>
-            <span class="ph-en">One Saint-Genix brioche please</span><span class="ph-jp">Une brioche Saint-Genix, s'il vous plaît</span><span class="ph-ro">oon bree-OSH san-zheh-NEE seel voo PLAY</span>
-            <span class="ph-en">Where is the lake path?</span><span class="ph-jp">Où est la voie verte?</span><span class="ph-ro">oo ay la vwah VAIR</span>
-            <span class="ph-en">Is the trail icy?</span><span class="ph-jp">Le sentier est verglacé?</span><span class="ph-ro">luh son-TYAY ay vair-gla-SAY</span>
-          </div>
+          <div class="place-item"><span class="place-icon">⛰️</span><div class="place-content"><a href="https://www.google.com/search?q=Mont+Veyrier+hike+Annecy+lake+views" target="_blank" class="place-name">Mont Veyrier</a><p class="place-desc"><span class="hl-hike">2–3 hour return hike directly from town.</span> Views over Lac d'Annecy with the Alps behind in January snow — one of the great views in the Alps. Bring microspikes if there's been recent snow.</p></div></div>
+          <div class="place-item"><span class="place-icon">🌊</span><div class="place-content"><a href="https://www.google.com/search?q=Annecy+lake+loop+walk" target="_blank" class="place-name">Lake Shore Walk</a><p class="place-desc"><span class="hl-hike">Walk south from town along the eastern shore, 10km return.</span> Flat, beautiful, extraordinary light in January.</p></div></div>
         </div>
       </div>
     </div>
 
     <hr class="city-divider">
 
-    <!-- SALZBURG -->
     <div class="city-block">
       <div class="city-header">
         <div class="city-name"><a href="https://www.google.com/search?q=Salzburg+Austria+old+town+Alps" target="_blank" class="place-name">Salzburg</a></div>
         <div class="city-dates">Wednesday–Friday, Days 7–9 🌙🌙🌙</div>
-        <p class="city-intro">The Austrian finale. Compact Baroque city on the Salzach river, fortress on the hill, the Alps immediately behind. Salzburg has excellent food markets, world-class patisseries, and is the gateway to Bad Gastein — one of Europe's most dramatic and beautiful thermal spa experiences, a Belle Époque spa town built into a steep Alpine gorge. Three days here leaves room for a full Bad Gastein day and still time to explore the old town properly.</p>
-        <span class="city-transit-note">🚂 Train from Annecy via Geneva and Zürich: ~6h. A spectacular Alpine crossing.</span>
+        <p class="city-intro">The Austrian finale. Compact Baroque city on the Salzach river, fortress on the hill, the Alps immediately behind. Excellent food markets, world-class patisseries, and Bad Gastein — one of Europe's most dramatic thermal experiences, a Belle Époque spa town built into a steep Alpine gorge — is 1.5h south by direct train.</p>
+        <span class="city-transit-note">🚂 Annecy → Geneva → Zürich → Salzburg: ~6h. A spectacular Alpine crossing — get a window seat.</span>
       </div>
-
       <div class="section-block food collapsed">
         <div class="section-top"><h3>🥐 Bakeries & Food</h3><span class="chevron">▼</span></div>
         <div class="section-body">
-          <div class="place-item"><span class="place-icon">🥐</span><div class="place-content"><a href="https://www.google.com/search?q=Austrian+bakery+Kipferl+Semmel+Salzburg+Bäckerei" target="_blank" class="place-name">Kipferl, Semmel, and Germknödel</a><p class="place-desc"><span class="hl-bakery">Austrian bakery culture is quietly exceptional.</span> Kipferl (crescent rolls, the original croissant), Semmel (soft rolls), and Germknödel (steamed dumplings filled with plum jam and smothered in poppy seed butter) are the morning essentials.</p></div></div>
-          <div class="place-item"><span class="place-icon">🍫</span><div class="place-content"><a href="https://www.google.com/search?q=Mozartkugel+original+Furst+Salzburg+chocolate" target="_blank" class="place-name">Original Mozartkugeln — Fürst</a><p class="place-desc">The original 1890 recipe — marzipan and pistachio nougat in dark chocolate, silver foil. Only sold at the original Fürst shop. Completely different from the mass-produced versions in gold foil at tourist shops.</p></div></div>
-          <div class="place-item"><span class="place-icon">🛒</span><div class="place-content"><a href="https://www.google.com/search?q=Green+Market+Salzburg+Universitätsplatz+food" target="_blank" class="place-name">Green Market (Universitätsplatz)</a><p class="place-desc">Daily outdoor market in the old town. Local cheese, bread, charcuterie, and pastries from regional producers. Best breakfast in Salzburg — eat standing at the stalls.</p></div></div>
+          <div class="place-item"><span class="place-icon">🥐</span><div class="place-content"><a href="https://www.google.com/search?q=Austrian+bakery+Kipferl+Semmel+Salzburg" target="_blank" class="place-name">Kipferl, Semmel & Germknödel</a><p class="place-desc"><span class="hl-bakery">Austrian bakery culture quietly exceptional.</span> Crescent rolls, soft scored rolls, and steamed dumplings filled with plum jam under poppy seed butter. Morning essentials.</p></div></div>
+          <div class="place-item"><span class="place-icon">🍫</span><div class="place-content"><a href="https://www.google.com/search?q=Mozartkugel+original+Furst+Salzburg+chocolate" target="_blank" class="place-name">Original Mozartkugeln — Fürst</a><p class="place-desc">The 1890 original — marzipan and pistachio nougat in dark chocolate, silver foil. Only at the original Fürst shop. Completely different from mass-produced tourist versions.</p></div></div>
+          <div class="place-item"><span class="place-icon">🛒</span><div class="place-content"><a href="https://www.google.com/search?q=Green+Market+Salzburg+Universitätsplatz" target="_blank" class="place-name">Green Market (Universitätsplatz)</a><p class="place-desc">Daily outdoor market in the old town. Local cheese, bread, charcuterie, pastries. Best breakfast in Salzburg — eat standing at the stalls.</p></div></div>
         </div>
       </div>
-
       <div class="section-block bath collapsed">
-        <div class="section-top"><h3>🛁 Baths — Bad Gastein Day Trip ⭐</h3><span class="chevron">▼</span></div>
+        <div class="section-top"><h3>🛁 Baths — Bad Gastein ⭐</h3><span class="chevron">▼</span></div>
         <div class="section-body">
-          <div class="place-item"><span class="place-icon">♨️</span><div class="place-content"><a href="https://www.google.com/search?q=Bad+Gastein+thermal+spa+gorge+waterfall+Austria" target="_blank" class="place-name">Bad Gastein</a><p class="place-desc"><span class="hl-onsen">Don't miss this.</span> Bad Gastein is a Victorian and Belle Époque spa town stacked vertically up the walls of an Alpine gorge, with a waterfall crashing down its centre. The radon-rich thermal water is genuinely therapeutic. The Felsentherme is the main bath complex — outdoor and indoor pools with the gorge walls and waterfall directly visible. In January: snow on the peaks, steam rising from the pools, the frozen spray on the cliff walls catching the light. Magical. 1.5h south of Salzburg by direct train. <span class="hl-onsen">Tattoo policy: welcoming.</span></p></div></div>
-          <div class="place-item"><span class="place-icon">♨️</span><div class="place-content"><a href="https://www.google.com/search?q=Paracelsusbad+Salzburg+thermal+pool+city" target="_blank" class="place-name">Paracelsusbad, Salzburg</a><p class="place-desc"><span class="hl-onsen">Salzburg's own thermal pool complex.</span> Good for an evening session when you don't want to travel. Indoor and outdoor pools, sauna, solid relaxation facilities.</p></div></div>
+          <div class="place-item"><span class="place-icon">♨️</span><div class="place-content"><a href="https://www.google.com/search?q=Bad+Gastein+thermal+spa+gorge+waterfall+Austria" target="_blank" class="place-name">Bad Gastein</a><p class="place-desc"><span class="hl-onsen">Don't miss this.</span> A Victorian and Belle Époque spa town stacked vertically into an Alpine gorge, with a waterfall crashing down its centre. Radon-rich thermal water, the Felsentherme bath complex with outdoor pools directly facing the gorge. In January: snow on the peaks, steam rising from the pools, frozen spray on the cliff walls. Magical. <span class="hl-onsen">Tattoo policy: welcoming.</span></p></div></div>
+          <div class="place-item"><span class="place-icon">♨️</span><div class="place-content"><a href="https://www.google.com/search?q=Paracelsusbad+Salzburg+thermal+pool" target="_blank" class="place-name">Paracelsusbad, Salzburg</a><p class="place-desc"><span class="hl-onsen">Salzburg's own thermal pool complex</span> for an evening session without the train trip.</p></div></div>
         </div>
       </div>
-
       <div class="section-block hike collapsed">
         <div class="section-top"><h3>🥾 Hiking</h3><span class="chevron">▼</span></div>
         <div class="section-body">
-          <div class="place-item"><span class="place-icon">⛰️</span><div class="place-content"><a href="https://www.google.com/search?q=Untersberg+mountain+Salzburg+cable+car+winter+hike" target="_blank" class="place-name">Untersberg Mountain</a><p class="place-desc"><span class="hl-hike">Cable car to 1776m, then trails across the Alpine plateau.</span> Views into Bavaria and across the Austrian Alps. Proper January Alpine terrain — crampons needed on the plateau. The descent through the forest is gentler.</p></div></div>
-          <div class="place-item"><span class="place-icon">🌊</span><div class="place-content"><a href="https://www.google.com/search?q=Bad+Gastein+gorge+waterfall+walk+winter" target="_blank" class="place-name">Bad Gastein Gorge Walk</a><p class="place-desc"><span class="hl-hike">The waterfall gorge trail is hikeable year-round.</span> The frozen spray on the cliff walls in January makes it extraordinary. Pair the walk with a Felsentherme session — hike in, soak out.</p></div></div>
+          <div class="place-item"><span class="place-icon">⛰️</span><div class="place-content"><a href="https://www.google.com/search?q=Untersberg+mountain+Salzburg+cable+car+winter" target="_blank" class="place-name">Untersberg Mountain</a><p class="place-desc"><span class="hl-hike">Cable car to 1776m, trails across the Alpine plateau.</span> Views into Bavaria and across the Austrian Alps. Microspikes needed on the plateau in January.</p></div></div>
+          <div class="place-item"><span class="place-icon">🌊</span><div class="place-content"><a href="https://www.google.com/search?q=Bad+Gastein+gorge+waterfall+walk+winter" target="_blank" class="place-name">Bad Gastein Gorge Walk</a><p class="place-desc"><span class="hl-hike">The waterfall gorge trail is hikeable year-round.</span> Frozen spray on the cliff walls in January. Hike in, soak out at the Felsentherme.</p></div></div>
         </div>
       </div>
-
       <div class="section-block attr collapsed">
         <div class="section-top"><h3>🗺️ Attractions</h3><span class="chevron">▼</span></div>
         <div class="section-body">
-          <div class="place-item"><span class="place-icon">🏰</span><div class="place-content"><a href="https://www.google.com/search?q=Hohensalzburg+Fortress+Salzburg+medieval" target="_blank" class="place-name">Hohensalzburg Fortress</a><p class="place-desc">One of Europe's largest and best-preserved medieval fortresses. Take the funicular up, walk down through the old town. Views over the Alps in winter are outstanding.</p></div></div>
-          <div class="place-item"><span class="place-icon">🏛️</span><div class="place-content"><a href="https://www.google.com/search?q=Getreidegasse+Mozart+birthplace+Salzburg+old+town" target="_blank" class="place-name">Getreidegasse & Mozart's Birthplace</a><p class="place-desc">The main old town shopping street — unchanged since Mozart's time, lined with wrought-iron guild signs. His birthplace is here. The street itself is a museum without an entrance fee.</p></div></div>
+          <div class="place-item"><span class="place-icon">🏰</span><div class="place-content"><a href="https://www.google.com/search?q=Hohensalzburg+Fortress+Salzburg" target="_blank" class="place-name">Hohensalzburg Fortress</a><p class="place-desc">One of Europe's largest and best-preserved medieval fortresses. Take the funicular up, walk down through the old town.</p></div></div>
+          <div class="place-item"><span class="place-icon">🏛️</span><div class="place-content"><a href="https://www.google.com/search?q=Getreidegasse+Mozart+birthplace+Salzburg" target="_blank" class="place-name">Getreidegasse & Mozart's Birthplace</a><p class="place-desc">The main old town street — unchanged since Mozart's time, wrought-iron guild signs, his birthplace at No. 9. The street itself is a free museum.</p></div></div>
         </div>
       </div>
-
       <div class="section-block transit collapsed">
         <div class="section-top"><h3>🚆 Transit & Phrases</h3><span class="chevron">▼</span></div>
         <div class="section-body">
-          <div class="transport-row"><span class="transport-badge badge-train">Train</span>Salzburg to Bad Gastein: 1h30 by ÖBB, direct. Book on oebb.at.</div>
-          <div class="transport-row"><span class="transport-badge badge-fly">Fly</span>Salzburg airport (SZG) is 20 min from old town by bus. Munich (MUC) is 2h by train with more flight options.</div>
+          <div class="transport-row"><span class="transport-badge badge-train">Train</span>Salzburg to Bad Gastein: 1h30 by ÖBB direct. Book on oebb.at.</div>
+          <div class="transport-row"><span class="transport-badge badge-fly">Fly</span>Salzburg airport (SZG) is 20 min from old town by bus. Munich (MUC) is 2h by train.</div>
           <div class="sublabel">Key Phrases — Austrian German</div>
           <div class="phrase-grid">
             <span class="ph-header">English</span><span class="ph-header">German</span><span class="ph-header">Pronunciation</span>
-            <span class="ph-en">Two rolls please</span><span class="ph-jp">Zwei Semmeln, bitte</span><span class="ph-ro">tsvye ZEM-eln BIT-teh</span>
-            <span class="ph-en">Where are the thermal baths?</span><span class="ph-jp">Wo sind die Therme?</span><span class="ph-ro">voh zint dee TER-meh</span>
-            <span class="ph-en">Is the train on time?</span><span class="ph-jp">Ist der Zug pünktlich?</span><span class="ph-ro">ist dair tsoog PÜNKT-likh</span>
-            <span class="ph-en">Wonderful, thank you!</span><span class="ph-jp">Wunderbar, danke!</span><span class="ph-ro">VOON-der-bar DAHN-keh</span>
+            <span class="ph-en">Two rolls please</span><span>Zwei Semmeln, bitte</span><span class="ph-ro">tsvye ZEM-eln BIT-teh</span>
+            <span class="ph-en">Where are the thermal baths?</span><span>Wo sind die Therme?</span><span class="ph-ro">voh zint dee TER-meh</span>
+            <span class="ph-en">Wonderful, thank you!</span><span>Wunderbar, danke!</span><span class="ph-ro">VOON-der-bar DAHN-keh</span>
           </div>
         </div>
       </div>
@@ -1068,18 +693,18 @@ body {
       <div class="city-header">
         <div class="city-name">✈️ Travel Home</div>
         <div class="city-dates">Saturday, Day 10 — Salzburg → Portland</div>
-        <p class="city-intro">Fly from Salzburg (SZG) or take the 2h train to Munich (MUC) for more flight options. Air France through Paris CDG, Lufthansa through Frankfurt, or United through various hubs all work for PDX.</p>
+        <p class="city-intro">Fly from Salzburg (SZG) or take the 2h train to Munich (MUC) for more flight options. Air France through Paris CDG or Lufthansa through Frankfurt both work for PDX.</p>
         <span class="city-transit-note">✈️ SZG or MUC → PDX. Budget a full travel day.</span>
       </div>
     </div>
 
     <div class="notes-section">
       <h2>Essential Notes — Trip 3</h2>
-      <div class="note-card"><strong>🍽️ Lyon Bouchon Tips</strong><p>Certified bouchons display an official "Authentique Bouchon Lyonnais" plaque. Lunch is the main meal — dinner service is shorter and some bouchons close early. Book ahead even in January for the popular ones.</p></div>
+      <div class="note-card"><strong>🍽️ Lyon Bouchon Tips</strong><p>Certified bouchons display an "Authentique Bouchon Lyonnais" plaque. Lunch is the main meal — some bouchons close early for dinner. Book ahead even in January.</p></div>
       <div class="note-card"><strong>💶 Currency</strong><p>France and Austria both use Euro. One currency the entire trip.</p></div>
-      <div class="note-card"><strong>🏔️ The Annecy → Salzburg Train</strong><p>The route via Geneva and Zürich takes about 6 hours but passes through some extraordinary Alpine scenery — Lac Léman, the Swiss midlands, and the Salzburg approach through the Austrian Alps. Get a window seat and don't sleep through it.</p></div>
-      <div class="note-card"><strong>♨️ Bad Gastein — Book the Train</strong><p>The ÖBB direct train from Salzburg to Bad Gastein runs several times daily. Book on oebb.at in advance. The town itself is tiny — one main street of thermal facilities, cafes, and that extraordinary gorge.</p></div>
-      <div class="note-card"><strong>🥾 January Hiking Gear</strong><p>Microspikes for Annecy's Mont Veyrier and anything above 1500m in Austria. Waterproof boots throughout. Layers that compress. The cold is genuinely pleasant when you're dressed for it.</p></div>
+      <div class="note-card"><strong>🚂 The Annecy → Salzburg Train</strong><p>About 6 hours via Geneva and Zürich — passes through extraordinary Alpine scenery. Get a window seat and don't sleep through it.</p></div>
+      <div class="note-card"><strong>♨️ Bad Gastein</strong><p>Book the ÖBB train from Salzburg in advance at oebb.at. The town is tiny — one main strip of thermal facilities, cafes, and that extraordinary gorge.</p></div>
+      <div class="note-card"><strong>🥾 January Hiking Gear</strong><p>Microspikes for anything above 1500m. Waterproof boots throughout. Layers that compress. The cold is genuinely pleasant when you're dressed for it.</p></div>
     </div>
 
   </div>
@@ -1092,51 +717,47 @@ function makeMap(id, stops, color) {
   L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
     attribution: '© OpenStreetMap contributors'
   }).addTo(m);
-
   var latlngs = stops.map(function(s){ return [s.lat, s.lng]; });
-
-  L.polyline(latlngs, {
-    color: color, weight: 3, opacity: 0.75, dashArray: '6,4'
-  }).addTo(m);
-
+  L.polyline(latlngs, { color: color, weight: 3, opacity: 0.75, dashArray: '6,4' }).addTo(m);
   stops.forEach(function(s) {
     L.circleMarker([s.lat, s.lng], {
       radius: 7, color: '#fff', weight: 2,
-      fillColor: s.highlight ? '#c4622d' : color,
-      fillOpacity: 1
+      fillColor: s.highlight ? '#c4622d' : color, fillOpacity: 1
     }).addTo(m).bindTooltip(
       '<strong>' + s.name + '</strong><br><span style="font-size:0.8em;color:#555">' + s.dates + '</span>',
       { permanent: true, direction: s.dir || 'right', className: 'city-tip' }
     );
   });
-
-  m.fitBounds(L.latLngBounds(latlngs), { padding: [60, 60] });
+  var bounds = L.latLngBounds(latlngs);
+  var minSpan = 5.5;
+  var center = bounds.getCenter();
+  var expanded = L.latLngBounds(
+    [center.lat - minSpan * 0.38, center.lng - minSpan * 0.5],
+    [center.lat + minSpan * 0.38, center.lng + minSpan * 0.5]
+  );
+  m.fitBounds(bounds.extend(expanded), { padding: [50, 50] });
   return m;
 }
 
 var t1 = [
-  { name:'Basel / Strasbourg', dates:'Days 2–4', lat:48.37, lng:7.55, dir:'right', highlight:true },
-  { name:'Alsace Villages', dates:'Day 4', lat:48.08, lng:7.36, dir:'left' },
-  { name:'Baden-Baden', dates:'Days 5–6', lat:48.76, lng:8.24, dir:'right', highlight:true },
+  { name:'Basel / Strasbourg', dates:'Days 2–4', lat:48.37, lng:7.55, dir:'bottom', highlight:true },
+  { name:'Baden-Baden', dates:'Days 5–6', lat:48.76, lng:8.24, dir:'top', highlight:true },
   { name:'Salzburg', dates:'Days 7–9', lat:47.80, lng:13.04, dir:'right', highlight:true },
-  { name:'Bad Gastein', dates:'Day trip', lat:47.11, lng:13.13, dir:'right' }
+  { name:'Bad Gastein', dates:'Day trip', lat:47.11, lng:13.13, dir:'left' }
 ];
-
 var t2 = [
-  { name:'Basel / Strasbourg', dates:'Days 2–4', lat:48.37, lng:7.55, dir:'right', highlight:true },
-  { name:'Alsace Villages', dates:'Day 4', lat:48.08, lng:7.36, dir:'left' },
+  { name:'Basel / Strasbourg', dates:'Days 2–4', lat:48.37, lng:7.55, dir:'bottom', highlight:true },
   { name:'Bern', dates:'Days 5–6', lat:46.95, lng:7.44, dir:'left', highlight:true },
-  { name:'Interlaken', dates:'Day trip', lat:46.69, lng:7.86, dir:'left' },
+  { name:'Interlaken', dates:'Day trip', lat:46.69, lng:7.86, dir:'bottom' },
   { name:'Innsbruck', dates:'Days 7–9', lat:47.27, lng:11.39, dir:'right', highlight:true },
-  { name:'Aqua Dome / Längenfeld', dates:'Day trip', lat:47.06, lng:10.97, dir:'left' }
+  { name:'Aqua Dome', dates:'Day trip', lat:47.06, lng:10.97, dir:'left' }
 ];
-
 var t3 = [
-  { name:'Lyon', dates:'Days 2–4', lat:45.75, lng:4.83, dir:'right', highlight:true },
-  { name:'Annecy', dates:'Days 5–6', lat:45.90, lng:6.12, dir:'right', highlight:true },
+  { name:'Lyon', dates:'Days 2–4', lat:45.75, lng:4.83, dir:'bottom', highlight:true },
+  { name:'Annecy', dates:'Days 5–6', lat:45.90, lng:6.12, dir:'top', highlight:true },
   { name:'Aix-les-Bains', dates:'Day trip', lat:45.69, lng:5.91, dir:'left' },
   { name:'Salzburg', dates:'Days 7–9', lat:47.80, lng:13.04, dir:'right', highlight:true },
-  { name:'Bad Gastein', dates:'Day trip', lat:47.11, lng:13.13, dir:'right' }
+  { name:'Bad Gastein', dates:'Day trip', lat:47.11, lng:13.13, dir:'left' }
 ];
 
 var maps = {};
